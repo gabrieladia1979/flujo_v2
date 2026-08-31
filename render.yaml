@@ -1,0 +1,23 @@
+# ============================================================
+# PhishARG Backend — Configuración de despliegue en Render
+# ============================================================
+# Render detecta este archivo automáticamente al conectar el repo.
+# Docs: https://docs.render.com/blueprint-spec
+
+services:
+  - type: web
+    name: phisharg-api
+    runtime: python
+    plan: free
+    region: oregon
+    buildCommand: pip install -r requirements.txt && python -m spacy download es_core_news_sm
+    startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: API_KEY
+        sync: false    # Configurar manualmente en el dashboard de Render
+      - key: CORS_ORIGINS
+        value: https://add-in-pfi.vercel.app
+      - key: DEBUG
+        value: "false"
+      - key: PYTHON_VERSION
+        value: "3.11.12"

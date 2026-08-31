@@ -1,0 +1,23 @@
+# ============================================================
+# PhishARG Backend — Dependencias (FastAPI)
+# ============================================================
+
+# --- Framework web ---
+fastapi
+uvicorn[standard]
+pydantic
+slowapi             # Para Rate Limiting (Prevención DDoS)
+
+# --- Base de Datos & Feedback Loop ---
+sqlalchemy
+
+# --- Machine Learning ---
+scikit-learn
+xgboost
+spacy
+numpy
+shap                # Para Explicabilidad (XAI)
+
+# --- Utilidades ---
+python-dotenv       # Variables de entorno desde .env
+httpx               # Necesario para FastAPI TestClient

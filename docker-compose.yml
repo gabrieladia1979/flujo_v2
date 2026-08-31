@@ -1,0 +1,31 @@
+version: '3.8'
+
+services:
+  web:
+    build: .
+    ports:
+      - "8080:8080"
+    environment:
+      - API_KEY=${API_KEY:-PHISHARG_DEV_KEY_123}
+      - CORS_ORIGINS=http://localhost:3000,https://add-in-pfi.vercel.app
+    volumes:
+      - .:/app
+      # Excluimos la base de datos de producción y los entornos virtuales del mount
+      - /app/venv
+      - /app/__pycache__
+    depends_on:
+      - db
+
+  db:
+    image: postgres:15-alpine
+    environment:
+      - POSTGRES_USER=phisharg
+      - POSTGRES_PASSWORD=phisharg_secure
+      - POSTGRES_DB=phisharg_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+volumes:
+  pgdata:

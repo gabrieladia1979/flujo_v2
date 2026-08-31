@@ -1,0 +1,11 @@
+__pycache__/
+*.pyc
+.git/
+.env
+patch*.py
+fix_regex.py
+test_*.py
+docker-compose.yml
+*.code-workspace
+DataSet/
+model_onnx/
