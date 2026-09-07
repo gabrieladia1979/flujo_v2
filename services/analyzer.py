@@ -111,22 +111,40 @@ _ANALYSIS_CACHE = {}
 
 def analyze_email(payload: EmailPayloadSchema) -> AnalysisResultSchema:
     from services.security_rules import check_critical_threats
+    from services.slm_explanation import (
+        build_analyzer_evidence,
+        build_explanation_context,
+        render_server_fallback,
+    )
     
-    sec_str = str(payload.security_features.dict()) if payload.security_features else ""; content_hash = hashlib.sha256(f"{payload.metadata.asunto}|{payload.contenido}|{sec_str}".encode("utf-8")).hexdigest()
+    sec_str = str(payload.security_features.model_dump()) if payload.security_features else ""
+    content_hash = hashlib.sha256(
+        f"{payload.metadata.asunto}|{payload.contenido}|{sec_str}".encode("utf-8")
+    ).hexdigest()
     if content_hash in _ANALYSIS_CACHE:
         return _ANALYSIS_CACHE[content_hash]
 
     if payload.security_features:
         es_critico, razon_critica = check_critical_threats(payload.security_features)
         if es_critico:
+            critical_intent = "suplantacion_o_malware"
+            critical_evidence = build_analyzer_evidence(
+                {}, [], is_phishing=True, critical_reason=razon_critica
+            )
+            critical_context = build_explanation_context(
+                is_phishing=True,
+                risk_score=1.0,
+                intent=critical_intent,
+                evidence=critical_evidence,
+            )
             resultado_express = AnalysisResultSchema(
                 is_phishing=True,
                 risk_score=1.0,
                 reason="🛑 PHISHING COMPROBADO POR METADATOS",
-                intent="suplantacion_o_malware",
+                intent=critical_intent,
                 slots_detectados={},
                 security_adjustments=[],
-                slm_explanation=f"⚠️ Este correo fue bloqueado instantáneamente sin necesidad de IA porque comprobamos técnicamente que es fraudulento: {razon_critica}"
+                slm_explanation=render_server_fallback(critical_context),
             )
             _ANALYSIS_CACHE[content_hash] = resultado_express
             return resultado_express
@@ -191,32 +209,39 @@ def analyze_email(payload: EmailPayloadSchema) -> AnalysisResultSchema:
     risk_score = prob
     is_phishing = prob >= UMBRAL_CRITICO
 
-    # 7. Generación de intent
-    if not is_phishing: intent = "comunicacion_operativa"
-    elif slots_count['FINANCIERO'] > 0: intent = "coaccionar_pago"
-    else: intent = "solicitar_credenciales"
-
-    # 8. Aplicar ajustes heurísticos
+    # 7. Aplicar ajustes heurísticos
     security_adjustments = None
     if payload.security_features is not None:
         risk_score, is_phishing, security_adjustments = _apply_security_adjustments(
             risk_score, is_phishing, payload.security_features
         )
 
+    # 8. Derivar el intent DESPUÉS de los ajustes para mantener consistente
+    # la tupla autoritativa (is_phishing, risk_score, intent).
+    if not is_phishing:
+        intent = "comunicacion_operativa"
+    elif slots_count['FINANCIERO'] > 0:
+        intent = "coaccionar_pago"
+    else:
+        intent = "solicitar_credenciales"
+
     # 9. Veredicto
     reason = "🔴 PHISHING DETECTADO" if is_phishing else "🟢 LEGÍTIMO"
 
-    # 10. SLM Explicabilidad
-    from services.explainer import generate_safe_email_response, extract_shap_insights, generate_slm_prompt
-    slm_explanation = None
-    if is_phishing:
-        try:
-            insights = extract_shap_insights(calibrated_model, X_input, tfidf)
-            slm_explanation = f"[Borrador del SLM]: Analicé este correo y encontré riesgos. {', '.join(insights)}."
-        except Exception as e:
-            slm_explanation = "Este correo contiene elementos maliciosos detectados por nuestra IA."
-    else:
-        slm_explanation = generate_safe_email_response(security_adjustments)
+    # 10. Explicación segura. No existe un proveedor SLM integrado todavía,
+    # por lo que el servidor renderiza su fallback determinístico validado.
+    explanation_evidence = build_analyzer_evidence(
+        slots_text,
+        security_adjustments,
+        is_phishing=is_phishing,
+    )
+    explanation_context = build_explanation_context(
+        is_phishing=is_phishing,
+        risk_score=round(float(risk_score), 4),
+        intent=intent,
+        evidence=explanation_evidence,
+    )
+    slm_explanation = render_server_fallback(explanation_context)
 
     final_result = AnalysisResultSchema(
         is_phishing=is_phishing,

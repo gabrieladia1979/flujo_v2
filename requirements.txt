@@ -5,7 +5,7 @@
 # --- Framework web ---
 fastapi
 uvicorn[standard]
-pydantic
+pydantic>=2.5,<3      # Contrato estricto de explicaciones SLM (field/model validators)
 slowapi             # Para Rate Limiting (Prevención DDoS)
 
 # --- Base de Datos & Feedback Loop ---
