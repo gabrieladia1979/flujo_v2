@@ -137,6 +137,12 @@ def analyze_email(payload: EmailPayloadSchema) -> AnalysisResultSchema:
                 intent=critical_intent,
                 evidence=critical_evidence,
             )
+            try:
+                from services.slm_client import generate_slm_explanation
+                express_explanation = generate_slm_explanation(critical_context)
+            except Exception:
+                express_explanation = render_server_fallback(critical_context)
+                
             resultado_express = AnalysisResultSchema(
                 is_phishing=True,
                 risk_score=1.0,
@@ -144,7 +150,7 @@ def analyze_email(payload: EmailPayloadSchema) -> AnalysisResultSchema:
                 intent=critical_intent,
                 slots_detectados={},
                 security_adjustments=[],
-                slm_explanation=render_server_fallback(critical_context),
+                slm_explanation=express_explanation,
             )
             _ANALYSIS_CACHE[content_hash] = resultado_express
             return resultado_express
@@ -228,8 +234,9 @@ def analyze_email(payload: EmailPayloadSchema) -> AnalysisResultSchema:
     # 9. Veredicto
     reason = "🔴 PHISHING DETECTADO" if is_phishing else "🟢 LEGÍTIMO"
 
-    # 10. Explicación segura. No existe un proveedor SLM integrado todavía,
-    # por lo que el servidor renderiza su fallback determinístico validado.
+    # 10. Explicación Segura usando SLM Local (Fallback automático en caso de error)
+    # Se integra el componente del servidor dedicado a generar explicaciones,
+    # desacoplando la generación del veredicto.
     explanation_evidence = build_analyzer_evidence(
         slots_text,
         security_adjustments,
@@ -241,7 +248,13 @@ def analyze_email(payload: EmailPayloadSchema) -> AnalysisResultSchema:
         intent=intent,
         evidence=explanation_evidence,
     )
-    slm_explanation = render_server_fallback(explanation_context)
+    
+    try:
+        from services.slm_client import generate_slm_explanation
+        slm_explanation = generate_slm_explanation(explanation_context)
+    except Exception:
+        # Evita que un fallo del SLM impida devolver el veredicto
+        slm_explanation = render_server_fallback(explanation_context)
 
     final_result = AnalysisResultSchema(
         is_phishing=is_phishing,

@@ -10,3 +10,6 @@ venv/
 
 # ONNX (no se usa en V2)
 model_onnx/
+# Modelos Pesados
+model/*.gguf
+
