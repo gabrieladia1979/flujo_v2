@@ -527,7 +527,7 @@ def build_analyzer_evidence(
         evidence.append(
             ExplanationEvidence(
                 evidence_id="security.critical_threat",
-                text="Una regla crítica de seguridad confirmó una amenaza en los metadatos disponibles.",
+                text=critical_reason[:150], # Limitar longitud por seguridad
                 source=EvidenceSource.SECURITY_RULE,
             )
         )
