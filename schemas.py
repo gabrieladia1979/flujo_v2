@@ -38,6 +38,7 @@ class SecurityFeaturesSchema(BaseModel):
     originating_country: str = ""
     x_mailer: str = ""
     received_hop_count: int = 0
+    is_trusted_domain: Optional[bool] = False
 
     # === Adjuntos ===
     attachment_count: int = 0

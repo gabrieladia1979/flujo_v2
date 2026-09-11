@@ -32,12 +32,12 @@ def test_spf_fail():
 
 
 def test_spf_softfail():
-    """SPF softfail debe generar el mismo ajuste que fail."""
+    """SPF softfail debe generar ajuste +0.05."""
     features = SecurityFeaturesSchema(spf_result="softfail")
     adjustments = apply_security_rules(features)
-    spf_adj = [a for a in adjustments if a.rule == "spf_fail"]
+    spf_adj = [a for a in adjustments if a.rule == "spf_softfail"]
     assert len(spf_adj) == 1
-    assert spf_adj[0].delta == 0.15
+    assert spf_adj[0].delta == 0.05
     print("[PASS] test_spf_softfail")
 
 
@@ -166,7 +166,7 @@ def test_all_checks_pass():
     adjustments = apply_security_rules(features)
     ok_adj = [a for a in adjustments if a.rule == "all_checks_pass"]
     assert len(ok_adj) == 1
-    assert ok_adj[0].delta == -0.05
+    assert ok_adj[0].delta == -0.15
     print("[PASS] test_all_checks_pass")
 
 
@@ -220,7 +220,7 @@ def test_best_case_internal():
     
     # Debe ser negativo (reduce riesgo)
     assert total_delta < 0, f"Expected negative total delta, got {total_delta}"
-    assert abs(total_delta - (-0.15)) < 1e-9, f"Expected -0.15, got {total_delta}"
+    assert abs(total_delta - (-0.25)) < 1e-9, f"Expected -0.25, got {total_delta}"
     
     print(f"[PASS] test_best_case_internal (total delta: {total_delta:.2f})")
 

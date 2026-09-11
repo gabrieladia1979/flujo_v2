@@ -13,45 +13,25 @@ from schemas import SecurityFeaturesSchema, SecurityAdjustment
 def check_critical_threats(features: SecurityFeaturesSchema) -> Tuple[bool, str]:
     if not features: return False, ""
     
-    # 1. Spoofing y Autenticación Criptográfica (Identidad Falsificada)
-    if features.dmarc_result == 'fail':
-        return True, "🛑 ALERTA MÁXIMA: DMARC falló. El dominio origen prohíbe explícitamente a este remitente enviar correos. Es una suplantación comprobada."
+    # 1. Spoofing Directo (SPF Fail + Sender Enmascarado)
+    #    SPF fail + sender mismatch es evidencia fuerte de suplantación activa.
     if features.spf_result == 'fail' and not features.sender_vs_from_match:
         return True, "⚠️ Suplantación: El servidor desde donde se envió este correo no está autorizado por el dominio (SPF Fail) y el remitente está enmascarado."
     
-    # 2. Análisis de Cabeceras (Reply-To Mismatch)
-    if not features.from_reply_to_match:
-        return True, "⚠️ Fraude BEC: La dirección a la que vas a responder (Reply-To) es distinta a la del remitente original. Si haces clic en 'Responder', el correo irá a un atacante."
-    
-    # 3. Amenazas Microsoft 365 (Filtro Antispam)
+    # 2. Amenazas Microsoft 365 (Alta confianza de phishing)
     if features.scl >= 9:
         return True, f"🚨 Microsoft 365 catalogó silenciosamente este correo como Alta Probabilidad de Phishing (Nivel SCL: {features.scl})."
-    if features.bcl >= 7:
+    if features.bcl >= 8:
         return True, f"⚠️ Este correo proviene de un enviador masivo reportado frecuentemente por spam y abusos (Nivel BCL: {features.bcl})."
     
-    # 4. Análisis de Carga Útil (Payload)
+    # 3. Análisis de Carga Útil (Payload)
     if features.has_executable_attachment:
         return True, "🛑 PELIGRO: Se detectó un archivo adjunto con formato ejecutable oculto. Podría instalar Malware o Ransomware en tu equipo."
     
-    # 5. Anomalías de Origen y Red
-    if features.auth_as == 'Anonymous' and features.scl >= 5:
-        return True, "⚠️ Remitente anónimo desde un servidor externo combinado con sospecha de Spam. Tratar con extrema precaución."
+    # 4. Anomalías de Origen y Red (umbral SCL subido a 7 para evitar FP con newsletters)
+    if features.auth_as == 'Anonymous' and features.scl >= 7:
+        return True, "⚠️ Remitente anónimo desde un servidor externo combinado con sospecha alta de Spam. Tratar con extrema precaución."
 
-    return False, ""
-        
-    # 1. Spoofing Directo (Suplantación de Identidad)
-    falla_auth = features.spf_result == 'fail' or features.dkim_result == 'fail'
-    if falla_auth and not features.sender_vs_from_match:
-        return True, "Suplantación de identidad comprobada (Falla criptográfica + Dominio falsificado)."
-        
-    # 2. Veredicto del Servidor (Microsoft 365)
-    if features.scl >= 9 or features.threat_category.upper() in ['MALWARE', 'PHISH', 'HIGHPHISH']:
-        return True, f"Bloqueado por el servidor de correo corporativo (Nivel de Spam: {features.scl})."
-        
-    # 3. Adjuntos Peligrosos
-    if features.has_executable_attachment:
-        return True, "Contiene un archivo adjunto ejecutable (posible Malware/Ransomware)."
-        
     return False, ""
 
 
@@ -59,11 +39,17 @@ def _check_auth_failures(features: SecurityFeaturesSchema) -> List[SecurityAdjus
     """Evalúa fallos de autenticación SPF, DKIM, DMARC, CompAuth."""
     adjustments = []
 
-    if features.spf_result in ("fail", "softfail"):
+    if features.spf_result == "fail":
         adjustments.append(SecurityAdjustment(
             rule="spf_fail",
             delta=0.15,
-            description=f"SPF {features.spf_result}: el remitente no está autorizado por el dominio"
+            description="SPF fail: el remitente no está autorizado por el dominio"
+        ))
+    elif features.spf_result == "softfail":
+        adjustments.append(SecurityAdjustment(
+            rule="spf_softfail",
+            delta=0.05,
+            description="SPF softfail: el dominio no prohíbe explícitamente este remitente (común en reenvíos)"
         ))
 
     if features.dkim_result == "fail":
@@ -187,8 +173,21 @@ def _check_positive_signals(features: SecurityFeaturesSchema) -> List[SecurityAd
     if all_auth_pass and no_spoofing:
         adjustments.append(SecurityAdjustment(
             rule="all_checks_pass",
-            delta=-0.05,
+            delta=-0.15,
             description="Todas las verificaciones de autenticación y spoofing pasaron correctamente"
+        ))
+        if features.is_trusted_domain:
+            adjustments.append(SecurityAdjustment(
+                rule="trusted_official_domain",
+                delta=-0.40,
+                description="Remitente es un dominio oficial verificado con autenticación perfecta"
+            ))
+    elif features.spf_result == "pass" and features.dkim_result == "pass":
+        # SPF+DKIM pasan pero DMARC no está o falla (común en dominios sin DMARC configurado)
+        adjustments.append(SecurityAdjustment(
+            rule="spf_dkim_pass",
+            delta=-0.08,
+            description="SPF y DKIM pasaron correctamente (autenticación parcial positiva)"
         ))
 
     return adjustments

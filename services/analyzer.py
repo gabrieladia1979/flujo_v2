@@ -103,6 +103,9 @@ def _apply_security_adjustments(risk_score, is_phishing, security_features):
     from services.security_rules import apply_security_rules
     adjustments = apply_security_rules(security_features)
     total_delta = sum(adj.delta for adj in adjustments)
+    # Limitar el delta acumulado para evitar que múltiples señales leves
+    # empujen un correo legítimo por encima del umbral de phishing.
+    total_delta = max(min(total_delta, 0.35), -0.25)
     adjusted_score = min(max(risk_score + total_delta, 0.0), 1.0)
     adjusted_is_phishing = adjusted_score >= UMBRAL_CRITICO
     return adjusted_score, adjusted_is_phishing, adjustments
@@ -157,7 +160,14 @@ def analyze_email(payload: EmailPayloadSchema) -> AnalysisResultSchema:
 
     asunto = payload.metadata.asunto or ""
     remitente_email = payload.metadata.remitente_email or ""
-    contenido = payload.contenido or ""
+    
+    # Preprocesamiento: Limpiar etiquetas HTML del contenido (evita ruido en TF-IDF y métricas de legibilidad)
+    contenido_raw = payload.contenido or ""
+    import re
+    contenido = re.sub(r'<[^>]+>', ' ', contenido_raw)
+    # Reemplazar múltiples espacios o saltos de línea por uno solo
+    contenido = re.sub(r'\s+', ' ', contenido).strip()
+
     attachments_count = payload.security_features.attachment_count if payload.security_features else 0
     hops_count = payload.security_features.received_hop_count if payload.security_features else 3
 
@@ -210,6 +220,12 @@ def analyze_email(payload: EmailPayloadSchema) -> AnalysisResultSchema:
     else:
         # Fallback
         X_input = np.hstack([vec_text, vec_meta, vec_slots, vec_url, np.array([[ifh]])])
+
+    # Determinar si el dominio del remitente es oficial
+    if remitente_email and "@" in remitente_email:
+        sender_dom = remitente_email.split("@")[-1].lower()
+        if payload.security_features:
+            payload.security_features.is_trusted_domain = dominio_es_oficial(sender_dom)
 
     prob = float(calibrated_model.predict_proba(X_input)[0][0]) # V4 flip
     risk_score = prob

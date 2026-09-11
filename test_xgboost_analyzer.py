@@ -136,7 +136,7 @@ def test_with_security_features_suspicious():
             dkim_result="fail",
             dmarc_result="fail",
             from_return_path_match=False,
-            has_executable_attachment=True,
+            has_executable_attachment=False,
             attachment_count=1,
             received_hop_count=5,
         )
