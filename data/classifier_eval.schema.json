@@ -1,0 +1,125 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://phisharg.local/schemas/classifier-eval-v1.json",
+  "title": "PhishARG classifier evaluation case",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "id",
+    "subject",
+    "body",
+    "label",
+    "category",
+    "campaign_id",
+    "security_features",
+    "source"
+  ],
+  "properties": {
+    "id": {"type": "string", "minLength": 1},
+    "subject": {"type": "string"},
+    "body": {"type": "string"},
+    "label": {"enum": ["phishing", "legitimate"]},
+    "category": {
+      "enum": [
+        "credential_theft",
+        "tax_impersonation",
+        "bank_impersonation",
+        "marketplace_impersonation",
+        "fake_prize",
+        "fake_invoice",
+        "fake_delivery",
+        "malware",
+        "other_phishing",
+        "internal_communication",
+        "legitimate_invoice",
+        "bank_notification",
+        "marketplace_notification",
+        "newsletter",
+        "password_recovery",
+        "technical_email",
+        "forwarded_email",
+        "other_legitimate"
+      ]
+    },
+    "campaign_id": {"type": "string", "minLength": 1},
+    "security_features": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "spf_result": {"type": "string"},
+        "dkim_result": {"type": "string"},
+        "dmarc_result": {"type": "string"},
+        "compauth_result": {"type": "string"},
+        "return_path": {"type": "string"},
+        "reply_to": {"type": "string"},
+        "from_return_path_match": {"type": "boolean"},
+        "from_reply_to_match": {"type": "boolean"},
+        "sender_vs_from_match": {"type": "boolean"},
+        "scl": {"type": "integer"},
+        "threat_category": {"type": "string"},
+        "spam_filtering_verdict": {"type": "string"},
+        "auth_as": {"type": "string"},
+        "bcl": {"type": "integer"},
+        "originating_ip": {"type": "string"},
+        "originating_country": {"type": "string"},
+        "x_mailer": {"type": "string"},
+        "received_hop_count": {"type": "integer"},
+        "is_trusted_domain": {"type": ["boolean", "null"]},
+        "attachment_count": {"type": "integer"},
+        "attachment_types": {"type": ["array", "null"], "items": {"type": "string"}},
+        "has_executable_attachment": {"type": "boolean"},
+        "to_count": {"type": "integer"},
+        "cc_count": {"type": "integer"},
+        "internet_message_id": {"type": "string"},
+        "has_headers": {"type": "boolean"}
+      }
+    },
+    "source": {"type": "string", "minLength": 1}
+  },
+  "anyOf": [
+    {"properties": {"subject": {"minLength": 1}}},
+    {"properties": {"body": {"minLength": 1}}}
+  ],
+  "allOf": [
+    {
+      "if": {"properties": {"label": {"const": "phishing"}}},
+      "then": {
+        "properties": {
+          "category": {
+            "enum": [
+              "credential_theft",
+              "tax_impersonation",
+              "bank_impersonation",
+              "marketplace_impersonation",
+              "fake_prize",
+              "fake_invoice",
+              "fake_delivery",
+              "malware",
+              "other_phishing"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "if": {"properties": {"label": {"const": "legitimate"}}},
+      "then": {
+        "properties": {
+          "category": {
+            "enum": [
+              "internal_communication",
+              "legitimate_invoice",
+              "bank_notification",
+              "marketplace_notification",
+              "newsletter",
+              "password_recovery",
+              "technical_email",
+              "forwarded_email",
+              "other_legitimate"
+            ]
+          }
+        }
+      }
+    }
+  ]
+}

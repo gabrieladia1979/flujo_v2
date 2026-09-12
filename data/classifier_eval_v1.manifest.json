@@ -1,0 +1,44 @@
+{
+  "counts": {
+    "by_category": {
+      "bank_impersonation": 1,
+      "internal_communication": 3,
+      "tax_impersonation": 1,
+      "technical_email": 1
+    },
+    "by_label": {
+      "legitimate": 4,
+      "phishing": 2
+    },
+    "total": 6
+  },
+  "dataset": "classifier_eval_v1.jsonl",
+  "generated_on": "2026-09-12",
+  "holdout_status": "unverified",
+  "notes": [
+    "This corpus is intentionally incomplete and is not a verified holdout.",
+    "No new messages were fabricated to satisfy minimum sample counts."
+  ],
+  "provenance": {
+    "description": "Authorized, synthetic/anonymized cases already present in repository tests.",
+    "source_files": [
+      "test_xgboost_analyzer.py",
+      "test_api.py"
+    ],
+    "training_overlap": "unknown"
+  },
+  "sha256": "b827445d25cd0cc97e5724e10e9f022bdddba35e7cc28eb5b834cfe3d03f3dde",
+  "shortfalls": {
+    "legitimate": 196,
+    "phishing": 198,
+    "used_categories": {
+      "bank_impersonation": 9,
+      "internal_communication": 7,
+      "tax_impersonation": 9,
+      "technical_email": 9
+    }
+  },
+  "status": "incomplete",
+  "version": "1.0.0",
+  "warnings": []
+}

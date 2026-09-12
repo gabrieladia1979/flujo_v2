@@ -133,7 +133,7 @@ class _Classifier:
         self.phishing_score = phishing_score
 
     def predict_proba(self, values):
-        # Production V4 reads index zero as the phishing probability.
+        # Production currently reads index zero as the phishing probability.
         return np.array([[self.phishing_score, 1.0 - self.phishing_score]])
 
 
@@ -215,7 +215,7 @@ class AnalyzerSLMIntegrationTests(unittest.TestCase):
         )
         lowered = self.analyzer.analyze_email(lowered_payload)
         self.assertFalse(lowered.is_phishing)
-        self.assertEqual(0.9, lowered.risk_score)
+        self.assertEqual(0.8, lowered.risk_score)
         self.assertEqual("comunicacion_operativa", lowered.intent)
         self.assertIn(LEGITIMATE_SUMMARY, lowered.slm_explanation)
         self.assertIn("No se requiere una acción adicional", lowered.slm_explanation)
@@ -224,11 +224,54 @@ class AnalyzerSLMIntegrationTests(unittest.TestCase):
         repeated = self.analyzer.analyze_email(lowered_payload)
         self.assertEqual(lowered.model_dump(), repeated.model_dump())
 
+    def test_internal_diagnostics_separate_raw_and_final_scores(self):
+        self.analyzer.calibrated_model = _Classifier(0.80)
+        diagnostics = self.analyzer._classify_payload(
+            self._payload(
+                "Adjusted diagnostics",
+                SecurityFeaturesSchema(spf_result="fail"),
+            )
+        )
+
+        self.assertEqual(0.80, diagnostics["raw_score"])
+        self.assertAlmostEqual(0.95, diagnostics["risk_score"])
+        self.assertEqual("model_and_security_rules", diagnostics["decision_source"])
+        self.assertTrue(diagnostics["is_phishing"])
+
+    def test_internal_diagnostics_mark_critical_path_without_raw_score(self):
+        self.analyzer.calibrated_model = _Classifier(0.01)
+        diagnostics = self.analyzer._classify_payload(
+            self._payload(
+                "Critical diagnostics",
+                SecurityFeaturesSchema(has_executable_attachment=True),
+            )
+        )
+
+        self.assertIsNone(diagnostics["raw_score"])
+        self.assertEqual(1.0, diagnostics["risk_score"])
+        self.assertEqual("critical_security_rule", diagnostics["decision_source"])
+
+    def test_public_analysis_contract_is_unchanged(self):
+        self.analyzer.calibrated_model = _Classifier(0.20)
+        result = self.analyzer.analyze_email(self._payload("Public contract", None))
+        self.assertEqual(
+            {
+                "is_phishing",
+                "risk_score",
+                "reason",
+                "intent",
+                "slots_detectados",
+                "security_adjustments",
+                "slm_explanation",
+            },
+            set(result.model_dump()),
+        )
+
     def test_critical_threat_path_returns_server_owned_safe_fallback(self):
         self.analyzer.calibrated_model = _Classifier(0.01)
         critical_payload = self._payload(
             "Critical threat",
-            SecurityFeaturesSchema(dmarc_result="fail"),
+            SecurityFeaturesSchema(has_executable_attachment=True),
         )
         result = self.analyzer.analyze_email(critical_payload)
 
@@ -236,7 +279,7 @@ class AnalyzerSLMIntegrationTests(unittest.TestCase):
         self.assertEqual(1.0, result.risk_score)
         self.assertEqual("suplantacion_o_malware", result.intent)
         self.assertIn(PHISHING_SUMMARY, result.slm_explanation)
-        self.assertIn("Una regla crítica de seguridad", result.slm_explanation)
+        self.assertIn("ejecutable", result.slm_explanation.lower())
         self.assertIn("No abras enlaces ni adjuntos", result.slm_explanation)
         self.assertNotIn("Borrador del SLM", result.slm_explanation)
 

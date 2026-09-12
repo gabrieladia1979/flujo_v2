@@ -8,6 +8,10 @@ import pickle
 import os
 
 from schemas import EmailPayloadSchema, AnalysisResultSchema, SecurityFeaturesSchema
+from services.classifier_contract import (
+    DEFAULT_MODEL_PATH,
+    PRODUCTION_PHISHING_PROBABILITY_INDEX,
+)
 
 # 1. CARGA DE SPACY Y DEFINICIÓN DEL TOKENIZER (DEBE ESTAR ANTES DEL PICKLE LOAD)
 try:
@@ -32,13 +36,17 @@ calibrated_model = None
 UMBRAL_CRITICO = 0.91
 DOMINIOS_OFICIALES = []
 
-def _load_model():
+
+class ClassifierUnavailableError(RuntimeError):
+    """Raised when normal model inference is requested without a loaded model."""
+
+def _load_model(model_path=None):
     global modelo_exportado, tfidf, scaler_meta, scaler_slots, scaler_legibilidad
     global calibrated_model, UMBRAL_CRITICO, DOMINIOS_OFICIALES
-    
-    model_path = os.path.join(os.path.dirname(__file__), "..", "model", "phisharg_xgboost.pkl")
+
+    selected_path = os.fspath(model_path or DEFAULT_MODEL_PATH)
     try:
-        with open(model_path, 'rb') as f:
+        with open(selected_path, 'rb') as f:
             modelo_exportado = pickle.load(f)
         
         tfidf = modelo_exportado['tfidf']
@@ -50,6 +58,12 @@ def _load_model():
         DOMINIOS_OFICIALES = modelo_exportado.get('dominios_oficiales', [])
         print("[Analyzer] Modelo XGBoost V4 cargado exitosamente.")
     except Exception as e:
+        modelo_exportado = None
+        tfidf = None
+        scaler_meta = None
+        scaler_slots = None
+        scaler_legibilidad = None
+        calibrated_model = None
         print(f"[!] Error crítico cargando el modelo real: {e}")
 
 _load_model()
@@ -112,14 +126,121 @@ def _apply_security_adjustments(risk_score, is_phishing, security_features):
 
 _ANALYSIS_CACHE = {}
 
-def analyze_email(payload: EmailPayloadSchema) -> AnalysisResultSchema:
+def _classify_payload(payload: EmailPayloadSchema) -> dict:
+    """Run the authoritative classifier and expose internal evaluation diagnostics."""
     from services.security_rules import check_critical_threats
+
+    if payload.security_features:
+        es_critico, razon_critica = check_critical_threats(payload.security_features)
+        if es_critico:
+            return {
+                "raw_score": None,
+                "risk_score": 1.0,
+                "is_phishing": True,
+                "intent": "suplantacion_o_malware",
+                "slots_detectados": {},
+                "security_adjustments": [],
+                "decision_source": "critical_security_rule",
+                "critical_reason": razon_critica,
+            }
+
+    asunto = payload.metadata.asunto or ""
+    remitente_email = payload.metadata.remitente_email or ""
+
+    contenido_raw = payload.contenido or ""
+    contenido = re.sub(r'<[^>]+>', ' ', contenido_raw)
+    contenido = re.sub(r'\s+', ' ', contenido).strip()
+
+    attachments_count = payload.security_features.attachment_count if payload.security_features else 0
+    hops_count = payload.security_features.received_hop_count if payload.security_features else 3
+
+    if calibrated_model is None or tfidf is None or nlp is None:
+        raise ClassifierUnavailableError("El modelo de IA no se encuentra cargado.")
+
+    urls = extraer_urls(contenido)
+    url_count = len(urls)
+
+    doc = nlp(f"{asunto} {contenido}")
+    slots_count = {"URGENCIA": 0, "AUTORIDAD": 0, "FINANCIERO": 0, "AMENAZA": 0, "CALL_TO_ACTION": 0, "TEMPORAL": 0}
+    slots_text = {"URGENCIA": [], "AUTORIDAD": [], "FINANCIERO": [], "AMENAZA": [], "CALL_TO_ACTION": [], "TEMPORAL": []}
+
+    for match_id, start, end in matcher_global(doc):
+        cat = nlp.vocab.strings[match_id]
+        slots_count[cat] += 1
+        slots_text[cat].append(doc[start:end].text)
+
+    tiene_url = 1 if urls else 0
+    url_usa_http = 0; url_oficial_val = 0; url_suplantada_val = 0; url_tiene_ip_val = 0; typosquatting_val = 0
+    entidades_suplantables = ["afip", "arca", "bcra", "anses", "mercadopago", "galicia", "santander", "macro", "nacion", "redlink", "netflix", "correo", "pami"]
+
+    for u in urls:
+        if u.startswith('http://'): url_usa_http = 1
+        dom = extraer_dominio(u)
+        if dominio_es_oficial(dom): url_oficial_val = 1
+        for ent in entidades_suplantables:
+            if ent in dom and not dominio_es_oficial(dom): url_suplantada_val = 1; break
+        if re.match(r'\d+\.\d+\.\d+\.\d+', dom or ''): url_tiene_ip_val = 1
+        if not dominio_es_oficial(dom) and any(1 <= damerau_levenshtein(dom, o) <= 2 for o in DOMINIOS_OFICIALES): typosquatting_val = 1
+
+    ifh = indice_fernandez_huerta(f"{asunto} {contenido}")
+
+    vec_text = tfidf.transform([f"{asunto} {contenido}"]).toarray()
+    vec_meta = scaler_meta.transform([[url_count, attachments_count, hops_count]])
+    vec_slots = scaler_slots.transform([[slots_count['URGENCIA'], slots_count['AUTORIDAD'], slots_count['FINANCIERO'], slots_count['AMENAZA'], slots_count['CALL_TO_ACTION'], slots_count['TEMPORAL'], url_count]])
+    vec_url = np.array([[tiene_url, tiene_url, url_usa_http, url_usa_http, url_oficial_val, url_oficial_val, url_suplantada_val, url_suplantada_val, url_tiene_ip_val, url_tiene_ip_val, typosquatting_val]])
+
+    if scaler_legibilidad:
+        vec_legibilidad = scaler_legibilidad.transform([[ifh]])
+        X_input = np.hstack([vec_text, vec_meta, vec_slots, vec_url, vec_legibilidad])
+    else:
+        X_input = np.hstack([vec_text, vec_meta, vec_slots, vec_url, np.array([[ifh]])])
+
+    if remitente_email and "@" in remitente_email:
+        sender_dom = remitente_email.split("@")[-1].lower()
+        if payload.security_features:
+            payload.security_features.is_trusted_domain = dominio_es_oficial(sender_dom)
+
+    raw_score = float(
+        calibrated_model.predict_proba(X_input)[0][PRODUCTION_PHISHING_PROBABILITY_INDEX]
+    )
+    risk_score = raw_score
+    is_phishing = raw_score >= UMBRAL_CRITICO
+
+    security_adjustments = None
+    decision_source = "model_only"
+    if payload.security_features is not None:
+        risk_score, is_phishing, security_adjustments = _apply_security_adjustments(
+            risk_score, is_phishing, payload.security_features
+        )
+        decision_source = "model_and_security_rules"
+
+    if not is_phishing:
+        intent = "comunicacion_operativa"
+    elif slots_count['FINANCIERO'] > 0:
+        intent = "coaccionar_pago"
+    else:
+        intent = "solicitar_credenciales"
+
+    return {
+        "raw_score": raw_score,
+        "risk_score": risk_score,
+        "is_phishing": is_phishing,
+        "intent": intent,
+        "slots_detectados": slots_text,
+        "security_adjustments": security_adjustments,
+        "decision_source": decision_source,
+        "critical_reason": None,
+        "feature_count": int(X_input.shape[1]),
+    }
+
+
+def analyze_email(payload: EmailPayloadSchema) -> AnalysisResultSchema:
     from services.slm_explanation import (
         build_analyzer_evidence,
         build_explanation_context,
         render_server_fallback,
     )
-    
+
     sec_str = str(payload.security_features.model_dump()) if payload.security_features else ""
     content_hash = hashlib.sha256(
         f"{payload.metadata.asunto}|{payload.contenido}|{sec_str}".encode("utf-8")
@@ -127,9 +248,15 @@ def analyze_email(payload: EmailPayloadSchema) -> AnalysisResultSchema:
     if content_hash in _ANALYSIS_CACHE:
         return _ANALYSIS_CACHE[content_hash]
 
-    if payload.security_features:
-        es_critico, razon_critica = check_critical_threats(payload.security_features)
-        if es_critico:
+    try:
+        diagnostics = _classify_payload(payload)
+    except ClassifierUnavailableError:
+        return AnalysisResultSchema(
+            is_phishing=False, risk_score=0.0, reason="Error interno: El modelo de IA no se encuentra cargado."
+        )
+
+    if diagnostics["decision_source"] == "critical_security_rule":
+            razon_critica = diagnostics["critical_reason"]
             critical_intent = "suplantacion_o_malware"
             critical_evidence = build_analyzer_evidence(
                 {}, [], is_phishing=True, critical_reason=razon_critica
@@ -145,7 +272,7 @@ def analyze_email(payload: EmailPayloadSchema) -> AnalysisResultSchema:
                 express_explanation = generate_slm_explanation(critical_context)
             except Exception:
                 express_explanation = render_server_fallback(critical_context)
-                
+
             resultado_express = AnalysisResultSchema(
                 is_phishing=True,
                 risk_score=1.0,
@@ -158,94 +285,11 @@ def analyze_email(payload: EmailPayloadSchema) -> AnalysisResultSchema:
             _ANALYSIS_CACHE[content_hash] = resultado_express
             return resultado_express
 
-    asunto = payload.metadata.asunto or ""
-    remitente_email = payload.metadata.remitente_email or ""
-    
-    # Preprocesamiento: Limpiar etiquetas HTML del contenido (evita ruido en TF-IDF y métricas de legibilidad)
-    contenido_raw = payload.contenido or ""
-    import re
-    contenido = re.sub(r'<[^>]+>', ' ', contenido_raw)
-    # Reemplazar múltiples espacios o saltos de línea por uno solo
-    contenido = re.sub(r'\s+', ' ', contenido).strip()
-
-    attachments_count = payload.security_features.attachment_count if payload.security_features else 0
-    hops_count = payload.security_features.received_hop_count if payload.security_features else 3
-
-    if calibrated_model is None or tfidf is None or nlp is None:
-        return AnalysisResultSchema(
-            is_phishing=False, risk_score=0.0, reason="Error interno: El modelo de IA no se encuentra cargado."
-        )
-
-    # 5. EL PIPELINE DE INFERENCIA
-    urls = extraer_urls(contenido)
-    url_count = len(urls)
-    
-    # 5.1 Slots Psicológicos
-    doc = nlp(f"{asunto} {contenido}")
-    slots_count = {"URGENCIA": 0, "AUTORIDAD": 0, "FINANCIERO": 0, "AMENAZA": 0, "CALL_TO_ACTION": 0, "TEMPORAL": 0}
-    slots_text = {"URGENCIA": [], "AUTORIDAD": [], "FINANCIERO": [], "AMENAZA": [], "CALL_TO_ACTION": [], "TEMPORAL": []}
-    
-    for match_id, start, end in matcher_global(doc): 
-        cat = nlp.vocab.strings[match_id]
-        slots_count[cat] += 1
-        slots_text[cat].append(doc[start:end].text)
-
-    # 5.2 Features de URL y Typosquatting
-    tiene_url = 1 if urls else 0
-    url_usa_http = 0; url_oficial_val = 0; url_suplantada_val = 0; url_tiene_ip_val = 0; typosquatting_val = 0
-    entidades_suplantables = ["afip", "arca", "bcra", "anses", "mercadopago", "galicia", "santander", "macro", "nacion", "redlink", "netflix", "correo", "pami"]
-    
-    for u in urls:
-        if u.startswith('http://'): url_usa_http = 1
-        dom = extraer_dominio(u)
-        if dominio_es_oficial(dom): url_oficial_val = 1
-        for ent in entidades_suplantables:
-            if ent in dom and not dominio_es_oficial(dom): url_suplantada_val = 1; break
-        if re.match(r'\d+\.\d+\.\d+\.\d+', dom or ''): url_tiene_ip_val = 1
-        if not dominio_es_oficial(dom) and any(1 <= damerau_levenshtein(dom, o) <= 2 for o in DOMINIOS_OFICIALES): typosquatting_val = 1
-    
-    # 5.3 Legibilidad
-    ifh = indice_fernandez_huerta(f"{asunto} {contenido}")
-    
-    # 5.4 Ensamblado de Matriz (6022 features)
-    vec_text = tfidf.transform([f"{asunto} {contenido}"]).toarray()
-    vec_meta = scaler_meta.transform([[url_count, attachments_count, hops_count]])
-    vec_slots = scaler_slots.transform([[slots_count['URGENCIA'], slots_count['AUTORIDAD'], slots_count['FINANCIERO'], slots_count['AMENAZA'], slots_count['CALL_TO_ACTION'], slots_count['TEMPORAL'], url_count]])
-    
-    vec_url = np.array([[tiene_url, tiene_url, url_usa_http, url_usa_http, url_oficial_val, url_oficial_val, url_suplantada_val, url_suplantada_val, url_tiene_ip_val, url_tiene_ip_val, typosquatting_val]])
-    
-    if scaler_legibilidad:
-        vec_legibilidad = scaler_legibilidad.transform([[ifh]])
-        X_input = np.hstack([vec_text, vec_meta, vec_slots, vec_url, vec_legibilidad])
-    else:
-        # Fallback
-        X_input = np.hstack([vec_text, vec_meta, vec_slots, vec_url, np.array([[ifh]])])
-
-    # Determinar si el dominio del remitente es oficial
-    if remitente_email and "@" in remitente_email:
-        sender_dom = remitente_email.split("@")[-1].lower()
-        if payload.security_features:
-            payload.security_features.is_trusted_domain = dominio_es_oficial(sender_dom)
-
-    prob = float(calibrated_model.predict_proba(X_input)[0][0]) # V4 flip
-    risk_score = prob
-    is_phishing = prob >= UMBRAL_CRITICO
-
-    # 7. Aplicar ajustes heurísticos
-    security_adjustments = None
-    if payload.security_features is not None:
-        risk_score, is_phishing, security_adjustments = _apply_security_adjustments(
-            risk_score, is_phishing, payload.security_features
-        )
-
-    # 8. Derivar el intent DESPUÉS de los ajustes para mantener consistente
-    # la tupla autoritativa (is_phishing, risk_score, intent).
-    if not is_phishing:
-        intent = "comunicacion_operativa"
-    elif slots_count['FINANCIERO'] > 0:
-        intent = "coaccionar_pago"
-    else:
-        intent = "solicitar_credenciales"
+    risk_score = diagnostics["risk_score"]
+    is_phishing = diagnostics["is_phishing"]
+    intent = diagnostics["intent"]
+    slots_text = diagnostics["slots_detectados"]
+    security_adjustments = diagnostics["security_adjustments"]
 
     # 9. Veredicto
     reason = "🔴 PHISHING DETECTADO" if is_phishing else "🟢 LEGÍTIMO"

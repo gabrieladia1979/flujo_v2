@@ -1,0 +1,143 @@
+{
+  "case_count": 6,
+  "dataset": "/Users/tomasbasualdo/Desktop/flujo_v2/data/classifier_eval_v1.jsonl",
+  "dataset_sha256": "b827445d25cd0cc97e5724e10e9f022bdddba35e7cc28eb5b834cfe3d03f3dde",
+  "filters": {
+    "category": null,
+    "label": null,
+    "limit": null
+  },
+  "metrics": {
+    "by_category": {
+      "bank_impersonation": {
+        "brier_score": 0.3973084285243844,
+        "confusion_matrix": {
+          "false_negative": 1,
+          "false_positive": 0,
+          "true_negative": 0,
+          "true_positive": 0
+        },
+        "count": 1,
+        "f1_phishing": null,
+        "false_negative_rate": 1.0,
+        "false_positive_rate": null,
+        "pr_auc": 1.0,
+        "precision_phishing": null,
+        "recall_phishing": 0.0,
+        "roc_auc": null
+      },
+      "internal_communication": {
+        "brier_score": 0.8303303938403915,
+        "confusion_matrix": {
+          "false_negative": 0,
+          "false_positive": 2,
+          "true_negative": 1,
+          "true_positive": 0
+        },
+        "count": 3,
+        "f1_phishing": null,
+        "false_negative_rate": null,
+        "false_positive_rate": 0.6666666666666666,
+        "pr_auc": null,
+        "precision_phishing": 0.0,
+        "recall_phishing": null,
+        "roc_auc": null
+      },
+      "tax_impersonation": {
+        "brier_score": 0.974129616071982,
+        "confusion_matrix": {
+          "false_negative": 1,
+          "false_positive": 0,
+          "true_negative": 0,
+          "true_positive": 0
+        },
+        "count": 1,
+        "f1_phishing": null,
+        "false_negative_rate": 1.0,
+        "false_positive_rate": null,
+        "pr_auc": 1.0,
+        "precision_phishing": null,
+        "recall_phishing": 0.0,
+        "roc_auc": null
+      },
+      "technical_email": {
+        "brier_score": 0.9739527330289872,
+        "confusion_matrix": {
+          "false_negative": 0,
+          "false_positive": 1,
+          "true_negative": 0,
+          "true_positive": 0
+        },
+        "count": 1,
+        "f1_phishing": null,
+        "false_negative_rate": null,
+        "false_positive_rate": 1.0,
+        "pr_auc": null,
+        "precision_phishing": 0.0,
+        "recall_phishing": null,
+        "roc_auc": null
+      }
+    },
+    "final": {
+      "brier_score": 0.8060636598577547,
+      "confusion_matrix": {
+        "false_negative": 2,
+        "false_positive": 3,
+        "true_negative": 1,
+        "true_positive": 0
+      },
+      "count": 6,
+      "f1_phishing": 0.0,
+      "false_negative_rate": 1.0,
+      "false_positive_rate": 0.75,
+      "pr_auc": 0.26666666666666666,
+      "precision_phishing": 0.0,
+      "recall_phishing": 0.0,
+      "roc_auc": 0.0
+    },
+    "raw_model": {
+      "brier_score": 0.9718460515457662,
+      "confusion_matrix": {
+        "false_negative": 2,
+        "false_positive": 4,
+        "true_negative": 0,
+        "true_positive": 0
+      },
+      "count": 6,
+      "f1_phishing": 0.0,
+      "false_negative_rate": 1.0,
+      "false_positive_rate": 1.0,
+      "pr_auc": 0.26666666666666666,
+      "precision_phishing": 0.0,
+      "recall_phishing": 0.0,
+      "roc_auc": 0.0
+    },
+    "timing_ms": {
+      "average": 18.668687509489246,
+      "p95": 34.31083299801685
+    }
+  },
+  "model": "/Users/tomasbasualdo/Desktop/flujo_v2/model/phisharg_xgboost.pkl",
+  "model_audit": {
+    "classes": [
+      0,
+      1
+    ],
+    "feature_dimensions_match": true,
+    "phishing_probability_index": 0,
+    "threshold": 0.8
+  },
+  "partial": false,
+  "seed": 42,
+  "warnings": [
+    "Category bank_impersonation needs 9 more cases.",
+    "Category internal_communication needs 7 more cases.",
+    "Category tax_impersonation needs 9 more cases.",
+    "Category technical_email needs 9 more cases.",
+    "Some category metrics are undefined because the category does not contain both classes.",
+    "The corpus is not a verified holdout from model training.",
+    "The corpus needs 196 more legitimate cases.",
+    "The corpus needs 198 more phishing cases.",
+    "The evaluation corpus is incomplete."
+  ]
+}
