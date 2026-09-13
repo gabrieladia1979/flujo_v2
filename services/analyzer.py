@@ -249,6 +249,19 @@ def _classify_payload(payload: EmailPayloadSchema) -> dict:
             risk_score, is_phishing, security_features
         )
         decision_source = "model_and_security_rules"
+        
+        if remitente_email and "@" in remitente_email:
+            sender_dom = remitente_email.split("@")[-1].lower()
+            freemails = {"gmail.com", "hotmail.com", "yahoo.com", "outlook.com", "live.com"}
+            if sender_dom in freemails and (slots_count['FINANCIERO'] > 0 or slots_count['URGENCIA'] > 0):
+                from schemas import SecurityAdjustment
+                security_adjustments.append(SecurityAdjustment(
+                    rule="freemail_riesgo",
+                    delta=0.25,
+                    description="Remitente de correo gratuito con lenguaje financiero o de urgencia"
+                ))
+                risk_score = min(risk_score + 0.25, 1.0)
+                is_phishing = risk_score >= UMBRAL_CRITICO
 
     from services.content_rules import detect_content_signals
     content_signals = detect_content_signals(contenido_raw)

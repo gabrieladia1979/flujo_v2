@@ -1,7 +1,7 @@
 {
-  "case_count": 6,
-  "dataset": "/Users/tomasbasualdo/Desktop/flujo_v2/data/classifier_eval_v1.jsonl",
-  "dataset_sha256": "b827445d25cd0cc97e5724e10e9f022bdddba35e7cc28eb5b834cfe3d03f3dde",
+  "case_count": 14,
+  "dataset": "C:\\Users\\gabri\\OneDrive\\Documentos\\GitHub\\flujo_v2\\data\\classifier_eval_v1.jsonl",
+  "dataset_sha256": "004f6d69bc1e1f7df6b397ef3d9593496f0a1157b72af1ead054c9b67a37daae",
   "filters": {
     "category": null,
     "label": null,
@@ -10,114 +10,165 @@
   "metrics": {
     "by_category": {
       "bank_impersonation": {
-        "brier_score": 0.3973084285243844,
+        "brier_score": 0.0,
         "confusion_matrix": {
-          "false_negative": 1,
+          "false_negative": 0,
           "false_positive": 0,
           "true_negative": 0,
+          "true_positive": 4
+        },
+        "count": 4,
+        "f1_phishing": 1.0,
+        "false_negative_rate": 0.0,
+        "false_positive_rate": null,
+        "pr_auc": 1.0,
+        "precision_phishing": 1.0,
+        "recall_phishing": 1.0,
+        "roc_auc": null
+      },
+      "credential_theft": {
+        "brier_score": 0.0025000000000000044,
+        "confusion_matrix": {
+          "false_negative": 0,
+          "false_positive": 0,
+          "true_negative": 0,
+          "true_positive": 1
+        },
+        "count": 1,
+        "f1_phishing": 1.0,
+        "false_negative_rate": 0.0,
+        "false_positive_rate": null,
+        "pr_auc": 1.0,
+        "precision_phishing": 1.0,
+        "recall_phishing": 1.0,
+        "roc_auc": null
+      },
+      "internal_communication": {
+        "brier_score": 8.18525960735578e-05,
+        "confusion_matrix": {
+          "false_negative": 0,
+          "false_positive": 0,
+          "true_negative": 4,
+          "true_positive": 0
+        },
+        "count": 4,
+        "f1_phishing": null,
+        "false_negative_rate": null,
+        "false_positive_rate": 0.0,
+        "pr_auc": null,
+        "precision_phishing": null,
+        "recall_phishing": null,
+        "roc_auc": null
+      },
+      "legitimate_invoice": {
+        "brier_score": 0.0,
+        "confusion_matrix": {
+          "false_negative": 0,
+          "false_positive": 0,
+          "true_negative": 1,
           "true_positive": 0
         },
         "count": 1,
         "f1_phishing": null,
-        "false_negative_rate": 1.0,
-        "false_positive_rate": null,
-        "pr_auc": 1.0,
+        "false_negative_rate": null,
+        "false_positive_rate": 0.0,
+        "pr_auc": null,
         "precision_phishing": null,
-        "recall_phishing": 0.0,
+        "recall_phishing": null,
         "roc_auc": null
       },
-      "internal_communication": {
-        "brier_score": 0.8303303938403915,
+      "other_legitimate": {
+        "brier_score": 0.0,
         "confusion_matrix": {
           "false_negative": 0,
-          "false_positive": 2,
+          "false_positive": 0,
           "true_negative": 1,
           "true_positive": 0
         },
-        "count": 3,
+        "count": 1,
         "f1_phishing": null,
         "false_negative_rate": null,
-        "false_positive_rate": 0.6666666666666666,
+        "false_positive_rate": 0.0,
         "pr_auc": null,
-        "precision_phishing": 0.0,
+        "precision_phishing": null,
         "recall_phishing": null,
         "roc_auc": null
       },
       "tax_impersonation": {
-        "brier_score": 0.974129616071982,
+        "brier_score": 0.0001754713924254033,
         "confusion_matrix": {
-          "false_negative": 1,
+          "false_negative": 0,
           "false_positive": 0,
           "true_negative": 0,
-          "true_positive": 0
+          "true_positive": 1
         },
         "count": 1,
-        "f1_phishing": null,
-        "false_negative_rate": 1.0,
+        "f1_phishing": 1.0,
+        "false_negative_rate": 0.0,
         "false_positive_rate": null,
         "pr_auc": 1.0,
-        "precision_phishing": null,
-        "recall_phishing": 0.0,
+        "precision_phishing": 1.0,
+        "recall_phishing": 1.0,
         "roc_auc": null
       },
       "technical_email": {
-        "brier_score": 0.9739527330289872,
+        "brier_score": 8.186405655614352e-05,
         "confusion_matrix": {
           "false_negative": 0,
-          "false_positive": 1,
-          "true_negative": 0,
+          "false_positive": 0,
+          "true_negative": 2,
           "true_positive": 0
         },
-        "count": 1,
+        "count": 2,
         "f1_phishing": null,
         "false_negative_rate": null,
-        "false_positive_rate": 1.0,
+        "false_positive_rate": 0.0,
         "pr_auc": null,
-        "precision_phishing": 0.0,
+        "precision_phishing": null,
         "recall_phishing": null,
         "roc_auc": null
       }
     },
     "final": {
-      "brier_score": 0.8060636598577547,
+      "brier_score": 0.00022618642070228043,
       "confusion_matrix": {
-        "false_negative": 2,
-        "false_positive": 3,
-        "true_negative": 1,
-        "true_positive": 0
+        "false_negative": 0,
+        "false_positive": 0,
+        "true_negative": 8,
+        "true_positive": 6
       },
-      "count": 6,
-      "f1_phishing": 0.0,
-      "false_negative_rate": 1.0,
-      "false_positive_rate": 0.75,
-      "pr_auc": 0.26666666666666666,
-      "precision_phishing": 0.0,
-      "recall_phishing": 0.0,
-      "roc_auc": 0.0
+      "count": 14,
+      "f1_phishing": 1.0,
+      "false_negative_rate": 0.0,
+      "false_positive_rate": 0.0,
+      "pr_auc": 0.9999999999999999,
+      "precision_phishing": 1.0,
+      "recall_phishing": 1.0,
+      "roc_auc": 1.0
     },
     "raw_model": {
-      "brier_score": 0.9718460515457662,
+      "brier_score": 0.0862864749449741,
       "confusion_matrix": {
-        "false_negative": 2,
-        "false_positive": 4,
-        "true_negative": 0,
-        "true_positive": 0
+        "false_negative": 1,
+        "false_positive": 0,
+        "true_negative": 8,
+        "true_positive": 3
       },
-      "count": 6,
-      "f1_phishing": 0.0,
-      "false_negative_rate": 1.0,
-      "false_positive_rate": 1.0,
-      "pr_auc": 0.26666666666666666,
-      "precision_phishing": 0.0,
-      "recall_phishing": 0.0,
-      "roc_auc": 0.0
+      "count": 12,
+      "f1_phishing": 0.8571428571428571,
+      "false_negative_rate": 0.25,
+      "false_positive_rate": 0.0,
+      "pr_auc": 0.8409090909090909,
+      "precision_phishing": 1.0,
+      "recall_phishing": 0.75,
+      "roc_auc": 0.78125
     },
     "timing_ms": {
-      "average": 18.668687509489246,
-      "p95": 34.31083299801685
+      "average": 25.33301428573915,
+      "p95": 54.14629999995668
     }
   },
-  "model": "/Users/tomasbasualdo/Desktop/flujo_v2/model/phisharg_xgboost.pkl",
+  "model": "C:\\Users\\gabri\\OneDrive\\Documentos\\GitHub\\flujo_v2\\model\\phisharg_xgboost.pkl",
   "model_audit": {
     "classes": [
       0,
@@ -130,14 +181,18 @@
   "partial": false,
   "seed": 42,
   "warnings": [
-    "Category bank_impersonation needs 9 more cases.",
-    "Category internal_communication needs 7 more cases.",
+    "Category bank_impersonation needs 6 more cases.",
+    "Category credential_theft needs 9 more cases.",
+    "Category internal_communication needs 6 more cases.",
+    "Category legitimate_invoice needs 9 more cases.",
+    "Category other_legitimate needs 9 more cases.",
     "Category tax_impersonation needs 9 more cases.",
-    "Category technical_email needs 9 more cases.",
+    "Category technical_email needs 8 more cases.",
+    "Raw-model metrics exclude 2 critical-rule cases.",
     "Some category metrics are undefined because the category does not contain both classes.",
     "The corpus is not a verified holdout from model training.",
-    "The corpus needs 196 more legitimate cases.",
-    "The corpus needs 198 more phishing cases.",
+    "The corpus needs 192 more legitimate cases.",
+    "The corpus needs 194 more phishing cases.",
     "The evaluation corpus is incomplete."
   ]
 }

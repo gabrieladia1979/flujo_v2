@@ -1,24 +1,40 @@
 {
-  "counts": {
-    "by_category": {
-      "bank_impersonation": 1,
-      "internal_communication": 3,
-      "tax_impersonation": 1,
-      "technical_email": 1
-    },
-    "by_label": {
-      "legitimate": 4,
-      "phishing": 2
-    },
-    "total": 6
-  },
+  "version": "1.0.0",
+  "generated_on": "2026-09-13",
   "dataset": "classifier_eval_v1.jsonl",
-  "generated_on": "2026-09-12",
+  "sha256": "004f6d69bc1e1f7df6b397ef3d9593496f0a1157b72af1ead054c9b67a37daae",
+  "status": "incomplete",
   "holdout_status": "unverified",
-  "notes": [
-    "This corpus is intentionally incomplete and is not a verified holdout.",
-    "No new messages were fabricated to satisfy minimum sample counts."
-  ],
+  "counts": {
+    "total": 14,
+    "by_label": {
+      "legitimate": 8,
+      "phishing": 6
+    },
+    "by_category": {
+      "bank_impersonation": 4,
+      "credential_theft": 1,
+      "internal_communication": 4,
+      "legitimate_invoice": 1,
+      "other_legitimate": 1,
+      "tax_impersonation": 1,
+      "technical_email": 2
+    }
+  },
+  "shortfalls": {
+    "phishing": 194,
+    "legitimate": 192,
+    "used_categories": {
+      "bank_impersonation": 6,
+      "credential_theft": 9,
+      "internal_communication": 6,
+      "legitimate_invoice": 9,
+      "other_legitimate": 9,
+      "tax_impersonation": 9,
+      "technical_email": 8
+    }
+  },
+  "warnings": [],
   "provenance": {
     "description": "Authorized, synthetic/anonymized cases already present in repository tests.",
     "source_files": [
@@ -27,18 +43,8 @@
     ],
     "training_overlap": "unknown"
   },
-  "sha256": "b827445d25cd0cc97e5724e10e9f022bdddba35e7cc28eb5b834cfe3d03f3dde",
-  "shortfalls": {
-    "legitimate": 196,
-    "phishing": 198,
-    "used_categories": {
-      "bank_impersonation": 9,
-      "internal_communication": 7,
-      "tax_impersonation": 9,
-      "technical_email": 9
-    }
-  },
-  "status": "incomplete",
-  "version": "1.0.0",
-  "warnings": []
+  "notes": [
+    "This corpus is intentionally incomplete and is not a verified holdout.",
+    "No new messages were fabricated to satisfy minimum sample counts."
+  ]
 }

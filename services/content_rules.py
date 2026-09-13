@@ -46,7 +46,7 @@ def _clauses(text):
     return [re.sub(r'\s+', ' ', s).strip() for s in re.split(r'[.!?;\n]+', normalized) if s.strip()]
 
 
-_SEND = re.compile(r'\b(?:responda|responde|respondeme|respondanos|envie|envia|enviame|envienos|mande|manda|mandame|comparta|comparti|compartime|facilite|facilita)\b')
+_SEND = re.compile(r'\b(?:responda|responde|respondeme|respondanos|envie|envia|enviame|envienos|mande|manda|mandame|comparta|comparti|compartime|facilite|facilita|ingrese|ingresa|ingresando|actualice|actualiza|actualizando|confirme|confirma|confirmar)\b')
 _SECRET = re.compile(r'\b(?:contrasenas?|passwords?|claves? (?:fiscal(?:es)?|bancarias?|de acceso)|tokens?|cvv|pin|codigos? (?:sms|de (?:seguridad|verificacion|autenticacion)))\b')
 _PAY = re.compile(r'\b(?:transfiera|transferi|transfieran|pague|paga|paguen|deposite|deposita|realice (?:el pago|la transferencia))\b')
 _NEW_ACCOUNT = re.compile(r'\b(?:(?:nueva|otra) cuenta|cuenta (?:nueva|actualizada)|nuevo (?:cbu|alias)|(?:cbu|alias) (?:nuevo|actualizado))\b')
@@ -73,9 +73,9 @@ def detect_content_signals(body: str) -> list[ContentSignal]:
     for clause in clauses:
         requested = False
         for request in _affirmative_match(_SEND, clause):
-            following = clause[request.end():request.end() + 140]
-            secret = _SECRET.search(following)
-            if secret and not _INDIRECT_REQUEST.search(following[:secret.start()]):
+            window = clause[max(0, request.start() - 50):request.end() + 140]
+            secret = _SECRET.search(window)
+            if secret and not _INDIRECT_REQUEST.search(window[:secret.start()]):
                 requested = True
                 break
         if requested:
