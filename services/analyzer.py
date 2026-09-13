@@ -370,6 +370,23 @@ def analyze_email(payload: EmailPayloadSchema) -> AnalysisResultSchema:
         is_phishing=is_phishing,
         content_signals=content_signals,
     )
+    
+    if is_phishing:
+        try:
+            from services.explainer import extract_shap_insights
+            # Extraemos las palabras exactas que dispararon la alerta
+            shap_words = extract_shap_insights(calibrated_model, X_input, tfidf_vectorizer)
+            if shap_words:
+                from services.slm_explanation import ExplanationEvidence, EvidenceSource
+                for w in shap_words:
+                    if w and not w.startswith("Tiene_") and not w.startswith("URL_"):
+                        explanation_evidence.append(ExplanationEvidence(
+                            evidence_id="shap.keyword",
+                            text=f"El modelo detectó esta palabra como sospechosa: '{w}'",
+                            source=EvidenceSource.OBSERVED_SIGNAL
+                        ))
+        except Exception as e:
+            pass
     explanation_context = build_explanation_context(
         is_phishing=is_phishing,
         risk_score=round(float(risk_score), 4),
@@ -377,12 +394,16 @@ def analyze_email(payload: EmailPayloadSchema) -> AnalysisResultSchema:
         evidence=explanation_evidence,
     )
     
-    try:
-        from services.slm_client import generate_slm_explanation
-        slm_explanation = generate_slm_explanation(explanation_context)
-    except Exception:
-        # Evita que un fallo del SLM impida devolver el veredicto
+    if not is_phishing:
+        # Fast-path: Si es legítimo, no consumimos recursos del SLM ni SHAP
         slm_explanation = render_server_fallback(explanation_context)
+    else:
+        try:
+            from services.slm_client import generate_slm_explanation
+            slm_explanation = generate_slm_explanation(explanation_context)
+        except Exception:
+            # Evita que un fallo del SLM impida devolver el veredicto
+            slm_explanation = render_server_fallback(explanation_context)
 
     final_result = AnalysisResultSchema(
         is_phishing=is_phishing,
