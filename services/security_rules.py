@@ -21,8 +21,8 @@ def check_critical_threats(features: SecurityFeaturesSchema) -> Tuple[bool, str]
     # 2. Amenazas Microsoft 365 (Alta confianza de phishing)
     if features.scl >= 9:
         return True, f"🚨 Microsoft 365 catalogó silenciosamente este correo como Alta Probabilidad de Phishing (Nivel SCL: {features.scl})."
-    if features.bcl >= 8:
-        return True, f"⚠️ Este correo proviene de un enviador masivo reportado frecuentemente por spam y abusos (Nivel BCL: {features.bcl})."
+    # BCL alone describes bulk mail complaints, not proof of phishing.
+    # Keep its noncritical contribution in _check_antispam.
     
     # 3. Análisis de Carga Útil (Payload)
     if features.has_executable_attachment:

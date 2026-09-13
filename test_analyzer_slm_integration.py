@@ -251,7 +251,7 @@ class AnalyzerSLMIntegrationTests(unittest.TestCase):
         self.assertEqual(1.0, diagnostics["risk_score"])
         self.assertEqual("critical_security_rule", diagnostics["decision_source"])
 
-    def test_public_analysis_contract_is_unchanged(self):
+    def test_public_analysis_contract_preserves_fields_and_adds_diagnostics(self):
         self.analyzer.calibrated_model = _Classifier(0.20)
         result = self.analyzer.analyze_email(self._payload("Public contract", None))
         self.assertEqual(
@@ -263,6 +263,9 @@ class AnalyzerSLMIntegrationTests(unittest.TestCase):
                 "slots_detectados",
                 "security_adjustments",
                 "slm_explanation",
+                "raw_model_score",
+                "decision_source",
+                "content_signals",
             },
             set(result.model_dump()),
         )

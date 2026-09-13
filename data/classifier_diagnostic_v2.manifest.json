@@ -1,0 +1,65 @@
+{
+  "version": "1.0.0",
+  "generated_on": "2026-09-13",
+  "dataset": "classifier_diagnostic_v2.jsonl",
+  "sha256": "4a9dfc1f29e1b47ddc2f8b91f8a6a0de957f5c8acb64f222c178d896a9c50bb1",
+  "status": "incomplete",
+  "holdout_status": "unverified",
+  "counts": {
+    "total": 24,
+    "by_label": {
+      "legitimate": 13,
+      "phishing": 11
+    },
+    "by_category": {
+      "bank_impersonation": 2,
+      "bank_notification": 1,
+      "credential_theft": 2,
+      "fake_delivery": 1,
+      "fake_invoice": 1,
+      "fake_prize": 1,
+      "forwarded_email": 1,
+      "internal_communication": 3,
+      "legitimate_invoice": 1,
+      "malware": 1,
+      "marketplace_notification": 1,
+      "newsletter": 1,
+      "other_legitimate": 1,
+      "other_phishing": 1,
+      "password_recovery": 1,
+      "tax_impersonation": 2,
+      "technical_email": 3
+    }
+  },
+  "shortfalls": {
+    "phishing": 189,
+    "legitimate": 187,
+    "used_categories": {
+      "bank_impersonation": 8,
+      "bank_notification": 9,
+      "credential_theft": 8,
+      "fake_delivery": 9,
+      "fake_invoice": 9,
+      "fake_prize": 9,
+      "forwarded_email": 9,
+      "internal_communication": 7,
+      "legitimate_invoice": 9,
+      "malware": 9,
+      "marketplace_notification": 9,
+      "newsletter": 9,
+      "other_legitimate": 9,
+      "other_phishing": 9,
+      "password_recovery": 9,
+      "tax_impersonation": 8,
+      "technical_email": 7
+    }
+  },
+  "warnings": [],
+  "provenance": {
+    "description": "Six existing fixtures plus eighteen manually authored diagnostic cases; not independent validation.",
+    "training_overlap": "unknown"
+  },
+  "notes": [
+    "Synthetic development corpus. Do not report these metrics as production accuracy."
+  ]
+}

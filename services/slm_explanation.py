@@ -494,10 +494,16 @@ def build_analyzer_evidence(
     *,
     is_phishing: bool,
     critical_reason: Optional[str] = None,
+    content_signals: Optional[Sequence[Any]] = None,
 ) -> list[ExplanationEvidence]:
     """Convert verified analyzer signals into bounded, stable explanation evidence."""
 
     evidence: list[ExplanationEvidence] = []
+    for signal in content_signals or ():
+        evidence.append(ExplanationEvidence(
+            evidence_id=f"content.{signal.rule}", text=signal.description,
+            source=EvidenceSource.OBSERVED_SIGNAL,
+        ))
     for slot_name, text in _SLOT_EVIDENCE_TEXTS.items():
         if is_phishing and slots.get(slot_name):
             evidence.append(

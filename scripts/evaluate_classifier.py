@@ -193,6 +193,7 @@ def evaluate_records(
                 "final_score": diagnostics["risk_score"],
                 "decision_source": diagnostics["decision_source"],
                 "security_adjustments": adjustments,
+                "content_signals": [signal.model_dump() for signal in diagnostics.get("content_signals", [])],
                 "elapsed_ms": elapsed_ms,
                 "category": record["category"],
                 "correct": predicted_label == record["label"],
@@ -298,7 +299,7 @@ def write_outputs(report: dict[str, Any], rows: list[dict[str, Any]], output_pre
     markdown_path.write_text(render_markdown(report), encoding="utf-8")
     fieldnames = [
         "id", "expected_label", "predicted_label", "raw_score", "final_score",
-        "decision_source", "security_adjustments", "elapsed_ms", "category", "correct",
+        "decision_source", "security_adjustments", "content_signals", "elapsed_ms", "category", "correct",
     ]
     with csv_path.open("w", encoding="utf-8", newline="") as handle:
         writer = csv.DictWriter(handle, fieldnames=fieldnames)
@@ -306,6 +307,7 @@ def write_outputs(report: dict[str, Any], rows: list[dict[str, Any]], output_pre
         for row in rows:
             serialized = dict(row)
             serialized["security_adjustments"] = json.dumps(row["security_adjustments"], ensure_ascii=False, sort_keys=True)
+            serialized["content_signals"] = json.dumps(row.get("content_signals", []), ensure_ascii=False, sort_keys=True)
             writer.writerow(serialized)
     return json_path, markdown_path, csv_path
 

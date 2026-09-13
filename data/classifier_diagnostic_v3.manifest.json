@@ -1,0 +1,63 @@
+{
+  "version": "1.0.0",
+  "generated_on": "2026-09-13",
+  "dataset": "classifier_diagnostic_v3.jsonl",
+  "sha256": "08023b3a84a3b997a935dfd129b596db650c1fcd209a5dc67bbea7fdd70e1c71",
+  "status": "incomplete",
+  "holdout_status": "unverified",
+  "counts": {
+    "total": 56,
+    "by_label": {
+      "legitimate": 32,
+      "phishing": 24
+    },
+    "by_category": {
+      "bank_impersonation": 2,
+      "bank_notification": 1,
+      "credential_theft": 11,
+      "fake_delivery": 1,
+      "fake_invoice": 5,
+      "fake_prize": 1,
+      "forwarded_email": 1,
+      "internal_communication": 3,
+      "legitimate_invoice": 1,
+      "malware": 1,
+      "marketplace_notification": 1,
+      "newsletter": 1,
+      "other_legitimate": 20,
+      "other_phishing": 1,
+      "password_recovery": 1,
+      "tax_impersonation": 2,
+      "technical_email": 3
+    }
+  },
+  "shortfalls": {
+    "phishing": 176,
+    "legitimate": 168,
+    "used_categories": {
+      "bank_impersonation": 8,
+      "bank_notification": 9,
+      "fake_delivery": 9,
+      "fake_invoice": 5,
+      "fake_prize": 9,
+      "forwarded_email": 9,
+      "internal_communication": 7,
+      "legitimate_invoice": 9,
+      "malware": 9,
+      "marketplace_notification": 9,
+      "newsletter": 9,
+      "other_phishing": 9,
+      "password_recovery": 9,
+      "tax_impersonation": 8,
+      "technical_email": 7
+    }
+  },
+  "warnings": [],
+  "provenance": {
+    "description": "Existing v2 corpus plus rule-development contrast cases from test_content_rules.py. Not independent validation.",
+    "training_overlap": "unknown"
+  },
+  "notes": [
+    "Synthetic development corpus; related variants share scenarios. Metrics are not production accuracy."
+  ]
+}

@@ -1,0 +1,1425 @@
+{
+  "dataset_sha256": "4a9dfc1f29e1b47ddc2f8b91f8a6a0de957f5c8acb64f222c178d896a9c50bb1",
+  "model_sha256": "fa7cf7c1fbe8d217a7199f824413305bfcb0e61cacb800451382925c0b5cf2a8",
+  "threshold": 0.8,
+  "production_index": 0,
+  "environment": {
+    "python": "3.14.4",
+    "sklearn": "1.9.0",
+    "xgboost": "2.0.3",
+    "spacy": "3.8.13"
+  },
+  "validation": {
+    "valid": true,
+    "complete": false,
+    "errors": [],
+    "warnings": [],
+    "counts": {
+      "total": 24,
+      "by_label": {
+        "legitimate": 13,
+        "phishing": 11
+      },
+      "by_category": {
+        "bank_impersonation": 2,
+        "bank_notification": 1,
+        "credential_theft": 2,
+        "fake_delivery": 1,
+        "fake_invoice": 1,
+        "fake_prize": 1,
+        "forwarded_email": 1,
+        "internal_communication": 3,
+        "legitimate_invoice": 1,
+        "malware": 1,
+        "marketplace_notification": 1,
+        "newsletter": 1,
+        "other_legitimate": 1,
+        "other_phishing": 1,
+        "password_recovery": 1,
+        "tax_impersonation": 2,
+        "technical_email": 3
+      }
+    },
+    "shortfalls": {
+      "phishing": 189,
+      "legitimate": 187,
+      "used_categories": {
+        "bank_impersonation": 8,
+        "bank_notification": 9,
+        "credential_theft": 8,
+        "fake_delivery": 9,
+        "fake_invoice": 9,
+        "fake_prize": 9,
+        "forwarded_email": 9,
+        "internal_communication": 7,
+        "legitimate_invoice": 9,
+        "malware": 9,
+        "marketplace_notification": 9,
+        "newsletter": 9,
+        "other_legitimate": 9,
+        "other_phishing": 9,
+        "password_recovery": 9,
+        "tax_impersonation": 8,
+        "technical_email": 7
+      }
+    }
+  },
+  "warnings": [
+    "The evaluation corpus is incomplete.",
+    "The corpus is not a verified holdout from model training."
+  ],
+  "runs": {
+    "0": {
+      "rows": [
+        {
+          "id": "phisharg-eval-0001",
+          "expected_label": "legitimate",
+          "predicted_label": "legitimate",
+          "raw_score": 0.012792197136219652,
+          "final_score": 0.012792197136219652,
+          "decision_source": "model_only",
+          "security_adjustments": [],
+          "elapsed_ms": 52.488499999981286,
+          "category": "internal_communication",
+          "correct": true
+        },
+        {
+          "id": "phisharg-eval-0002",
+          "expected_label": "phishing",
+          "predicted_label": "phishing",
+          "raw_score": 0.9867534384678361,
+          "final_score": 0.9867534384678361,
+          "decision_source": "model_only",
+          "security_adjustments": [],
+          "elapsed_ms": 34.13659999978336,
+          "category": "tax_impersonation",
+          "correct": true
+        },
+        {
+          "id": "phisharg-eval-0003",
+          "expected_label": "phishing",
+          "predicted_label": "phishing",
+          "raw_score": 0.9827520458377079,
+          "final_score": 1.0,
+          "decision_source": "model_and_security_rules",
+          "security_adjustments": [
+            {
+              "rule": "spf_fail",
+              "delta": 0.15,
+              "description": "SPF fail: el remitente no está autorizado por el dominio"
+            },
+            {
+              "rule": "dkim_fail",
+              "delta": 0.1,
+              "description": "DKIM fail: la firma digital del correo es inválida"
+            },
+            {
+              "rule": "dmarc_fail",
+              "delta": 0.15,
+              "description": "DMARC fail: la política de autenticación del dominio no se cumplió"
+            },
+            {
+              "rule": "return_path_mismatch",
+              "delta": 0.1,
+              "description": "Discrepancia entre From y Return-Path: posible spoofing"
+            }
+          ],
+          "elapsed_ms": 25.640600000315317,
+          "category": "bank_impersonation",
+          "correct": true
+        },
+        {
+          "id": "phisharg-eval-0004",
+          "expected_label": "legitimate",
+          "predicted_label": "legitimate",
+          "raw_score": 0.012728087481089612,
+          "final_score": 0.0,
+          "decision_source": "model_and_security_rules",
+          "security_adjustments": [
+            {
+              "rule": "internal_auth",
+              "delta": -0.1,
+              "description": "Correo autenticado como interno de la organización"
+            },
+            {
+              "rule": "all_checks_pass",
+              "delta": -0.15,
+              "description": "Todas las verificaciones de autenticación y spoofing pasaron correctamente"
+            }
+          ],
+          "elapsed_ms": 22.32209999965562,
+          "category": "internal_communication",
+          "correct": true
+        },
+        {
+          "id": "phisharg-eval-0005",
+          "expected_label": "legitimate",
+          "predicted_label": "legitimate",
+          "raw_score": 0.012795628672022608,
+          "final_score": 0.012795628672022608,
+          "decision_source": "model_only",
+          "security_adjustments": [],
+          "elapsed_ms": 21.665899999788962,
+          "category": "technical_email",
+          "correct": true
+        },
+        {
+          "id": "phisharg-eval-0006",
+          "expected_label": "legitimate",
+          "predicted_label": "legitimate",
+          "raw_score": 0.012797268330480727,
+          "final_score": 0.012797268330480727,
+          "decision_source": "model_and_security_rules",
+          "security_adjustments": [],
+          "elapsed_ms": 17.44890000009036,
+          "category": "internal_communication",
+          "correct": true
+        },
+        {
+          "id": "challenge-001",
+          "expected_label": "legitimate",
+          "predicted_label": "phishing",
+          "raw_score": null,
+          "final_score": 1.0,
+          "decision_source": "critical_security_rule",
+          "security_adjustments": [],
+          "elapsed_ms": 0.007000000096013537,
+          "category": "newsletter",
+          "correct": false
+        },
+        {
+          "id": "challenge-002",
+          "expected_label": "legitimate",
+          "predicted_label": "legitimate",
+          "raw_score": 0.014793294808276791,
+          "final_score": 0.014793294808276791,
+          "decision_source": "model_only",
+          "security_adjustments": [],
+          "elapsed_ms": 20.35790000036286,
+          "category": "legitimate_invoice",
+          "correct": true
+        },
+        {
+          "id": "challenge-003",
+          "expected_label": "legitimate",
+          "predicted_label": "legitimate",
+          "raw_score": 0.012733644740808125,
+          "final_score": 0.012733644740808125,
+          "decision_source": "model_only",
+          "security_adjustments": [],
+          "elapsed_ms": 22.35319999999774,
+          "category": "bank_notification",
+          "correct": true
+        },
+        {
+          "id": "challenge-004",
+          "expected_label": "legitimate",
+          "predicted_label": "legitimate",
+          "raw_score": 0.3652442674709349,
+          "final_score": 0.3652442674709349,
+          "decision_source": "model_only",
+          "security_adjustments": [],
+          "elapsed_ms": 20.882799999981216,
+          "category": "password_recovery",
+          "correct": true
+        },
+        {
+          "id": "challenge-005",
+          "expected_label": "legitimate",
+          "predicted_label": "legitimate",
+          "raw_score": 0.019903386858262373,
+          "final_score": 0.019903386858262373,
+          "decision_source": "model_only",
+          "security_adjustments": [],
+          "elapsed_ms": 24.848200000178622,
+          "category": "technical_email",
+          "correct": true
+        },
+        {
+          "id": "challenge-006",
+          "expected_label": "legitimate",
+          "predicted_label": "legitimate",
+          "raw_score": 0.012787361898227989,
+          "final_score": 0.212787361898228,
+          "decision_source": "model_and_security_rules",
+          "security_adjustments": [
+            {
+              "rule": "spf_softfail",
+              "delta": 0.05,
+              "description": "SPF softfail: el dominio no prohíbe explícitamente este remitente (común en reenvíos)"
+            },
+            {
+              "rule": "dmarc_fail",
+              "delta": 0.15,
+              "description": "DMARC fail: la política de autenticación del dominio no se cumplió"
+            }
+          ],
+          "elapsed_ms": 18.96519999991142,
+          "category": "forwarded_email",
+          "correct": true
+        },
+        {
+          "id": "challenge-007",
+          "expected_label": "legitimate",
+          "predicted_label": "legitimate",
+          "raw_score": 0.015598949549981644,
+          "final_score": 0.015598949549981644,
+          "decision_source": "model_only",
+          "security_adjustments": [],
+          "elapsed_ms": 20.872900000085792,
+          "category": "other_legitimate",
+          "correct": true
+        },
+        {
+          "id": "challenge-008",
+          "expected_label": "legitimate",
+          "predicted_label": "legitimate",
+          "raw_score": 0.03629067867316105,
+          "final_score": 0.03629067867316105,
+          "decision_source": "model_only",
+          "security_adjustments": [],
+          "elapsed_ms": 20.76130000023113,
+          "category": "marketplace_notification",
+          "correct": true
+        },
+        {
+          "id": "challenge-009",
+          "expected_label": "phishing",
+          "predicted_label": "phishing",
+          "raw_score": 0.984445684961452,
+          "final_score": 0.984445684961452,
+          "decision_source": "model_only",
+          "security_adjustments": [],
+          "elapsed_ms": 28.07489999986501,
+          "category": "credential_theft",
+          "correct": true
+        },
+        {
+          "id": "challenge-010",
+          "expected_label": "phishing",
+          "predicted_label": "phishing",
+          "raw_score": 0.9179398415007927,
+          "final_score": 0.9179398415007927,
+          "decision_source": "model_only",
+          "security_adjustments": [],
+          "elapsed_ms": 21.541399999932764,
+          "category": "tax_impersonation",
+          "correct": true
+        },
+        {
+          "id": "challenge-011",
+          "expected_label": "phishing",
+          "predicted_label": "phishing",
+          "raw_score": 0.9868250051249619,
+          "final_score": 0.8368250051249618,
+          "decision_source": "model_and_security_rules",
+          "security_adjustments": [
+            {
+              "rule": "all_checks_pass",
+              "delta": -0.15,
+              "description": "Todas las verificaciones de autenticación y spoofing pasaron correctamente"
+            }
+          ],
+          "elapsed_ms": 27.93279999968945,
+          "category": "bank_impersonation",
+          "correct": true
+        },
+        {
+          "id": "challenge-012",
+          "expected_label": "phishing",
+          "predicted_label": "phishing",
+          "raw_score": 0.9708895679302985,
+          "final_score": 0.9708895679302985,
+          "decision_source": "model_only",
+          "security_adjustments": [],
+          "elapsed_ms": 24.964300000192452,
+          "category": "fake_prize",
+          "correct": true
+        },
+        {
+          "id": "challenge-013",
+          "expected_label": "phishing",
+          "predicted_label": "phishing",
+          "raw_score": 0.9866396355067415,
+          "final_score": 0.9866396355067415,
+          "decision_source": "model_only",
+          "security_adjustments": [],
+          "elapsed_ms": 27.664300000196818,
+          "category": "fake_delivery",
+          "correct": true
+        },
+        {
+          "id": "challenge-014",
+          "expected_label": "phishing",
+          "predicted_label": "legitimate",
+          "raw_score": 0.015421653555877879,
+          "final_score": 0.015421653555877879,
+          "decision_source": "model_only",
+          "security_adjustments": [],
+          "elapsed_ms": 24.0523999996185,
+          "category": "fake_invoice",
+          "correct": false
+        },
+        {
+          "id": "challenge-015",
+          "expected_label": "phishing",
+          "predicted_label": "legitimate",
+          "raw_score": 0.012886073900114037,
+          "final_score": 0.012886073900114037,
+          "decision_source": "model_only",
+          "security_adjustments": [],
+          "elapsed_ms": 21.232600000075763,
+          "category": "credential_theft",
+          "correct": false
+        },
+        {
+          "id": "challenge-016",
+          "expected_label": "phishing",
+          "predicted_label": "phishing",
+          "raw_score": null,
+          "final_score": 1.0,
+          "decision_source": "critical_security_rule",
+          "security_adjustments": [],
+          "elapsed_ms": 0.00779999982114532,
+          "category": "malware",
+          "correct": true
+        },
+        {
+          "id": "challenge-017",
+          "expected_label": "phishing",
+          "predicted_label": "phishing",
+          "raw_score": null,
+          "final_score": 1.0,
+          "decision_source": "critical_security_rule",
+          "security_adjustments": [],
+          "elapsed_ms": 0.006299999768089037,
+          "category": "other_phishing",
+          "correct": true
+        },
+        {
+          "id": "challenge-018",
+          "expected_label": "legitimate",
+          "predicted_label": "legitimate",
+          "raw_score": 0.012950007924725115,
+          "final_score": 0.012950007924725115,
+          "decision_source": "model_only",
+          "security_adjustments": [],
+          "elapsed_ms": 20.200499999646127,
+          "category": "technical_email",
+          "correct": true
+        }
+      ],
+      "metrics": {
+        "final": {
+          "count": 24,
+          "confusion_matrix": {
+            "true_positive": 9,
+            "true_negative": 12,
+            "false_positive": 1,
+            "false_negative": 2
+          },
+          "precision_phishing": 0.9,
+          "recall_phishing": 0.8181818181818182,
+          "f1_phishing": 0.8571428571428572,
+          "pr_auc": 0.7825738588896484,
+          "roc_auc": 0.8496503496503497,
+          "false_positive_rate": 0.07692307692307693,
+          "false_negative_rate": 0.18181818181818182,
+          "brier_score": 0.1316779102848393
+        },
+        "raw_model": {
+          "count": 21,
+          "confusion_matrix": {
+            "true_positive": 7,
+            "true_negative": 12,
+            "false_positive": 0,
+            "false_negative": 2
+          },
+          "precision_phishing": 1.0,
+          "recall_phishing": 0.7777777777777778,
+          "f1_phishing": 0.8750000000000001,
+          "pr_auc": 0.9185185185185186,
+          "roc_auc": 0.9074074074074074,
+          "false_positive_rate": 0.0,
+          "false_negative_rate": 0.2222222222222222,
+          "brier_score": 0.09948389998800244
+        },
+        "by_category": {
+          "bank_impersonation": {
+            "count": 2,
+            "confusion_matrix": {
+              "true_positive": 2,
+              "true_negative": 0,
+              "false_positive": 0,
+              "false_negative": 0
+            },
+            "precision_phishing": 1.0,
+            "recall_phishing": 1.0,
+            "f1_phishing": 1.0,
+            "pr_auc": 1.0,
+            "roc_auc": null,
+            "false_positive_rate": null,
+            "false_negative_rate": 0.0,
+            "brier_score": 0.013313039476234367
+          },
+          "bank_notification": {
+            "count": 1,
+            "confusion_matrix": {
+              "true_positive": 0,
+              "true_negative": 1,
+              "false_positive": 0,
+              "false_negative": 0
+            },
+            "precision_phishing": null,
+            "recall_phishing": null,
+            "f1_phishing": null,
+            "pr_auc": null,
+            "roc_auc": null,
+            "false_positive_rate": 0.0,
+            "false_negative_rate": null,
+            "brier_score": 0.00016214570838511043
+          },
+          "credential_theft": {
+            "count": 2,
+            "confusion_matrix": {
+              "true_positive": 1,
+              "true_negative": 0,
+              "false_positive": 0,
+              "false_negative": 1
+            },
+            "precision_phishing": 1.0,
+            "recall_phishing": 0.5,
+            "f1_phishing": 0.6666666666666666,
+            "pr_auc": 1.0,
+            "roc_auc": null,
+            "false_positive_rate": null,
+            "false_negative_rate": 0.5,
+            "brier_score": 0.48731791990832485
+          },
+          "fake_delivery": {
+            "count": 1,
+            "confusion_matrix": {
+              "true_positive": 1,
+              "true_negative": 0,
+              "false_positive": 0,
+              "false_negative": 0
+            },
+            "precision_phishing": 1.0,
+            "recall_phishing": 1.0,
+            "f1_phishing": 1.0,
+            "pr_auc": 1.0,
+            "roc_auc": null,
+            "false_positive_rate": null,
+            "false_negative_rate": 0.0,
+            "brier_score": 0.00017849933939272254
+          },
+          "fake_invoice": {
+            "count": 1,
+            "confusion_matrix": {
+              "true_positive": 0,
+              "true_negative": 0,
+              "false_positive": 0,
+              "false_negative": 1
+            },
+            "precision_phishing": null,
+            "recall_phishing": 0.0,
+            "f1_phishing": null,
+            "pr_auc": 1.0,
+            "roc_auc": null,
+            "false_positive_rate": null,
+            "false_negative_rate": 1.0,
+            "brier_score": 0.9693945202866417
+          },
+          "fake_prize": {
+            "count": 1,
+            "confusion_matrix": {
+              "true_positive": 1,
+              "true_negative": 0,
+              "false_positive": 0,
+              "false_negative": 0
+            },
+            "precision_phishing": 1.0,
+            "recall_phishing": 1.0,
+            "f1_phishing": 1.0,
+            "pr_auc": 1.0,
+            "roc_auc": null,
+            "false_positive_rate": null,
+            "false_negative_rate": 0.0,
+            "brier_score": 0.000847417255284708
+          },
+          "forwarded_email": {
+            "count": 1,
+            "confusion_matrix": {
+              "true_positive": 0,
+              "true_negative": 1,
+              "false_positive": 0,
+              "false_negative": 0
+            },
+            "precision_phishing": null,
+            "recall_phishing": null,
+            "f1_phishing": null,
+            "pr_auc": null,
+            "roc_auc": null,
+            "false_positive_rate": 0.0,
+            "false_negative_rate": null,
+            "brier_score": 0.04527846138360745
+          },
+          "internal_communication": {
+            "count": 3,
+            "confusion_matrix": {
+              "true_positive": 0,
+              "true_negative": 3,
+              "false_positive": 0,
+              "false_negative": 0
+            },
+            "precision_phishing": null,
+            "recall_phishing": null,
+            "f1_phishing": null,
+            "pr_auc": null,
+            "roc_auc": null,
+            "false_positive_rate": 0.0,
+            "false_negative_rate": null,
+            "brier_score": 0.00010913679476474373
+          },
+          "legitimate_invoice": {
+            "count": 1,
+            "confusion_matrix": {
+              "true_positive": 0,
+              "true_negative": 1,
+              "false_positive": 0,
+              "false_negative": 0
+            },
+            "precision_phishing": null,
+            "recall_phishing": null,
+            "f1_phishing": null,
+            "pr_auc": null,
+            "roc_auc": null,
+            "false_positive_rate": 0.0,
+            "false_negative_rate": null,
+            "brier_score": 0.00021884157128458905
+          },
+          "malware": {
+            "count": 1,
+            "confusion_matrix": {
+              "true_positive": 1,
+              "true_negative": 0,
+              "false_positive": 0,
+              "false_negative": 0
+            },
+            "precision_phishing": 1.0,
+            "recall_phishing": 1.0,
+            "f1_phishing": 1.0,
+            "pr_auc": 1.0,
+            "roc_auc": null,
+            "false_positive_rate": null,
+            "false_negative_rate": 0.0,
+            "brier_score": 0.0
+          },
+          "marketplace_notification": {
+            "count": 1,
+            "confusion_matrix": {
+              "true_positive": 0,
+              "true_negative": 1,
+              "false_positive": 0,
+              "false_negative": 0
+            },
+            "precision_phishing": null,
+            "recall_phishing": null,
+            "f1_phishing": null,
+            "pr_auc": null,
+            "roc_auc": null,
+            "false_positive_rate": 0.0,
+            "false_negative_rate": null,
+            "brier_score": 0.001317013358558626
+          },
+          "newsletter": {
+            "count": 1,
+            "confusion_matrix": {
+              "true_positive": 0,
+              "true_negative": 0,
+              "false_positive": 1,
+              "false_negative": 0
+            },
+            "precision_phishing": 0.0,
+            "recall_phishing": null,
+            "f1_phishing": null,
+            "pr_auc": null,
+            "roc_auc": null,
+            "false_positive_rate": 1.0,
+            "false_negative_rate": null,
+            "brier_score": 1.0
+          },
+          "other_legitimate": {
+            "count": 1,
+            "confusion_matrix": {
+              "true_positive": 0,
+              "true_negative": 1,
+              "false_positive": 0,
+              "false_negative": 0
+            },
+            "precision_phishing": null,
+            "recall_phishing": null,
+            "f1_phishing": null,
+            "pr_auc": null,
+            "roc_auc": null,
+            "false_positive_rate": 0.0,
+            "false_negative_rate": null,
+            "brier_score": 0.00024332722706287254
+          },
+          "other_phishing": {
+            "count": 1,
+            "confusion_matrix": {
+              "true_positive": 1,
+              "true_negative": 0,
+              "false_positive": 0,
+              "false_negative": 0
+            },
+            "precision_phishing": 1.0,
+            "recall_phishing": 1.0,
+            "f1_phishing": 1.0,
+            "pr_auc": 1.0,
+            "roc_auc": null,
+            "false_positive_rate": null,
+            "false_negative_rate": 0.0,
+            "brier_score": 0.0
+          },
+          "password_recovery": {
+            "count": 1,
+            "confusion_matrix": {
+              "true_positive": 0,
+              "true_negative": 1,
+              "false_positive": 0,
+              "false_negative": 0
+            },
+            "precision_phishing": null,
+            "recall_phishing": null,
+            "f1_phishing": null,
+            "pr_auc": null,
+            "roc_auc": null,
+            "false_positive_rate": 0.0,
+            "false_negative_rate": null,
+            "brier_score": 0.13340337492037985
+          },
+          "tax_impersonation": {
+            "count": 2,
+            "confusion_matrix": {
+              "true_positive": 2,
+              "true_negative": 0,
+              "false_positive": 0,
+              "false_negative": 0
+            },
+            "precision_phishing": 1.0,
+            "recall_phishing": 1.0,
+            "f1_phishing": 1.0,
+            "pr_auc": 1.0,
+            "roc_auc": null,
+            "false_positive_rate": null,
+            "false_negative_rate": 0.0,
+            "brier_score": 0.0034546705026702166
+          },
+          "technical_email": {
+            "count": 3,
+            "confusion_matrix": {
+              "true_positive": 0,
+              "true_negative": 3,
+              "false_positive": 0,
+              "false_negative": 0
+            },
+            "precision_phishing": null,
+            "recall_phishing": null,
+            "f1_phishing": null,
+            "pr_auc": null,
+            "roc_auc": null,
+            "false_positive_rate": 0.0,
+            "false_negative_rate": null,
+            "brier_score": 0.00024252520893079386
+          }
+        },
+        "timing_ms": {
+          "average": 21.601183333302743,
+          "p95": 34.13659999978336
+        }
+      },
+      "warnings": [
+        "Raw-model metrics exclude 3 critical-rule cases.",
+        "Some category metrics are undefined because the category does not contain both classes."
+      ]
+    },
+    "1": {
+      "rows": [
+        {
+          "id": "phisharg-eval-0001",
+          "expected_label": "legitimate",
+          "predicted_label": "phishing",
+          "raw_score": 0.9872078028637803,
+          "final_score": 0.9872078028637803,
+          "decision_source": "model_only",
+          "security_adjustments": [],
+          "elapsed_ms": 20.454700000300363,
+          "category": "internal_communication",
+          "correct": false
+        },
+        {
+          "id": "phisharg-eval-0002",
+          "expected_label": "phishing",
+          "predicted_label": "legitimate",
+          "raw_score": 0.013246561532163866,
+          "final_score": 0.013246561532163866,
+          "decision_source": "model_only",
+          "security_adjustments": [],
+          "elapsed_ms": 32.27340000012191,
+          "category": "tax_impersonation",
+          "correct": false
+        },
+        {
+          "id": "phisharg-eval-0003",
+          "expected_label": "phishing",
+          "predicted_label": "legitimate",
+          "raw_score": 0.017247954162292106,
+          "final_score": 0.36724795416229206,
+          "decision_source": "model_and_security_rules",
+          "security_adjustments": [
+            {
+              "rule": "spf_fail",
+              "delta": 0.15,
+              "description": "SPF fail: el remitente no está autorizado por el dominio"
+            },
+            {
+              "rule": "dkim_fail",
+              "delta": 0.1,
+              "description": "DKIM fail: la firma digital del correo es inválida"
+            },
+            {
+              "rule": "dmarc_fail",
+              "delta": 0.15,
+              "description": "DMARC fail: la política de autenticación del dominio no se cumplió"
+            },
+            {
+              "rule": "return_path_mismatch",
+              "delta": 0.1,
+              "description": "Discrepancia entre From y Return-Path: posible spoofing"
+            }
+          ],
+          "elapsed_ms": 24.047500000051514,
+          "category": "bank_impersonation",
+          "correct": false
+        },
+        {
+          "id": "phisharg-eval-0004",
+          "expected_label": "legitimate",
+          "predicted_label": "legitimate",
+          "raw_score": 0.9872719125189104,
+          "final_score": 0.7372719125189104,
+          "decision_source": "model_and_security_rules",
+          "security_adjustments": [
+            {
+              "rule": "internal_auth",
+              "delta": -0.1,
+              "description": "Correo autenticado como interno de la organización"
+            },
+            {
+              "rule": "all_checks_pass",
+              "delta": -0.15,
+              "description": "Todas las verificaciones de autenticación y spoofing pasaron correctamente"
+            }
+          ],
+          "elapsed_ms": 18.826800000169897,
+          "category": "internal_communication",
+          "correct": true
+        },
+        {
+          "id": "phisharg-eval-0005",
+          "expected_label": "legitimate",
+          "predicted_label": "phishing",
+          "raw_score": 0.9872043713279774,
+          "final_score": 0.9872043713279774,
+          "decision_source": "model_only",
+          "security_adjustments": [],
+          "elapsed_ms": 19.391499999983353,
+          "category": "technical_email",
+          "correct": false
+        },
+        {
+          "id": "phisharg-eval-0006",
+          "expected_label": "legitimate",
+          "predicted_label": "phishing",
+          "raw_score": 0.9872027316695193,
+          "final_score": 0.9872027316695193,
+          "decision_source": "model_and_security_rules",
+          "security_adjustments": [],
+          "elapsed_ms": 16.63189999999304,
+          "category": "internal_communication",
+          "correct": false
+        },
+        {
+          "id": "challenge-001",
+          "expected_label": "legitimate",
+          "predicted_label": "phishing",
+          "raw_score": null,
+          "final_score": 1.0,
+          "decision_source": "critical_security_rule",
+          "security_adjustments": [],
+          "elapsed_ms": 0.006199999916134402,
+          "category": "newsletter",
+          "correct": false
+        },
+        {
+          "id": "challenge-002",
+          "expected_label": "legitimate",
+          "predicted_label": "phishing",
+          "raw_score": 0.9852067051917233,
+          "final_score": 0.9852067051917233,
+          "decision_source": "model_only",
+          "security_adjustments": [],
+          "elapsed_ms": 18.87799999985873,
+          "category": "legitimate_invoice",
+          "correct": false
+        },
+        {
+          "id": "challenge-003",
+          "expected_label": "legitimate",
+          "predicted_label": "phishing",
+          "raw_score": 0.9872663552591918,
+          "final_score": 0.9872663552591918,
+          "decision_source": "model_only",
+          "security_adjustments": [],
+          "elapsed_ms": 20.650700000260258,
+          "category": "bank_notification",
+          "correct": false
+        },
+        {
+          "id": "challenge-004",
+          "expected_label": "legitimate",
+          "predicted_label": "legitimate",
+          "raw_score": 0.6347557325290651,
+          "final_score": 0.6347557325290651,
+          "decision_source": "model_only",
+          "security_adjustments": [],
+          "elapsed_ms": 18.851899999845045,
+          "category": "password_recovery",
+          "correct": true
+        },
+        {
+          "id": "challenge-005",
+          "expected_label": "legitimate",
+          "predicted_label": "phishing",
+          "raw_score": 0.9800966131417377,
+          "final_score": 0.9800966131417377,
+          "decision_source": "model_only",
+          "security_adjustments": [],
+          "elapsed_ms": 20.969100000002072,
+          "category": "technical_email",
+          "correct": false
+        },
+        {
+          "id": "challenge-006",
+          "expected_label": "legitimate",
+          "predicted_label": "phishing",
+          "raw_score": 0.9872126381017721,
+          "final_score": 1.0,
+          "decision_source": "model_and_security_rules",
+          "security_adjustments": [
+            {
+              "rule": "spf_softfail",
+              "delta": 0.05,
+              "description": "SPF softfail: el dominio no prohíbe explícitamente este remitente (común en reenvíos)"
+            },
+            {
+              "rule": "dmarc_fail",
+              "delta": 0.15,
+              "description": "DMARC fail: la política de autenticación del dominio no se cumplió"
+            }
+          ],
+          "elapsed_ms": 19.427200000336597,
+          "category": "forwarded_email",
+          "correct": false
+        },
+        {
+          "id": "challenge-007",
+          "expected_label": "legitimate",
+          "predicted_label": "phishing",
+          "raw_score": 0.9844010504500184,
+          "final_score": 0.9844010504500184,
+          "decision_source": "model_only",
+          "security_adjustments": [],
+          "elapsed_ms": 19.900199999938195,
+          "category": "other_legitimate",
+          "correct": false
+        },
+        {
+          "id": "challenge-008",
+          "expected_label": "legitimate",
+          "predicted_label": "phishing",
+          "raw_score": 0.963709321326839,
+          "final_score": 0.963709321326839,
+          "decision_source": "model_only",
+          "security_adjustments": [],
+          "elapsed_ms": 19.63389999991705,
+          "category": "marketplace_notification",
+          "correct": false
+        },
+        {
+          "id": "challenge-009",
+          "expected_label": "phishing",
+          "predicted_label": "legitimate",
+          "raw_score": 0.015554315038547964,
+          "final_score": 0.015554315038547964,
+          "decision_source": "model_only",
+          "security_adjustments": [],
+          "elapsed_ms": 27.029699999729928,
+          "category": "credential_theft",
+          "correct": false
+        },
+        {
+          "id": "challenge-010",
+          "expected_label": "phishing",
+          "predicted_label": "legitimate",
+          "raw_score": 0.08206015849920731,
+          "final_score": 0.08206015849920731,
+          "decision_source": "model_only",
+          "security_adjustments": [],
+          "elapsed_ms": 21.92170000034821,
+          "category": "tax_impersonation",
+          "correct": false
+        },
+        {
+          "id": "challenge-011",
+          "expected_label": "phishing",
+          "predicted_label": "legitimate",
+          "raw_score": 0.013174994875038128,
+          "final_score": 0.0,
+          "decision_source": "model_and_security_rules",
+          "security_adjustments": [
+            {
+              "rule": "all_checks_pass",
+              "delta": -0.15,
+              "description": "Todas las verificaciones de autenticación y spoofing pasaron correctamente"
+            }
+          ],
+          "elapsed_ms": 28.41279999984181,
+          "category": "bank_impersonation",
+          "correct": false
+        },
+        {
+          "id": "challenge-012",
+          "expected_label": "phishing",
+          "predicted_label": "legitimate",
+          "raw_score": 0.02911043206970147,
+          "final_score": 0.02911043206970147,
+          "decision_source": "model_only",
+          "security_adjustments": [],
+          "elapsed_ms": 25.410899999769754,
+          "category": "fake_prize",
+          "correct": false
+        },
+        {
+          "id": "challenge-013",
+          "expected_label": "phishing",
+          "predicted_label": "legitimate",
+          "raw_score": 0.013360364493258453,
+          "final_score": 0.013360364493258453,
+          "decision_source": "model_only",
+          "security_adjustments": [],
+          "elapsed_ms": 27.969199999915872,
+          "category": "fake_delivery",
+          "correct": false
+        },
+        {
+          "id": "challenge-014",
+          "expected_label": "phishing",
+          "predicted_label": "phishing",
+          "raw_score": 0.9845783464441221,
+          "final_score": 0.9845783464441221,
+          "decision_source": "model_only",
+          "security_adjustments": [],
+          "elapsed_ms": 22.015099999862286,
+          "category": "fake_invoice",
+          "correct": true
+        },
+        {
+          "id": "challenge-015",
+          "expected_label": "phishing",
+          "predicted_label": "phishing",
+          "raw_score": 0.987113926099886,
+          "final_score": 0.987113926099886,
+          "decision_source": "model_only",
+          "security_adjustments": [],
+          "elapsed_ms": 20.554799999899842,
+          "category": "credential_theft",
+          "correct": true
+        },
+        {
+          "id": "challenge-016",
+          "expected_label": "phishing",
+          "predicted_label": "phishing",
+          "raw_score": null,
+          "final_score": 1.0,
+          "decision_source": "critical_security_rule",
+          "security_adjustments": [],
+          "elapsed_ms": 0.00869999985297909,
+          "category": "malware",
+          "correct": true
+        },
+        {
+          "id": "challenge-017",
+          "expected_label": "phishing",
+          "predicted_label": "phishing",
+          "raw_score": null,
+          "final_score": 1.0,
+          "decision_source": "critical_security_rule",
+          "security_adjustments": [],
+          "elapsed_ms": 0.0027999999474559445,
+          "category": "other_phishing",
+          "correct": true
+        },
+        {
+          "id": "challenge-018",
+          "expected_label": "legitimate",
+          "predicted_label": "phishing",
+          "raw_score": 0.9870499920752749,
+          "final_score": 0.9870499920752749,
+          "decision_source": "model_only",
+          "security_adjustments": [],
+          "elapsed_ms": 18.610499999795138,
+          "category": "technical_email",
+          "correct": false
+        }
+      ],
+      "metrics": {
+        "final": {
+          "count": 24,
+          "confusion_matrix": {
+            "true_positive": 4,
+            "true_negative": 2,
+            "false_positive": 11,
+            "false_negative": 7
+          },
+          "precision_phishing": 0.26666666666666666,
+          "recall_phishing": 0.36363636363636365,
+          "f1_phishing": 0.30769230769230765,
+          "pr_auc": 0.3903084682000846,
+          "roc_auc": 0.2517482517482518,
+          "false_positive_rate": 0.8461538461538461,
+          "false_negative_rate": 0.6363636363636364,
+          "brier_score": 0.7396026447632352
+        },
+        "raw_model": {
+          "count": 21,
+          "confusion_matrix": {
+            "true_positive": 2,
+            "true_negative": 1,
+            "false_positive": 11,
+            "false_negative": 7
+          },
+          "precision_phishing": 0.15384615384615385,
+          "recall_phishing": 0.2222222222222222,
+          "f1_phishing": 0.18181818181818185,
+          "pr_auc": 0.2908111782724786,
+          "roc_auc": 0.09259259259259259,
+          "false_positive_rate": 0.9166666666666666,
+          "false_negative_rate": 0.7777777777777778,
+          "brier_score": 0.8426399164872016
+        },
+        "by_category": {
+          "bank_impersonation": {
+            "count": 2,
+            "confusion_matrix": {
+              "true_positive": 0,
+              "true_negative": 0,
+              "false_positive": 0,
+              "false_negative": 2
+            },
+            "precision_phishing": null,
+            "recall_phishing": 0.0,
+            "f1_phishing": null,
+            "pr_auc": 1.0,
+            "roc_auc": null,
+            "false_positive_rate": null,
+            "false_negative_rate": 1.0,
+            "brier_score": 0.7001875757559024
+          },
+          "bank_notification": {
+            "count": 1,
+            "confusion_matrix": {
+              "true_positive": 0,
+              "true_negative": 0,
+              "false_positive": 1,
+              "false_negative": 0
+            },
+            "precision_phishing": 0.0,
+            "recall_phishing": null,
+            "f1_phishing": null,
+            "pr_auc": null,
+            "roc_auc": null,
+            "false_positive_rate": 1.0,
+            "false_negative_rate": null,
+            "brier_score": 0.9746948562267688
+          },
+          "credential_theft": {
+            "count": 2,
+            "confusion_matrix": {
+              "true_positive": 1,
+              "true_negative": 0,
+              "false_positive": 0,
+              "false_negative": 1
+            },
+            "precision_phishing": 1.0,
+            "recall_phishing": 0.5,
+            "f1_phishing": 0.6666666666666666,
+            "pr_auc": 1.0,
+            "roc_auc": null,
+            "false_positive_rate": null,
+            "false_negative_rate": 0.5,
+            "brier_score": 0.48464967876989085
+          },
+          "fake_delivery": {
+            "count": 1,
+            "confusion_matrix": {
+              "true_positive": 0,
+              "true_negative": 0,
+              "false_positive": 0,
+              "false_negative": 1
+            },
+            "precision_phishing": null,
+            "recall_phishing": 0.0,
+            "f1_phishing": null,
+            "pr_auc": 1.0,
+            "roc_auc": null,
+            "false_positive_rate": null,
+            "false_negative_rate": 1.0,
+            "brier_score": 0.9734577703528757
+          },
+          "fake_invoice": {
+            "count": 1,
+            "confusion_matrix": {
+              "true_positive": 1,
+              "true_negative": 0,
+              "false_positive": 0,
+              "false_negative": 0
+            },
+            "precision_phishing": 1.0,
+            "recall_phishing": 1.0,
+            "f1_phishing": 1.0,
+            "pr_auc": 1.0,
+            "roc_auc": null,
+            "false_positive_rate": null,
+            "false_negative_rate": 0.0,
+            "brier_score": 0.00023782739839752084
+          },
+          "fake_prize": {
+            "count": 1,
+            "confusion_matrix": {
+              "true_positive": 0,
+              "true_negative": 0,
+              "false_positive": 0,
+              "false_negative": 1
+            },
+            "precision_phishing": null,
+            "recall_phishing": 0.0,
+            "f1_phishing": null,
+            "pr_auc": 1.0,
+            "roc_auc": null,
+            "false_positive_rate": null,
+            "false_negative_rate": 1.0,
+            "brier_score": 0.9426265531158818
+          },
+          "forwarded_email": {
+            "count": 1,
+            "confusion_matrix": {
+              "true_positive": 0,
+              "true_negative": 0,
+              "false_positive": 1,
+              "false_negative": 0
+            },
+            "precision_phishing": 0.0,
+            "recall_phishing": null,
+            "f1_phishing": null,
+            "pr_auc": null,
+            "roc_auc": null,
+            "false_positive_rate": 1.0,
+            "false_negative_rate": null,
+            "brier_score": 1.0
+          },
+          "internal_communication": {
+            "count": 3,
+            "confusion_matrix": {
+              "true_positive": 0,
+              "true_negative": 1,
+              "false_positive": 2,
+              "false_negative": 0
+            },
+            "precision_phishing": 0.0,
+            "recall_phishing": null,
+            "f1_phishing": null,
+            "pr_auc": null,
+            "roc_auc": null,
+            "false_positive_rate": 0.6666666666666666,
+            "false_negative_rate": null,
+            "brier_score": 0.8309061174800618
+          },
+          "legitimate_invoice": {
+            "count": 1,
+            "confusion_matrix": {
+              "true_positive": 0,
+              "true_negative": 0,
+              "false_positive": 1,
+              "false_negative": 0
+            },
+            "precision_phishing": 0.0,
+            "recall_phishing": null,
+            "f1_phishing": null,
+            "pr_auc": null,
+            "roc_auc": null,
+            "false_positive_rate": 1.0,
+            "false_negative_rate": null,
+            "brier_score": 0.9706322519547311
+          },
+          "malware": {
+            "count": 1,
+            "confusion_matrix": {
+              "true_positive": 1,
+              "true_negative": 0,
+              "false_positive": 0,
+              "false_negative": 0
+            },
+            "precision_phishing": 1.0,
+            "recall_phishing": 1.0,
+            "f1_phishing": 1.0,
+            "pr_auc": 1.0,
+            "roc_auc": null,
+            "false_positive_rate": null,
+            "false_negative_rate": 0.0,
+            "brier_score": 0.0
+          },
+          "marketplace_notification": {
+            "count": 1,
+            "confusion_matrix": {
+              "true_positive": 0,
+              "true_negative": 0,
+              "false_positive": 1,
+              "false_negative": 0
+            },
+            "precision_phishing": 0.0,
+            "recall_phishing": null,
+            "f1_phishing": null,
+            "pr_auc": null,
+            "roc_auc": null,
+            "false_positive_rate": 1.0,
+            "false_negative_rate": null,
+            "brier_score": 0.9287356560122365
+          },
+          "newsletter": {
+            "count": 1,
+            "confusion_matrix": {
+              "true_positive": 0,
+              "true_negative": 0,
+              "false_positive": 1,
+              "false_negative": 0
+            },
+            "precision_phishing": 0.0,
+            "recall_phishing": null,
+            "f1_phishing": null,
+            "pr_auc": null,
+            "roc_auc": null,
+            "false_positive_rate": 1.0,
+            "false_negative_rate": null,
+            "brier_score": 1.0
+          },
+          "other_legitimate": {
+            "count": 1,
+            "confusion_matrix": {
+              "true_positive": 0,
+              "true_negative": 0,
+              "false_positive": 1,
+              "false_negative": 0
+            },
+            "precision_phishing": 0.0,
+            "recall_phishing": null,
+            "f1_phishing": null,
+            "pr_auc": null,
+            "roc_auc": null,
+            "false_positive_rate": 1.0,
+            "false_negative_rate": null,
+            "brier_score": 0.9690454281270996
+          },
+          "other_phishing": {
+            "count": 1,
+            "confusion_matrix": {
+              "true_positive": 1,
+              "true_negative": 0,
+              "false_positive": 0,
+              "false_negative": 0
+            },
+            "precision_phishing": 1.0,
+            "recall_phishing": 1.0,
+            "f1_phishing": 1.0,
+            "pr_auc": 1.0,
+            "roc_auc": null,
+            "false_positive_rate": null,
+            "false_negative_rate": 0.0,
+            "brier_score": 0.0
+          },
+          "password_recovery": {
+            "count": 1,
+            "confusion_matrix": {
+              "true_positive": 0,
+              "true_negative": 1,
+              "false_positive": 0,
+              "false_negative": 0
+            },
+            "precision_phishing": null,
+            "recall_phishing": null,
+            "f1_phishing": null,
+            "pr_auc": null,
+            "roc_auc": null,
+            "false_positive_rate": 0.0,
+            "false_negative_rate": null,
+            "brier_score": 0.4029148399785101
+          },
+          "tax_impersonation": {
+            "count": 2,
+            "confusion_matrix": {
+              "true_positive": 0,
+              "true_negative": 0,
+              "false_positive": 0,
+              "false_negative": 2
+            },
+            "precision_phishing": null,
+            "recall_phishing": 0.0,
+            "f1_phishing": null,
+            "pr_auc": 1.0,
+            "roc_auc": null,
+            "false_positive_rate": null,
+            "false_negative_rate": 1.0,
+            "brier_score": 0.908147950471299
+          },
+          "technical_email": {
+            "count": 3,
+            "confusion_matrix": {
+              "true_positive": 0,
+              "true_negative": 0,
+              "false_positive": 3,
+              "false_negative": 0
+            },
+            "precision_phishing": 0.0,
+            "recall_phishing": null,
+            "f1_phishing": null,
+            "pr_auc": null,
+            "roc_auc": null,
+            "false_positive_rate": 1.0,
+            "false_negative_rate": null,
+            "brier_score": 0.9698098429055908
+          }
+        },
+        "timing_ms": {
+          "average": 19.24496666665239,
+          "p95": 28.41279999984181
+        }
+      },
+      "warnings": [
+        "Raw-model metrics exclude 3 critical-rule cases.",
+        "Some category metrics are undefined because the category does not contain both classes."
+      ]
+    }
+  }
+}

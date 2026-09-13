@@ -6,6 +6,9 @@ from urllib.parse import urlparse
 import hashlib
 import pickle
 import os
+import json
+from html import unescape
+from html.parser import HTMLParser
 
 from schemas import EmailPayloadSchema, AnalysisResultSchema, SecurityFeaturesSchema
 from services.classifier_contract import (
@@ -86,10 +89,42 @@ def extraer_urls(texto):
     return re.findall(r'https?://[^\s<>"\'\)\]]+|www\.[^\s<>"\'\)\]]+', str(texto), re.IGNORECASE)
 
 def extraer_dominio(url):
-    try: 
-        return urlparse(url if url.startswith('http') else f'http://{url}').hostname.lower().lstrip('www.')
-    except: 
+    try:
+        value = url.strip()
+        if value.startswith('//'):
+            value = 'https:' + value
+        elif not re.match(r'^https?://', value, re.IGNORECASE):
+            value = 'http://' + value
+        domain = (urlparse(value).hostname or '').lower().rstrip('.')
+        return domain.removeprefix('www.')
+    except ValueError:
         return ''
+
+
+class _EmailHTMLParser(HTMLParser):
+    """Retain navigable destinations which disappear when HTML is stripped."""
+
+    def __init__(self):
+        super().__init__(convert_charrefs=True)
+        self.urls = []
+
+    def handle_starttag(self, tag, attrs):
+        attribute = {'a': 'href', 'area': 'href', 'form': 'action'}.get(tag)
+        if attribute:
+            for key, value in attrs:
+                if key == attribute and value:
+                    value = value.strip()
+                    if value.startswith('//'):
+                        value = 'https:' + value
+                    if re.match(r'^(https?://|www\.)', value, re.IGNORECASE):
+                        self.urls.append(value)
+
+
+def extraer_urls_correo(raw, visible):
+    parser = _EmailHTMLParser()
+    parser.feed(raw)
+    # An anchor showing its own URL is one destination, not two features.
+    return list(dict.fromkeys(extraer_urls(visible) + parser.urls))
 
 def dominio_es_oficial(dominio): 
     return bool(dominio) and any(dominio == o or dominio.endswith('.' + o) for o in DOMINIOS_OFICIALES)
@@ -148,7 +183,7 @@ def _classify_payload(payload: EmailPayloadSchema) -> dict:
     remitente_email = payload.metadata.remitente_email or ""
 
     contenido_raw = payload.contenido or ""
-    contenido = re.sub(r'<[^>]+>', ' ', contenido_raw)
+    contenido = unescape(re.sub(r'<[^>]+>', ' ', contenido_raw))
     contenido = re.sub(r'\s+', ' ', contenido).strip()
 
     attachments_count = payload.security_features.attachment_count if payload.security_features else 0
@@ -157,7 +192,7 @@ def _classify_payload(payload: EmailPayloadSchema) -> dict:
     if calibrated_model is None or tfidf is None or nlp is None:
         raise ClassifierUnavailableError("El modelo de IA no se encuentra cargado.")
 
-    urls = extraer_urls(contenido)
+    urls = extraer_urls_correo(contenido_raw, contenido)
     url_count = len(urls)
 
     doc = nlp(f"{asunto} {contenido}")
@@ -174,7 +209,7 @@ def _classify_payload(payload: EmailPayloadSchema) -> dict:
     entidades_suplantables = ["afip", "arca", "bcra", "anses", "mercadopago", "galicia", "santander", "macro", "nacion", "redlink", "netflix", "correo", "pami"]
 
     for u in urls:
-        if u.startswith('http://'): url_usa_http = 1
+        if u.lower().startswith('http://'): url_usa_http = 1
         dom = extraer_dominio(u)
         if dominio_es_oficial(dom): url_oficial_val = 1
         for ent in entidades_suplantables:
@@ -195,10 +230,11 @@ def _classify_payload(payload: EmailPayloadSchema) -> dict:
     else:
         X_input = np.hstack([vec_text, vec_meta, vec_slots, vec_url, np.array([[ifh]])])
 
+    security_features = payload.security_features.model_copy() if payload.security_features else None
     if remitente_email and "@" in remitente_email:
         sender_dom = remitente_email.split("@")[-1].lower()
-        if payload.security_features:
-            payload.security_features.is_trusted_domain = dominio_es_oficial(sender_dom)
+        if security_features:
+            security_features.is_trusted_domain = dominio_es_oficial(sender_dom)
 
     raw_score = float(
         calibrated_model.predict_proba(X_input)[0][PRODUCTION_PHISHING_PROBABILITY_INDEX]
@@ -208,14 +244,27 @@ def _classify_payload(payload: EmailPayloadSchema) -> dict:
 
     security_adjustments = None
     decision_source = "model_only"
-    if payload.security_features is not None:
+    if security_features is not None:
         risk_score, is_phishing, security_adjustments = _apply_security_adjustments(
-            risk_score, is_phishing, payload.security_features
+            risk_score, is_phishing, security_features
         )
         decision_source = "model_and_security_rules"
 
+    from services.content_rules import detect_content_signals
+    content_signals = detect_content_signals(contenido_raw)
+    if content_signals:
+        # Policy floor, not an additional calibrated model probability. Apply
+        # after header discounts: authenticated senders can still request secrets.
+        risk_score = max(risk_score, UMBRAL_CRITICO, 0.95)
+        is_phishing = True
+        decision_source = "content_security_rule"
+
     if not is_phishing:
         intent = "comunicacion_operativa"
+    elif any(s.rule == 'credential_disclosure_request' for s in content_signals):
+        intent = "solicitar_credenciales"
+    elif any(s.rule == 'payment_redirection_no_verification' for s in content_signals):
+        intent = "desviar_pago"
     elif slots_count['FINANCIERO'] > 0:
         intent = "coaccionar_pago"
     else:
@@ -231,6 +280,8 @@ def _classify_payload(payload: EmailPayloadSchema) -> dict:
         "decision_source": decision_source,
         "critical_reason": None,
         "feature_count": int(X_input.shape[1]),
+        "urls_detectadas": urls,
+        "content_signals": content_signals,
     }
 
 
@@ -241,9 +292,8 @@ def analyze_email(payload: EmailPayloadSchema) -> AnalysisResultSchema:
         render_server_fallback,
     )
 
-    sec_str = str(payload.security_features.model_dump()) if payload.security_features else ""
     content_hash = hashlib.sha256(
-        f"{payload.metadata.asunto}|{payload.contenido}|{sec_str}".encode("utf-8")
+        json.dumps(payload.model_dump(mode="json"), sort_keys=True, ensure_ascii=False).encode("utf-8")
     ).hexdigest()
     if content_hash in _ANALYSIS_CACHE:
         return _ANALYSIS_CACHE[content_hash]
@@ -281,6 +331,7 @@ def analyze_email(payload: EmailPayloadSchema) -> AnalysisResultSchema:
                 slots_detectados={},
                 security_adjustments=[],
                 slm_explanation=express_explanation,
+                decision_source="critical_security_rule",
             )
             _ANALYSIS_CACHE[content_hash] = resultado_express
             return resultado_express
@@ -293,6 +344,9 @@ def analyze_email(payload: EmailPayloadSchema) -> AnalysisResultSchema:
 
     # 9. Veredicto
     reason = "🔴 PHISHING DETECTADO" if is_phishing else "🟢 LEGÍTIMO"
+    content_signals = diagnostics.get("content_signals", [])
+    if content_signals:
+        reason += ": " + " ".join(signal.description for signal in content_signals)
 
     # 10. Explicación Segura usando SLM Local (Fallback automático en caso de error)
     # Se integra el componente del servidor dedicado a generar explicaciones,
@@ -301,6 +355,7 @@ def analyze_email(payload: EmailPayloadSchema) -> AnalysisResultSchema:
         slots_text,
         security_adjustments,
         is_phishing=is_phishing,
+        content_signals=content_signals,
     )
     explanation_context = build_explanation_context(
         is_phishing=is_phishing,
@@ -323,7 +378,10 @@ def analyze_email(payload: EmailPayloadSchema) -> AnalysisResultSchema:
         intent=intent,
         slots_detectados=slots_text,
         security_adjustments=security_adjustments,
-        slm_explanation=slm_explanation
+        slm_explanation=slm_explanation,
+        raw_model_score=diagnostics.get("raw_score"),
+        decision_source=diagnostics["decision_source"],
+        content_signals=content_signals,
     )
     _ANALYSIS_CACHE[content_hash] = final_result
     return final_result

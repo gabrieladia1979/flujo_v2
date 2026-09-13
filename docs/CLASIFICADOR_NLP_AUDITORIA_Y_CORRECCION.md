@@ -1,5 +1,7 @@
 # Auditoría del clasificador NLP y propuesta de corrección
 
+> **Actualización local — 13/09/2026:** se conserva el índice **0**. Con el artefacto actualmente presente, los seis casos originales dan 6/6 con índice 0 y 1/6 con índice 1. La propuesta histórica de invertir columnas que sigue debajo queda suspendida: sus resultados no se reproducen en este entorno. Ver [diagnóstico y mejoras](../reports/classifier_improvements.md), con hash del modelo, entorno, comparación de 24 casos y limitaciones. No se ha demostrado la causa de la diferencia con la ejecución histórica.
+
 ## Conclusión ejecutiva
 
 El servidor actual utiliza la primera columna de `predict_proba`, es decir, `predict_proba(X)[0][0]`, como probabilidad de phishing. La ejecución con el modelo real produjo resultados fuertemente compatibles con una inversión de columnas: los correos legítimos obtuvieron puntajes altos y los casos de phishing obtuvieron puntajes bajos.
