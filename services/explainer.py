@@ -38,25 +38,3 @@ def extract_shap_insights(calibrated_model, X_input, tfidf_vectorizer) -> list:
     except Exception as e:
         print(f"[Explainer] Error calculando SHAP: {e}")
         return ["Presencia de enlaces sospechosos", "Tono de urgencia o manipulacion"]
-
-def generate_slm_prompt(insights: list, slots: dict, security_adjustments: list) -> str:
-    prompt = "El modelo detecto las siguientes señales de phishing:\n"
-    if insights:
-        prompt += f"- Palabras/Variables clave: {', '.join(insights)}\n"
-    if slots:
-        for cat, values in slots.items():
-            if values:
-                prompt += f"- {cat}: {', '.join(values)}\n"
-    if security_adjustments:
-        for adj in security_adjustments:
-            if adj.delta > 0:
-                prompt += f"- Alerta tecnica: {adj.description}\n"
-    return prompt
-
-def generate_safe_email_response(security_adjustments: list) -> str:
-    msg = "Este correo parece seguro."
-    if security_adjustments:
-        good = [adj.description for adj in security_adjustments if adj.delta < 0]
-        if good:
-            msg += f" Señales de confianza: {'; '.join(good)}."
-    return msg
