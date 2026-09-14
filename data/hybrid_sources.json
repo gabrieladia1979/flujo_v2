@@ -1,0 +1,15 @@
+{
+  "version": 1,
+  "sources": [
+    {"file": "Nazario.csv", "labels": {"1": "1"}, "language": "en", "basis": "Phishing corpus; local numeric mapping remains subject to manual audit"},
+    {"file": "Nigerian_Fraud.csv", "labels": {"1": "1"}, "language": "en", "basis": "Advance-fee fraud included in the malicious-email target"},
+    {"file": "Enron.csv", "labels": {"0": "0"}, "language": "en", "basis": "Use only local ham label; spam label 1 is not automatically phishing"},
+    {"file": "SpamAssasin.csv", "labels": {"0": "0"}, "language": "en", "basis": "Use only ham; generic spam requires review before assigning phishing"}
+  ],
+  "not_automatically_used": {
+    "phishing_email.csv": "Consolidated corpus: source overlap and label semantics require review before mixing",
+    "CEAS_08.csv": "Spam/phishing label distinction requires review",
+    "Ling.csv": "Spam/phishing label distinction requires review",
+    "Phishing_Legitimate_full.csv": "Webpage features, not email text; separate URL model"
+  }
+}

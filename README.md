@@ -1,5 +1,9 @@
 # Proyecto Flujo
 
+## Experimento NLP híbrido
+
+La rama `codex/hybrid-nlp` agrega un encoder multilingüe ajustable y un XGBoost nuevo, con comparación contra TF-IDF y embeddings congelados. El clasificador y endpoint actuales se conservan. Ver [entrenamiento, datasets, evaluación y endpoint experimental](docs/HYBRID_NLP.md).
+
 Este repositorio contiene el código fuente del proyecto Flujo.
 
 ## Clasificador y respuesta del backend

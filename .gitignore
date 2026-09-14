@@ -7,6 +7,9 @@ __pycache__/
 *.pyo
 .venv/
 venv/
+.venv-hybrid/
+artifacts/hybrid/
+.cache-hybrid/
 
 # ONNX (no se usa en V2)
 model_onnx/

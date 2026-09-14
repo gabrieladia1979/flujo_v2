@@ -78,6 +78,16 @@ def analyze_email_endpoint(
         raise HTTPException(status_code=500, detail=f"Error en el análisis: {str(e)}")
 
 # (Opcional) Bloque para correr localmente sin uvicorn CLI
+@app.post("/api/v1/analyze/hybrid", response_model=AnalysisResultSchema)
+def analyze_hybrid_endpoint(payload: EmailPayloadSchema, api_key: str = Depends(get_api_key)):
+    """Experimental route. Requires a separately trained local artifact directory."""
+    from services.hybrid_classifier import analyze_hybrid_email, HybridUnavailableError
+    try:
+        return analyze_hybrid_email(payload)
+    except HybridUnavailableError as exc:
+        raise HTTPException(status_code=503, detail=str(exc)) from exc
+
+
 if __name__ == "__main__":
     import uvicorn
     host = os.getenv("HOST", "0.0.0.0")
