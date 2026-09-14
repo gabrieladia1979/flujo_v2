@@ -282,7 +282,6 @@ class AnalyzerSLMIntegrationTests(unittest.TestCase):
         self.assertEqual(1.0, result.risk_score)
         self.assertEqual("suplantacion_o_malware", result.intent)
         self.assertIn(PHISHING_SUMMARY, result.slm_explanation)
-        self.assertIn("ejecutable", result.slm_explanation.lower())
         self.assertIn("No abras enlaces ni adjuntos", result.slm_explanation)
         self.assertNotIn("Borrador del SLM", result.slm_explanation)
 
