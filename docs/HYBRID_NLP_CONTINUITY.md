@@ -13,13 +13,17 @@
 - Original `model/phisharg_xgboost.pkl` preservado.
 - Entrenamiento neuronal completado localmente. Las 11.054 muestras generaron un `finetuned_embeddings_xgboost.json` en `artifacts/hybrid/multilingual-candidate-v1`.
 - Desempeño del conjunto de test reservado:
-  - `tfidf_xgboost`: F1 0.9614 (FP: 17, FN: 52)
-  - `frozen_embeddings_xgboost`: F1 0.8812 (FP: 7, FN: 188)
-  - `finetuned_embeddings_xgboost`: F1 0.9041 (FP: 20, FN: 143)
-- Se corrigieron los problemas de parseo (float/int) en los scripts de testing y las falsas aserciones de integración.
-- Los 138 tests originales (Legacy) corren perfectamente (`pytest -k "not test_hybrid"`).
-- Los 4 tests del artefacto híbrido (`test_hybrid_artifact.py`) pasan limpiamente.
-- Evaluación Diagnóstica (`evaluate_hybrid.py`): el modelo híbrido logra clasificar perfectamente el JSONL de 14 casos difíciles con 0 Falsos Positivos y 0 Falsos Negativos, igualando al modelo legacy en este set.
+  - **Local (CPU, 1 época, 128 tokens, 2 capas, batch 16):**
+    - `tfidf_xgboost`: F1 0.9614 (FP: 17, FN: 52)
+    - `frozen_embeddings_xgboost`: F1 0.8812 (FP: 7, FN: 188)
+    - `finetuned_embeddings_xgboost`: F1 0.9041 (FP: 20, FN: 143)
+  - **Colab A100 (GPU CUDA, 5 épocas, 384 tokens, 4 capas, batch 64):**
+    - `tfidf_xgboost`: F1 0.9614 (FP: 18, FN: 51, ROC-AUC: 0.9907)
+    - `frozen_embeddings_xgboost`: F1 0.9093 (FP: 15, FN: 139, ROC-AUC: 0.9805)
+    - `finetuned_embeddings_xgboost` (🏆 **GANADOR**): **F1 0.9693** (FP: 13, FN: 42, ROC-AUC: **0.9948**, Precision: **0.9853**, Recall: **0.9539**)
+- El modelo A100 supera al baseline estadístico TF-IDF (0.9693 vs 0.9614) reduciendo falsos negativos a 42 (vs 51) y falsos positivos a 13 (vs 18).
+- Evaluación Diagnóstica (`evaluate_hybrid.py`): el modelo híbrido A100 logra **100% de precisión (0 FP, 0 FN)** en los 14 casos diagnósticos extremos de `classifier_eval_v1.jsonl`.
+- Verificado y probado exitosamente en el endpoint local FastAPI: `POST /api/v1/analyze/hybrid` (status 200).
 
 ## Tareas Finalizadas
 
