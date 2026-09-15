@@ -2,6 +2,8 @@
 
 ## Revisión posterior — 2026-09-15
 
+Los siguientes pasos tienen resultados adicionales en [HYBRID_NLP_NEXT_RESULTS.md](HYBRID_NLP_NEXT_RESULTS.md): bootstrap por grupos, calibración de validación, evaluación de 475 correos nuevos y 16 casos contrastivos, corpus ampliado con reserva y seis experimentos preparados para Colab. Las nuevas corridas GPU y un conjunto real temporal revisado siguen pendientes. Recomendación actual: A100 corregido como candidato principal; no promoción automática del último entrenamiento.
+
 Consultar [comparativa verificada](HYBRID_NLP_RESULTS_VERIFIED.md), que corrige y limita las afirmaciones históricas de este documento. Las métricas de Colab y el push de `e7edc9a` se confirmaron. Se resolvió una incompatibilidad real: XGBoost 2.0.3 perdía el intercepto vectorial exportado por 3.4.1. El backend ahora restaura y verifica el valor guardado. La reevaluación completa local reproduce las 1.661 decisiones de Colab (diferencia máxima de score 7,45e-9): F1=0,969325, FP=13, FN=42. Pasan 20/20 pruebas A100/pipeline, 3/3 nuevas regresiones en ambas versiones de XGBoost y 4/4 pruebas del candidato CPU. Reporte: `reports/hybrid_a100_windows_verified.json`.
 
 El diagnóstico de 14 casos pasa completo. El corpus adicional de 12 casos tiene 1 falsa alarma (`hybrid-challenge-06`, aviso defensivo legítimo en inglés), 7 TP y 4 TN. Próxima prioridad: estudiar los errores por fuente y reunir ejemplos contrastivos revisados, manteniendo un nuevo test independiente para mejoras posteriores. No hace falta repetir el entrenamiento A100 para resolver la incompatibilidad de carga.
