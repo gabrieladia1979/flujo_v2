@@ -1,5 +1,5 @@
 from typing import Optional, List, Any
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, model_validator
 
 
 class MetadataSchema(BaseModel):
@@ -66,6 +66,14 @@ class EmailPayloadSchema(BaseModel):
     contenido: Optional[str] = Field(default=None, max_length=1000000) # Máximo 1MB de texto
     cabeceras_red: Optional[Any] = None
     security_features: Optional[SecurityFeaturesSchema] = None
+
+    @model_validator(mode="before")
+    @classmethod
+    def allow_body_alias(cls, data: Any) -> Any:
+        if isinstance(data, dict):
+            if not data.get("contenido") and data.get("body"):
+                data["contenido"] = data["body"]
+        return data
 
 
 class ContentSignal(BaseModel):

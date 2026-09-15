@@ -295,6 +295,7 @@ def _classify_payload(payload: EmailPayloadSchema) -> dict:
         "feature_count": int(X_input.shape[1]),
         "urls_detectadas": urls,
         "content_signals": content_signals,
+        "X_input": X_input,
     }
 
 
@@ -374,18 +375,19 @@ def analyze_email(payload: EmailPayloadSchema) -> AnalysisResultSchema:
     if is_phishing:
         try:
             from services.explainer import extract_shap_insights
-            # Extraemos las palabras exactas que dispararon la alerta
-            shap_words = extract_shap_insights(calibrated_model, X_input, tfidf_vectorizer)
-            if shap_words:
-                from services.slm_explanation import ExplanationEvidence, EvidenceSource
-                for w in shap_words:
-                    if w and not w.startswith("Tiene_") and not w.startswith("URL_"):
+            X_input_mat = diagnostics.get("X_input")
+            if X_input_mat is not None and calibrated_model is not None and tfidf is not None:
+                shap_words = extract_shap_insights(calibrated_model, X_input_mat, tfidf)
+                if shap_words:
+                    from services.slm_explanation import ExplanationEvidence, EvidenceSource
+                    valid_words = [w for w in shap_words if w and not w.startswith("Tiene_") and not w.startswith("URL_")]
+                    if valid_words:
                         explanation_evidence.append(ExplanationEvidence(
-                            evidence_id="shap.keyword",
-                            text=f"El modelo detectó esta palabra como sospechosa: '{w}'",
-                            source=EvidenceSource.OBSERVED_SIGNAL
+                            evidence_id="evidence.keywords",
+                            text=f"Palabras clave detectadas: {', '.join(valid_words[:5])}",
+                            source=EvidenceSource.CLASSIFIER,
                         ))
-        except Exception as e:
+        except Exception:
             pass
     explanation_context = build_explanation_context(
         is_phishing=is_phishing,
