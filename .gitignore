@@ -16,4 +16,4 @@ artifacts/hybrid/
 model_onnx/
 # Modelos Pesados
 model/*.gguf
-
+*.zip

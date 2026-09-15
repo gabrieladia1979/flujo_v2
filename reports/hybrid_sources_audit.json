@@ -1,0 +1,182 @@
+{
+  "sources": {
+    "SpaPhish_Master_Final_v5.csv": {
+      "columns": [
+        "subject",
+        "body",
+        "Label",
+        "authority",
+        "distraction",
+        "commitment_integrity_reciprocation",
+        "social_proof",
+        "liking_similarity_deception",
+        "url_count",
+        "attachments_count",
+        "hops_count",
+        "tiene_url",
+        "n_urls",
+        "url_usa_http",
+        "url_oficial",
+        "url_suplantada",
+        "url_tiene_ip"
+      ],
+      "rows": 7095,
+      "labels": {
+        "1": 4144,
+        "0": 2951
+      },
+      "eligible": 7095,
+      "selected": 7095,
+      "status": "sampled",
+      "sha256": "252d8cddcf99d8a4ced833c50a1da3361db5a1ea23982c17c2f7f4f41bdcebeb",
+      "mapping_basis": "Existing SpaPhish mapping; language is a source hint, not detected per row"
+    },
+    "CEAS_08.csv": {
+      "columns": [
+        "sender",
+        "receiver",
+        "date",
+        "subject",
+        "body",
+        "label",
+        "urls"
+      ],
+      "rows": 39154,
+      "labels": {
+        "1": 21842,
+        "0": 17312
+      },
+      "eligible": 0,
+      "selected": 0,
+      "status": "review_required",
+      "sha256": "22375e7d5f5a8229dbe987914ee9b3705656c590038662a7df6054629b376074",
+      "mapping_basis": "not approved for this experiment"
+    },
+    "Enron.csv": {
+      "columns": [
+        "subject",
+        "body",
+        "label"
+      ],
+      "rows": 29767,
+      "labels": {
+        "0": 15791,
+        "1": 13976
+      },
+      "eligible": 15791,
+      "selected": 1000,
+      "status": "sampled",
+      "sha256": "99933d3233510cf5dc2ee7768ddc609425cb8002bf5d7691d9a7157ffa5fd318",
+      "mapping_basis": "Use only local ham label; spam label 1 is not automatically phishing"
+    },
+    "Ling.csv": {
+      "columns": [
+        "subject",
+        "body",
+        "label"
+      ],
+      "rows": 2859,
+      "labels": {
+        "0": 2401,
+        "1": 458
+      },
+      "eligible": 0,
+      "selected": 0,
+      "status": "review_required",
+      "sha256": "c133792260f18b251e9377b9cb31bef226322af6dc0d79841f61c67489929eca",
+      "mapping_basis": "not approved for this experiment"
+    },
+    "Nazario.csv": {
+      "columns": [
+        "sender",
+        "receiver",
+        "date",
+        "subject",
+        "body",
+        "urls",
+        "label"
+      ],
+      "rows": 1565,
+      "labels": {
+        "1": 1565
+      },
+      "eligible": 1565,
+      "selected": 1000,
+      "status": "sampled",
+      "sha256": "b8fbc4158fbdfaff1ed98584c43d72e283c6352d7ade4d457d34c1d79488d184",
+      "mapping_basis": "Phishing corpus; local numeric mapping remains subject to manual audit"
+    },
+    "Nigerian_Fraud.csv": {
+      "columns": [
+        "sender",
+        "receiver",
+        "date",
+        "subject",
+        "body",
+        "urls",
+        "label"
+      ],
+      "rows": 3332,
+      "labels": {
+        "1": 3332
+      },
+      "eligible": 3332,
+      "selected": 1000,
+      "status": "sampled",
+      "sha256": "f5d6930763cae6feeae6484131c79655a7440abbb97d6f51eab757aea4e6ab4b",
+      "mapping_basis": "Advance-fee fraud included in the malicious-email target"
+    },
+    "phishing_email.csv": {
+      "columns": [
+        "text_combined",
+        "label"
+      ],
+      "rows": 82486,
+      "labels": {
+        "0": 39595,
+        "1": 42891
+      },
+      "eligible": 0,
+      "selected": 0,
+      "status": "review_required",
+      "sha256": "73a5c5410baf46ed69517fedfd37910f2e93777dc504b73ea483bc16be3a69d1",
+      "mapping_basis": "not approved for this experiment"
+    },
+    "SpamAssasin.csv": {
+      "columns": [
+        "sender",
+        "receiver",
+        "date",
+        "subject",
+        "body",
+        "label",
+        "urls"
+      ],
+      "rows": 5809,
+      "labels": {
+        "0": 4091,
+        "1": 1718
+      },
+      "eligible": 4091,
+      "selected": 1000,
+      "status": "sampled",
+      "sha256": "3bfe8f8abff89f69a98456be50413c2fcb20a476141116dd84ee1507b980c00e",
+      "mapping_basis": "Use only ham; generic spam requires review before assigning phishing"
+    }
+  },
+  "total_output_rows": 11095,
+  "seed": 42,
+  "cap_per_source": 1000,
+  "dataset_sha256": "e162329828e61d79c074264fcab86b03e8af1f12adc17ab671574a63442ba25e",
+  "warnings": [
+    "Rows are sampled, then global duplicates and conflicting groups are removed by the trainer.",
+    "Source labels are inherited, not individually human-verified.",
+    "Source language is a hint; old corpora do not establish coverage of current attacks."
+  ],
+  "excluded_policies": {
+    "phishing_email.csv": "Consolidated corpus: source overlap and label semantics require review before mixing",
+    "CEAS_08.csv": "Spam/phishing label distinction requires review",
+    "Ling.csv": "Spam/phishing label distinction requires review",
+    "Phishing_Legitimate_full.csv": "Webpage features, not email text; separate URL model"
+  }
+}
