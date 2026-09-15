@@ -1,5 +1,7 @@
 # Continuidad del trabajo — 2026-09-14
 
+**Estado más reciente:** se recibieron e importaron los reportes de los seis experimentos GPU. Continuar desde [HYBRID_NLP_RESUME_PLAN.md](HYBRID_NLP_RESUME_PLAN.md). Los pesos nuevos aún deben descargarse/importarse; las referencias posteriores a corridas GPU pendientes son anteriores a esta recepción.
+
 ## Revisión posterior — 2026-09-15
 
 Los siguientes pasos tienen resultados adicionales en [HYBRID_NLP_NEXT_RESULTS.md](HYBRID_NLP_NEXT_RESULTS.md): bootstrap por grupos, calibración de validación, evaluación de 475 correos nuevos y 16 casos contrastivos, corpus ampliado con reserva y seis experimentos preparados para Colab. Las nuevas corridas GPU y un conjunto real temporal revisado siguen pendientes. Recomendación actual: A100 corregido como candidato principal; no promoción automática del último entrenamiento.
