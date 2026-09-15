@@ -1,0 +1,21 @@
+{
+  "version": "3.0.0",
+  "dataset": "hybrid_contrastive_curated_v3.jsonl",
+  "sha256": "31440cc6bf70a3b006b5358ca7f50b769a4d94db0354778e3188123c6d99bc4e",
+  "status": "diagnostic_only",
+  "holdout_status": "synthetic_curated_contrastive",
+  "generated_on": "2026-09-15",
+  "counts": {
+    "total": 24,
+    "phishing": 12,
+    "legitimate": 12
+  },
+  "provenance": {
+    "description": "Curated bilingual contrastive pairs (defensive warning vs active attack) across Device Code, MFA push, BEC payments, Credential recovery, and IT operations.",
+    "sources": [
+      "Microsoft Security Blog: AI-enabled device code phishing campaign",
+      "CISA: Phishing-resistant MFA Fact Sheet",
+      "Internal IT Security Guidelines and Operational Communications"
+    ]
+  }
+}

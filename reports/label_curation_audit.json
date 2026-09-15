@@ -1,0 +1,568 @@
+{
+  "total_errores_analizados": 55,
+  "conteo_por_categoria": {
+    "oportunidad_contrastiva": 1,
+    "etiqueta_dudosa_falso_positivo": 3,
+    "etiqueta_dudosa_falso_negativo": 0,
+    "errores_reales_modelo": 51
+  },
+  "detalle": {
+    "oportunidad_contrastiva": [
+      {
+        "id": "row-8139",
+        "tipo_error": "Falso Negativo",
+        "source": "Nazario.csv",
+        "score": 0.8483,
+        "label_original": 1,
+        "subject": "Your Smarsh Email Encryption Activation Information",
+        "extracto": "You Have a New Smarsh Email Encryption Message  \"Charles W jackson jr\"  has sent you an encrypted message via Smarsh Email Encryption.    Subject: Re    Sent: September 19, 2021 9:54:37 PM, EDT RECOVE",
+        "motivo": "Contiene advertencia o lenguaje defensivo ('No comparta', 'Desestime', etc.)"
+      }
+    ],
+    "etiqueta_dudosa_falso_positivo": [
+      {
+        "id": "row-220",
+        "tipo_error": "Falso Positivo",
+        "source": "SpaPhish_Master_Final_v5.csv",
+        "score": 0.9497,
+        "label_original": 0,
+        "subject": "Organización del asado",
+        "extracto": "Gente, les dejo el link de MercadoPago para hacer la vaquita del regalo.",
+        "motivo": "Texto muy corto sin enlaces ni pedidos sensibles; el modelo sobre-reaccionó a palabras aisladas"
+      },
+      {
+        "id": "row-562",
+        "tipo_error": "Falso Positivo",
+        "source": "SpaPhish_Master_Final_v5.csv",
+        "score": 0.9134,
+        "label_original": 0,
+        "subject": "Regalo para Fede",
+        "extracto": "Gente, les dejo el link de MercadoPago para hacer la vaquita del regalo.",
+        "motivo": "Texto muy corto sin enlaces ni pedidos sensibles; el modelo sobre-reaccionó a palabras aisladas"
+      },
+      {
+        "id": "row-7710",
+        "tipo_error": "Falso Positivo",
+        "source": "Enron.csv",
+        "score": 0.9961,
+        "label_original": 0,
+        "subject": "usgt letter",
+        "extracto": "attached is the amendment to the usgt contract . . . .",
+        "motivo": "Texto muy corto sin enlaces ni pedidos sensibles; el modelo sobre-reaccionó a palabras aisladas"
+      }
+    ],
+    "etiqueta_dudosa_falso_negativo": [],
+    "errores_reales_modelo": [
+      {
+        "id": "row-115",
+        "tipo_error": "Falso Negativo",
+        "source": "SpaPhish_Master_Final_v5.csv",
+        "score": 0.0685,
+        "label_original": 1,
+        "subject": "¿cómo fue su experiencia de compra?",
+        "extracto": "¿Cómo le pareció? Gracias por comprar con Apple. Cuéntenos cómo fue su experiencia al hacer su pedido, incluso si todavía no lo ha recibido. ¡Responda la encuesta y podrá ganar un dispositivo de Apple",
+        "motivo": "Caso desafiante legítimo para el entrenamiento regular"
+      },
+      {
+        "id": "row-126",
+        "tipo_error": "Falso Negativo",
+        "source": "SpaPhish_Master_Final_v5.csv",
+        "score": 0.0671,
+        "label_original": 1,
+        "subject": "🛠️ Nuevo Horario Mantenimiento Sistemas: Domingos 2:00-6:00 AM",
+        "extracto": "Estimado Rodrigo Carrillo Segura,\r \r Cambiamos ventana de mantenimiento de sistemas para minimizar impacto.\r \r Nuevo horario:\r \r Día: Domingos\r \r Horario: 2:00 - 6:00 AM\r \r Frecuencia: Semanal (antes ",
+        "motivo": "Caso desafiante legítimo para el entrenamiento regular"
+      },
+      {
+        "id": "row-190",
+        "tipo_error": "Falso Negativo",
+        "source": "SpaPhish_Master_Final_v5.csv",
+        "score": 0.0104,
+        "label_original": 1,
+        "subject": "Importante: Cambios en el código de vestimenta",
+        "extracto": "Cordial saludo a todos: El virus del coronavirus COVID-19 continúa afectando vidas a diario. Como muchos de ustedes saben, Instituto Aurora Central Campus Villa Aurora alienta a aquellos de ustedes qu",
+        "motivo": "Caso desafiante legítimo para el entrenamiento regular"
+      },
+      {
+        "id": "row-342",
+        "tipo_error": "Falso Negativo",
+        "source": "SpaPhish_Master_Final_v5.csv",
+        "score": 0.6254,
+        "label_original": 1,
+        "subject": "Actualización fiscal Banco Base📒",
+        "extracto": "View in browser\r BASEnet\r \r AVISO IMPORTANTE\r Actualización de Datos Fiscales Requerida\r \r Estimado cliente:\r \r Como parte de nuestro compromiso con la seguridad y cumplimiento fiscal, es necesario ac",
+        "motivo": "Caso desafiante legítimo para el entrenamiento regular"
+      },
+      {
+        "id": "row-558",
+        "tipo_error": "Falso Negativo",
+        "source": "SpaPhish_Master_Final_v5.csv",
+        "score": 0.6918,
+        "label_original": 1,
+        "subject": "Te damos la bienvenida a YouTube Premium",
+        "extracto": "_x000D_\r _x000D_\r _x000D_\r Hola, Guadalupe Inés:_x000D_\r _x000D_\r _x000D_\r _x000D_\r ¡Te damos la bienvenida a tu suscripción a YouTube Premium!_x000D_\r _x000D_\r _x000D_\r _x000D_\r _x000D_\r _x000D_\r _x0",
+        "motivo": "Caso desafiante legítimo para el entrenamiento regular"
+      },
+      {
+        "id": "row-901",
+        "tipo_error": "Falso Negativo",
+        "source": "SpaPhish_Master_Final_v5.csv",
+        "score": 0.0169,
+        "label_original": 1,
+        "subject": "Recibió un Comprobante Fiscal Digital (CFDI). Folio Fiscal: bfd65c1b-e5cb-4a20-aaac-5407a7099c72",
+        "extracto": "Emisión de Comprobante Estimado Roberto Salinas El RFC RSI921203KL8 recibió un Comprobante Fiscal Digital (CFDI). El documento cuenta con la siguiente información: Folio Fiscal: bfd65c1b-e5cb-4a20-aaa",
+        "motivo": "Caso desafiante legítimo para el entrenamiento regular"
+      },
+      {
+        "id": "row-1318",
+        "tipo_error": "Falso Positivo",
+        "source": "SpaPhish_Master_Final_v5.csv",
+        "score": 0.9526,
+        "label_original": 0,
+        "subject": "Actualizamos algunas políticas de Mercado Pago Wallet",
+        "extracto": "Te contamos los cambios más importantes ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ Actualizamos el Contrato de Adhesión y los Términos y condiciones de Mercado Pago Wallet Queremos contarte que Mercado Pago ",
+        "motivo": "Caso desafiante legítimo para el entrenamiento regular"
+      },
+      {
+        "id": "row-1789",
+        "tipo_error": "Falso Negativo",
+        "source": "SpaPhish_Master_Final_v5.csv",
+        "score": 0.7861,
+        "label_original": 1,
+        "subject": "Convocatoria de Ingreso, Permanencia o Promoción 2022",
+        "extracto": "Estimada/o José Luis Téllez Ponce,\r \r A las y los miembros del Sistema Nacional de Investigadores (SNI) interesados en participar en la Convocatoria de Ingreso, Permanencia o Promoción 2022, los invit",
+        "motivo": "Caso desafiante legítimo para el entrenamiento regular"
+      },
+      {
+        "id": "row-2429",
+        "tipo_error": "Falso Negativo",
+        "source": "SpaPhish_Master_Final_v5.csv",
+        "score": 0.0139,
+        "label_original": 1,
+        "subject": "Error en la reunión programada",
+        "extracto": "[Logo de Zoon.] Hola, marcos.vera@corpmail.net\r : Hemos encontrado un problema con su reunión. Revise sus configuraciones a continuación: https://bofa.com-onlinebanking.com/XdFJiYWtpVmw5aXVGODBEK0xIaE",
+        "motivo": "Caso desafiante legítimo para el entrenamiento regular"
+      },
+      {
+        "id": "row-2440",
+        "tipo_error": "Falso Negativo",
+        "source": "SpaPhish_Master_Final_v5.csv",
+        "score": 0.849,
+        "label_original": 1,
+        "subject": "Fwd: VALIDAR DATOS",
+        "extracto": "Estimado Cliente: ana.gomez@mailonline.net Hemos detectado diversas irregularidades con su cuenta email, para no ser desactivada de forma preventiva ingrese a continuación. Tenga en cuenta que este me",
+        "motivo": "Caso desafiante legítimo para el entrenamiento regular"
+      },
+      {
+        "id": "row-2515",
+        "tipo_error": "Falso Positivo",
+        "source": "SpaPhish_Master_Final_v5.csv",
+        "score": 0.894,
+        "label_original": 0,
+        "subject": "Verificación de cuenta",
+        "extracto": "Estimado/a Guadalupe F, ¡Gracias por crear una cuenta en Little Caesars! ¡La pizzería que te hace la\r  vida más fácil! Antes de realizar su primer pedido, active su cuenta al verificar su correo elect",
+        "motivo": "Caso desafiante legítimo para el entrenamiento regular"
+      },
+      {
+        "id": "row-2764",
+        "tipo_error": "Falso Negativo",
+        "source": "SpaPhish_Master_Final_v5.csv",
+        "score": 0.0818,
+        "label_original": 1,
+        "subject": "Fw: mensaje de la policía",
+        "extracto": "Get Outlook for Androidhttps://aka.ms/AAb9ysg ________________________________ From: Andrea Camila Soto Pérez <andrea.soto@institucion-academica.net> Sent: lunes, 15 de diciembre de 2024 09:45:00 AM T",
+        "motivo": "Caso desafiante legítimo para el entrenamiento regular"
+      },
+      {
+        "id": "row-2812",
+        "tipo_error": "Falso Negativo",
+        "source": "SpaPhish_Master_Final_v5.csv",
+        "score": 0.6833,
+        "label_original": 1,
+        "subject": "RE:Pablito:¡Felicidades! Nos gustaría ofrecerle una oportunidad única de recibir un nuevo iPhone 15 ",
+        "extracto": "Telcel Apresúrate. El número de premios a ganar es limitado! Confirma ahora! iPhone 15 Pro! CONFIRMA YA! Felicidades!X Ha sido elegido para participar en nuestro programa de fidelización GRATIS! Solo ",
+        "motivo": "Caso desafiante legítimo para el entrenamiento regular"
+      },
+      {
+        "id": "row-3194",
+        "tipo_error": "Falso Negativo",
+        "source": "SpaPhish_Master_Final_v5.csv",
+        "score": 0.6338,
+        "label_original": 1,
+        "subject": "Confirmación del restablecimiento de la contraseña de Zoom",
+        "extracto": "Estimada/o José Cordero Medina,\r \r Forgot Password Hola Martinez Lopez. Se solicitó recientemente cambiar la contraseña de su cuenta.\r  Si usted solicitó este cambio de contraseña, pulse el enlace sig",
+        "motivo": "Caso desafiante legítimo para el entrenamiento regular"
+      },
+      {
+        "id": "row-3225",
+        "tipo_error": "Falso Positivo",
+        "source": "SpaPhish_Master_Final_v5.csv",
+        "score": 0.9675,
+        "label_original": 0,
+        "subject": "Memorias Seminario Trastornos del Neurodesarrollo - DIAPOSITIVAS",
+        "extracto": "Estimado Estudiante\r cordial saludo\r \r envió memorias seminario trastornos del neurodesarrollo - DIAPOSITIVAS\r \r --\r Cordialmente,\r \r Julián Corral\r Asistente de Dirección\r Fundación ProDesarrollo Int",
+        "motivo": "Caso desafiante legítimo para el entrenamiento regular"
+      },
+      {
+        "id": "row-3280",
+        "tipo_error": "Falso Negativo",
+        "source": "SpaPhish_Master_Final_v5.csv",
+        "score": 0.8351,
+        "label_original": 1,
+        "subject": "VIOLACIÓN DE DERECHOS DE AUTOR - 55955659",
+        "extracto": "Señores Instituto Aurora Central Campus Villa Aurora: Recientemente recibimos una queja concerniente a una de sus publicaciones/campañas. Otro usuario ha hecho una reclamación de derechos de autor sob",
+        "motivo": "Caso desafiante legítimo para el entrenamiento regular"
+      },
+      {
+        "id": "row-3392",
+        "tipo_error": "Falso Negativo",
+        "source": "SpaPhish_Master_Final_v5.csv",
+        "score": 0.2339,
+        "label_original": 1,
+        "subject": "Factura CFDI (78920166)",
+        "extracto": "FACTURA-00033828791 OC-C0214938-1 MARRAYA-08506 CIMM\r Nota.- favor de regresarlas firmadas\r Favor de levantar pedido formal, enviar CFDI as� como esta el pedido y evidencia de entrega por este medio p",
+        "motivo": "Caso desafiante legítimo para el entrenamiento regular"
+      },
+      {
+        "id": "row-3564",
+        "tipo_error": "Falso Negativo",
+        "source": "SpaPhish_Master_Final_v5.csv",
+        "score": 0.4876,
+        "label_original": 1,
+        "subject": "Re: De Bustio",
+        "extracto": "Hola, el Sanchez q grande te has hecho jaja\r \r Gracias por tu correo bastante detallado.\r \r Me he demorado en responder porque igualmente me lo he pensado mucho. Ya no\r soy el alma libre que era en la",
+        "motivo": "Caso desafiante legítimo para el entrenamiento regular"
+      },
+      {
+        "id": "row-3738",
+        "tipo_error": "Falso Negativo",
+        "source": "SpaPhish_Master_Final_v5.csv",
+        "score": 0.7802,
+        "label_original": 1,
+        "subject": "Fwd: @BanCoppel.com:en linea",
+        "extracto": "Estimada/o José Ángel Delgado Olivarez,\r \r Notificacion Importante 12/08/2023. hola ismaela@hotmail[.]com Le Notificamos que Hemos recibido una Solicitud de Cambio de Numero no registrado en su Cuenta",
+        "motivo": "Caso desafiante legítimo para el entrenamiento regular"
+      },
+      {
+        "id": "row-4096",
+        "tipo_error": "Falso Negativo",
+        "source": "SpaPhish_Master_Final_v5.csv",
+        "score": 0.1527,
+        "label_original": 1,
+        "subject": "Seguimiento",
+        "extracto": "Este mensaje fue enviado por alguien ajeno a la Universidad! **************************************************************************** Hola, Le envié un correo dos veces y aún no me contesta. Cargu",
+        "motivo": "Caso desafiante legítimo para el entrenamiento regular"
+      },
+      {
+        "id": "row-4215",
+        "tipo_error": "Falso Negativo",
+        "source": "SpaPhish_Master_Final_v5.csv",
+        "score": 0.0216,
+        "label_original": 1,
+        "subject": "Cuenta bloqueada !.",
+        "extracto": "amazon Problemas de información de facturación Hola Cliente, el sistema bloquea automáticamente su cuenta de amazon y retiene todos sus últimos pedidos. tomamos esta medida, porque la información de f",
+        "motivo": "Caso desafiante legítimo para el entrenamiento regular"
+      },
+      {
+        "id": "row-4633",
+        "tipo_error": "Falso Negativo",
+        "source": "SpaPhish_Master_Final_v5.csv",
+        "score": 0.2572,
+        "label_original": 1,
+        "subject": "Aviso SNII",
+        "extracto": "Estimada/o Carlos Cortés Castañón,\r \r Apreciable comunidad del Sistema Nacional de Investigadoras e Investigadores:\r \r \r En alcance, al correo del 23 de octubre de 2024, donde se les invita a consulta",
+        "motivo": "Caso desafiante legítimo para el entrenamiento regular"
+      },
+      {
+        "id": "row-4685",
+        "tipo_error": "Falso Negativo",
+        "source": "SpaPhish_Master_Final_v5.csv",
+        "score": 0.1981,
+        "label_original": 1,
+        "subject": "Te apoyamos a retomar tus estudios en Utel",
+        "extracto": "Estimada/o Yaretzi Ponce Arias,\r \r &nbsp;\r \r \r \r \r &nbsp;\r \r \r \r \r \r \r \r \r \r \r \r \r \r \r \r \r \r \r \r \r \r \r \r \r \r \r \r \r Hola&nbsp;\r He tratado de comunicarme contigo, pero&nbsp;no&nbsp;ha sido posible, por",
+        "motivo": "Caso desafiante legítimo para el entrenamiento regular"
+      },
+      {
+        "id": "row-4740",
+        "tipo_error": "Falso Positivo",
+        "source": "SpaPhish_Master_Final_v5.csv",
+        "score": 0.9878,
+        "label_original": 0,
+        "subject": "Tax Filing Update Required Immediately",
+        "extracto": "Estimado José Luis Delgado Carbajal: Para cumplir con las regulaciones financieras, debe proporcionar información fiscal actualizada lo antes posible. No hacerlo podría provocar restricciones en su cu",
+        "motivo": "Caso desafiante legítimo para el entrenamiento regular"
+      },
+      {
+        "id": "row-5054",
+        "tipo_error": "Falso Negativo",
+        "source": "SpaPhish_Master_Final_v5.csv",
+        "score": 0.624,
+        "label_original": 1,
+        "subject": "Mensaje importante del administrador de Universidad Iberoamericana Campus Ciudad de México",
+        "extracto": "Tiene (2) mensajes importantes sin leer de nuestro equipo administrador. Haga clic en revisar para leer el (los) mensaje(s).",
+        "motivo": "Caso desafiante legítimo para el entrenamiento regular"
+      },
+      {
+        "id": "row-5102",
+        "tipo_error": "Falso Negativo",
+        "source": "SpaPhish_Master_Final_v5.csv",
+        "score": 0.2624,
+        "label_original": 1,
+        "subject": "HELLO",
+        "extracto": "Marina Torres ¿Cómo estás hoy? Espero que estés bien. mi nombre es señorita Marina Torres. Deberías contactarme nuevamente a través de mi dirección de correo electrónico escrita a continuación marina.",
+        "motivo": "Caso desafiante legítimo para el entrenamiento regular"
+      },
+      {
+        "id": "row-5263",
+        "tipo_error": "Falso Negativo",
+        "source": "SpaPhish_Master_Final_v5.csv",
+        "score": 0.2085,
+        "label_original": 1,
+        "subject": "RV: PREMIO NACIONAL DE CIENCIAS 2025",
+        "extracto": "Buenas noches estimadas colegas y estimados colegas,\r \r  \r \r Esperando que este correo les encuentre con bien, les reenvío la información\r contenida en el correo que encuentran aquí abajo, en caso de ",
+        "motivo": "Caso desafiante legítimo para el entrenamiento regular"
+      },
+      {
+        "id": "row-5304",
+        "tipo_error": "Falso Positivo",
+        "source": "SpaPhish_Master_Final_v5.csv",
+        "score": 0.9167,
+        "label_original": 0,
+        "subject": "ASUS Service No=N2502025630-0001; ASUS Service No=N2502025630-0001",
+        "extracto": "Hello Carlos Rivera Pérez, Buen día, espero que esté teniendo un excelente día cliente de ASUS Conforme a su consulta y para brindarle un mejor servicio sobre su inconveniente, por favor apóyeme revis",
+        "motivo": "Caso desafiante legítimo para el entrenamiento regular"
+      },
+      {
+        "id": "row-5349",
+        "tipo_error": "Falso Positivo",
+        "source": "SpaPhish_Master_Final_v5.csv",
+        "score": 0.9354,
+        "label_original": 0,
+        "subject": "Calificación Infotec",
+        "extracto": "Buen tarde Dr.Genovevo Sanchez soy Isidro Zavaleta Ochoa estudiante MSE\r Infotec revisando las calificaciones que compatio veo que mi calificación\r es muy baja, igualmente tengo entendido que aun falt",
+        "motivo": "Caso desafiante legítimo para el entrenamiento regular"
+      },
+      {
+        "id": "row-5451",
+        "tipo_error": "Falso Positivo",
+        "source": "SpaPhish_Master_Final_v5.csv",
+        "score": 0.8937,
+        "label_original": 0,
+        "subject": "Pancracio ¡Has ganado un paquete de San Valentín de Rituals GRATIS!",
+        "extracto": "RITUALS... Estimado Ricardo Herrera Meza, ¡Felicidades! Como parte de nuestra promoción del Día de San Valentín, nos gustaría ofrecerle una oportunidad única para recibir un nuevo Paquete de San Valen",
+        "motivo": "Caso desafiante legítimo para el entrenamiento regular"
+      },
+      {
+        "id": "row-5601",
+        "tipo_error": "Falso Negativo",
+        "source": "SpaPhish_Master_Final_v5.csv",
+        "score": 0.619,
+        "label_original": 1,
+        "subject": "¡Obtén un 90 % de descuento para reiniciar tu viaje de bienestar con BetterMe!",
+        "extracto": "\r  [ hxxps://quiz.betterme.world/en/referral-program?flow=2512&promocode=BETTERMEPOWER&promocodeApplied=true ]\r Hola Guadalupe,\r Hemos aplicado un descuento especial del 90 %* en tu plan para que te r",
+        "motivo": "Caso desafiante legítimo para el entrenamiento regular"
+      },
+      {
+        "id": "row-5653",
+        "tipo_error": "Falso Negativo",
+        "source": "SpaPhish_Master_Final_v5.csv",
+        "score": 0.0094,
+        "label_original": 1,
+        "subject": "📊 Revisión Desempeño Q3 - Agenda Tu Sesión",
+        "extracto": "Estimada Perla Villalobos Rosales,\r \r Tu evaluación de desempeño Q3 está programada para esta semana.\r \r Detalles:\r \r Período: Julio-Septiembre 2024\r Supervisor: José Reynoso Reyes\r Puntuación prelimi",
+        "motivo": "Caso desafiante legítimo para el entrenamiento regular"
+      },
+      {
+        "id": "row-5814",
+        "tipo_error": "Falso Positivo",
+        "source": "SpaPhish_Master_Final_v5.csv",
+        "score": 0.9986,
+        "label_original": 0,
+        "subject": "Fwd: VALIDAR DATOS",
+        "extracto": "Estimado Fernando Orozco Velasco: <EMAIL> Hemos detectado diversas irregularidades con su cuenta email, para no ser desactivada de forma preventiva ingrese a continuación. Tenga en cuenta que este men",
+        "motivo": "Caso desafiante legítimo para el entrenamiento regular"
+      },
+      {
+        "id": "row-5853",
+        "tipo_error": "Falso Negativo",
+        "source": "SpaPhish_Master_Final_v5.csv",
+        "score": 0.0907,
+        "label_original": 1,
+        "subject": "¿cómo fue su experiencia de compra?",
+        "extracto": "¿Cómo le pareció? Gracias por comprar con Apple. Cuéntenos cómo fue su experiencia al hacer su pedido, incluso si todavía no lo ha recibido. ¡Responda la encuesta y podrá ganar un dispositivo de Apple",
+        "motivo": "Caso desafiante legítimo para el entrenamiento regular"
+      },
+      {
+        "id": "row-5865",
+        "tipo_error": "Falso Negativo",
+        "source": "SpaPhish_Master_Final_v5.csv",
+        "score": 0.3559,
+        "label_original": 1,
+        "subject": "¡Recuerda compartirnos tu experiencia en menos de 3 minutos!",
+        "extracto": "Hola Guadalupe INES,\r \r \r Hace poco te enviamos una breve encuesta para conocer tu experiencia en Cajero Automático.\r \r Te invitamos a enviarnos tus comentarios, ya que son muy importantes para\r nosot",
+        "motivo": "Caso desafiante legítimo para el entrenamiento regular"
+      },
+      {
+        "id": "row-5914",
+        "tipo_error": "Falso Negativo",
+        "source": "SpaPhish_Master_Final_v5.csv",
+        "score": 0.812,
+        "label_original": 1,
+        "subject": "División de Delitos Antiterroristas y Monetarios",
+        "extracto": "División de Delitos Antiterroristas y Monetarios Sede del FBI, Washington, D.C. Oficina Federal de Investigaciones Edificio J. Edgar Hoover 1000 Avenida Principal, noroeste de Washington, D.C. 20004 w",
+        "motivo": "Caso desafiante legítimo para el entrenamiento regular"
+      },
+      {
+        "id": "row-5960",
+        "tipo_error": "Falso Positivo",
+        "source": "SpaPhish_Master_Final_v5.csv",
+        "score": 0.9783,
+        "label_original": 0,
+        "subject": "¡Que no se te pase nada! Conoce lo último de Nu.",
+        "extracto": "Lo Nuevo de LilaBank está aquí. No te pierdas todos los detalles. ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ",
+        "motivo": "Caso desafiante legítimo para el entrenamiento regular"
+      },
+      {
+        "id": "row-6123",
+        "tipo_error": "Falso Negativo",
+        "source": "SpaPhish_Master_Final_v5.csv",
+        "score": 0.3884,
+        "label_original": 1,
+        "subject": "Re: Correccion en factura",
+        "extracto": "Buenos Dias\r La pregunta mas concreta era quien facturo sus boletos?\r Al haber dos boletos en la factura necesitaria enviar la imagen de ambos\r boletos para poder cancelar y re facturar\r Saludos\r \r El",
+        "motivo": "Caso desafiante legítimo para el entrenamiento regular"
+      },
+      {
+        "id": "row-6154",
+        "tipo_error": "Falso Negativo",
+        "source": "SpaPhish_Master_Final_v5.csv",
+        "score": 0.3624,
+        "label_original": 1,
+        "subject": "El precio de lanzamiento de Google One finaliza el 4 abr 2024",
+        "extracto": "_x000D_\r _x000D_\r _x000D_\r _x000D_\r _x000D_\r _x000D_\r Hola Guadalupe Inés:_x000D_\r _x000D_\r _x000D_\r Este es un recordatorio de que el precio de lanzamiento de Google One (100 _x000D_\r GB) en Google P",
+        "motivo": "Caso desafiante legítimo para el entrenamiento regular"
+      },
+      {
+        "id": "row-6522",
+        "tipo_error": "Falso Negativo",
+        "source": "SpaPhish_Master_Final_v5.csv",
+        "score": 0.4249,
+        "label_original": 1,
+        "subject": "Tienes un mensaje nuevo en 2 Collares Dije Gatos Pareja Yin Yang Acero  Novios Amigos",
+        "extracto": "Estimada/o Cristóbal Bravo Bustamante,\r \r Mercado Libre Buenas noches Guadalupe Inés, si el producto que adquirió con nosotros fue de su completo agrado le agradecería bastante pudiera calificar la co",
+        "motivo": "Caso desafiante legítimo para el entrenamiento regular"
+      },
+      {
+        "id": "row-6526",
+        "tipo_error": "Falso Negativo",
+        "source": "SpaPhish_Master_Final_v5.csv",
+        "score": 0.116,
+        "label_original": 1,
+        "subject": "Ezequiela Miguelina - ¡Date prisa ! ¡Han llegado las recompensas! ",
+        "extracto": "Solo te llevará un minuto recibir este fantástico premio.\r Ninja Air Fryer\r L i DL\r \r RESPONDE & GANA: UN NUEVO NINJA AIR FRYER\r \r FELICIDADES!\r Ha sido elegido para participar en nuestro programa de ",
+        "motivo": "Caso desafiante legítimo para el entrenamiento regular"
+      },
+      {
+        "id": "row-6920",
+        "tipo_error": "Falso Negativo",
+        "source": "SpaPhish_Master_Final_v5.csv",
+        "score": 0.7371,
+        "label_original": 1,
+        "subject": "Actualización de seguridad",
+        "extracto": "Estimado luis.moreno@corpmail.net\r : Una actualización de seguridad próxima de Google Drive incrementará la seguridad de sus documentos compartidos, pero probablemente inhabilitará muchos de sus enlac",
+        "motivo": "Caso desafiante legítimo para el entrenamiento regular"
+      },
+      {
+        "id": "row-6948",
+        "tipo_error": "Falso Negativo",
+        "source": "SpaPhish_Master_Final_v5.csv",
+        "score": 0.5102,
+        "label_original": 1,
+        "subject": "Convierte tus puntos en experiencias inolvidables",
+        "extracto": "Estimada/o Joel Tovar Valencia,\r \r To view this email as a web page, go to the link below, or copy and paste it into your browser's address window.\r hxxps://view.mx.aeromexicorewards.com/?qs=371b8d183",
+        "motivo": "Caso desafiante legítimo para el entrenamiento regular"
+      },
+      {
+        "id": "row-7639",
+        "tipo_error": "Falso Positivo",
+        "source": "Enron.csv",
+        "score": 0.996,
+        "label_original": 0,
+        "subject": "fw : payment",
+        "extracto": "jo hillier - smith\r owner care manager\r sunsail worldwide sailing ltd\r tel : + 44 ( 0 ) 2392 222215\r email : joh @ sunsail . com\r this e - mail and any attachment is intended for the named addressee (",
+        "motivo": "Caso desafiante legítimo para el entrenamiento regular"
+      },
+      {
+        "id": "row-8131",
+        "tipo_error": "Falso Negativo",
+        "source": "Nazario.csv",
+        "score": 0.0042,
+        "label_original": 1,
+        "subject": "You sent a payment of 50.00 GBP to Skype (support@skype.com)",
+        "extracto": "20 Nov 2015 Transaction ID: 9QE5ORC62495K44H You sent a payment of  30.00 GBP to Skype  (support@skype.com)  It may take a few moments for this transaction to appear in your account. MerchantSkype Inc",
+        "motivo": "Caso desafiante legítimo para el entrenamiento regular"
+      },
+      {
+        "id": "row-8278",
+        "tipo_error": "Falso Negativo",
+        "source": "Nazario.csv",
+        "score": 0.4985,
+        "label_original": 1,
+        "subject": "jose@monkey.org received a share document via Onedrive",
+        "extracto": "( D_link ) A new Purchase_Contract.pdf documents has been shared wιth you on ** OneDrive Storage. *Message: Please review contract documents for your signing and approval.* ** *Vιew  Document* ( https",
+        "motivo": "Caso desafiante legítimo para el entrenamiento regular"
+      },
+      {
+        "id": "row-8330",
+        "tipo_error": "Falso Negativo",
+        "source": "Nazario.csv",
+        "score": 0.7496,
+        "label_original": 1,
+        "subject": "Purchase Order&#8207;",
+        "extracto": "New Page 1 \tDear Sir, We are interested in your service/product and we have attached our order for your company view. Please review our order and send us your quotation as soon as possible. Starter Mo",
+        "motivo": "Caso desafiante legítimo para el entrenamiento regular"
+      },
+      {
+        "id": "row-8383",
+        "tipo_error": "Falso Negativo",
+        "source": "Nazario.csv",
+        "score": 0.333,
+        "label_original": 1,
+        "subject": "Your Apple.com order of \"TOM TOM.",
+        "extracto": "You've bought a program \"Tom Tom\" from the Apple Store. (billings@itunes.com) It may take a few moments for this transaction to appear in your account. If you have not authorized this charge, log in a",
+        "motivo": "Caso desafiante legítimo para el entrenamiento regular"
+      },
+      {
+        "id": "row-8785",
+        "tipo_error": "Falso Negativo",
+        "source": "Nazario.csv",
+        "score": 0.4186,
+        "label_original": 1,
+        "subject": "Fw: Mould Purchase Order - order#84014",
+        "extracto": "Good Morning,    I have been trying to send you this file but was unsuccessful with attaching them to my email because the file is too large, then i manage to upload, so i secured them in the excel fo",
+        "motivo": "Caso desafiante legítimo para el entrenamiento regular"
+      },
+      {
+        "id": "row-9314",
+        "tipo_error": "Falso Negativo",
+        "source": "Nigerian_Fraud.csv",
+        "score": 0.0064,
+        "label_original": 1,
+        "subject": "Mr Richard Bongo",
+        "extracto": " African Development Bank GroupMokova Towers, Suite 068Braamfointeen, Johannesburg, South Africa.(P.O.Box 1155, 2000 Johannesburg)Contact email :(richardbongo1000@hotmail.com)Tel:27 78 516 3013       ",
+        "motivo": "Caso desafiante legítimo para el entrenamiento regular"
+      },
+      {
+        "id": "row-9485",
+        "tipo_error": "Falso Negativo",
+        "source": "Nigerian_Fraud.csv",
+        "score": 0.8588,
+        "label_original": 1,
+        "subject": "REPLY SOON",
+        "extracto": "VERY URGENT AND STRICTLY CONFIDENTIAL BUSINESS PROPOSAL.   PLEASE I WANT YOU TO RELPY ME THIS MAIL TO MY ALTERNATIVE EMAIL ADDRESSES vinobi@voila.fr and applefamily@indiatimes.com   Dear Sir,    I am ",
+        "motivo": "Caso desafiante legítimo para el entrenamiento regular"
+      }
+    ]
+  }
+}
