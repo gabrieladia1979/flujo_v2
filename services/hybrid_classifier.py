@@ -16,6 +16,32 @@ class HybridUnavailableError(RuntimeError):
     pass
 
 
+def load_hybrid_head(path):
+    """Preserve the binary intercept when older XGBoost reads a vector intercept."""
+    from xgboost import Booster
+    saved = json.loads(Path(path).read_text(encoding='utf-8'))['learner']
+    if saved['objective']['name'] != 'binary:logistic':
+        raise ValueError('Hybrid head must use binary:logistic')
+    raw = json.loads(saved['learner_model_param']['base_score'])
+    if isinstance(raw, list):
+        if len(raw) != 1:
+            raise ValueError('Hybrid head must have a single intercept')
+        raw = raw[0]
+    intercept = float(raw)
+    if not math.isfinite(intercept) or not 0 < intercept < 1:
+        raise ValueError('Invalid hybrid intercept')
+    head = Booster(params={'nthread': 4})
+    head.load_model(path)
+    # XGBoost 2.0 silently defaults to 0.5 for the [value] encoding from 3.1+.
+    # Reapply the saved value through the public API; keep the artifact intact.
+    head.set_param({'nthread': 4, 'base_score': intercept})
+    loaded = json.loads(json.loads(head.save_config())['learner']['learner_model_param']['base_score'])
+    loaded = loaded[0] if isinstance(loaded, list) else loaded
+    if not math.isclose(float(loaded), intercept, rel_tol=1e-6):
+        raise ValueError('XGBoost did not preserve the hybrid intercept')
+    return head
+
+
 def validate_manifest(directory):
     directory = Path(directory).resolve()
     manifest = json.loads((directory / 'manifest.json').read_text(encoding='utf-8'))
@@ -46,7 +72,6 @@ def validate_manifest(directory):
 class HybridClassifier:
     def __init__(self, directory):
         from sentence_transformers import SentenceTransformer
-        from xgboost import Booster
         import torch
         self.directory = Path(directory).resolve()
         self.manifest = validate_manifest(self.directory)
@@ -54,9 +79,7 @@ class HybridClassifier:
         self.encoder = SentenceTransformer(str(self.directory / self.manifest['encoder_path']),
                                            device='cpu', local_files_only=True, trust_remote_code=False)
         self.encoder.max_seq_length = self.manifest['max_tokens']
-        self.head = Booster(params={'nthread': 4})
-        self.head.load_model(self.directory / self.manifest['head_path'])
-        self.head.set_param({'nthread': 4})
+        self.head = load_hybrid_head(self.directory / self.manifest['head_path'])
         expected = self.encoder.get_sentence_embedding_dimension() + len(FEATURE_NAMES)
         if expected != self.head.num_features() or expected != self.manifest['total_features']:
             raise ValueError('Hybrid feature dimensions do not match')

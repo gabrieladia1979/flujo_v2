@@ -1,0 +1,13 @@
+id,expected_label,predicted_label,raw_score,final_score,decision_source,security_adjustments,content_signals,elapsed_ms,category,correct
+hybrid-challenge-01,phishing,phishing,0.9989437460899353,0.9989,hybrid_model,[],[],63.30789999992703,credential_theft,True
+hybrid-challenge-02,legitimate,legitimate,0.46247223019599915,0.4625,hybrid_model,[],[],30.61859999979788,bank_notification,True
+hybrid-challenge-03,phishing,phishing,0.9549025893211365,0.9549,hybrid_model,[],[],31.70880000016041,fake_invoice,True
+hybrid-challenge-04,legitimate,legitimate,0.7981182336807251,0.7981,hybrid_model,[],[],32.20020000026125,legitimate_invoice,True
+hybrid-challenge-05,phishing,phishing,0.9129123091697693,0.9129,hybrid_model,[],[],31.120300000111456,credential_theft,True
+hybrid-challenge-06,legitimate,phishing,0.982862651348114,0.9829,hybrid_model,[],[],30.04640000017389,other_legitimate,False
+hybrid-challenge-07,phishing,phishing,0.5033124089241028,0.95,hybrid_content_security_rule,[],"[{""description"": ""El mensaje pide enviar o compartir contraseñas, claves o códigos de autenticación."", ""rule"": ""credential_disclosure_request""}]",30.35749999980908,credential_theft,True
+hybrid-challenge-08,legitimate,legitimate,0.02611554227769375,0.0261,hybrid_model,[],[],29.39639999976862,other_legitimate,True
+hybrid-challenge-09,phishing,phishing,0.9413852691650391,0.9414,hybrid_model,[],[],31.899500000236003,credential_theft,True
+hybrid-challenge-10,legitimate,legitimate,0.10162452608346939,0.1016,hybrid_model,[],[],29.996400000072754,technical_email,True
+hybrid-challenge-11,phishing,phishing,0.01055970136076212,0.95,hybrid_content_security_rule,[],"[{""description"": ""El mensaje pide enviar o compartir contraseñas, claves o códigos de autenticación."", ""rule"": ""credential_disclosure_request""}]",30.105100000128004,tax_impersonation,True
+hybrid-challenge-12,phishing,phishing,0.9945163130760193,0.9945,hybrid_content_security_rule,[],"[{""description"": ""El mensaje pide enviar o compartir contraseñas, claves o códigos de autenticación."", ""rule"": ""credential_disclosure_request""}]",27.18979999963267,tax_impersonation,True

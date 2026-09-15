@@ -8,6 +8,7 @@ __pycache__/
 .venv/
 venv/
 .venv-hybrid/
+.venv-a100-verify/
 artifacts/hybrid/
 .cache-hybrid/
 

@@ -1,5 +1,13 @@
 # Continuidad del trabajo — 2026-09-14
 
+## Revisión posterior — 2026-09-15
+
+Consultar [comparativa verificada](HYBRID_NLP_RESULTS_VERIFIED.md), que corrige y limita las afirmaciones históricas de este documento. Las métricas de Colab y el push de `e7edc9a` se confirmaron. Se resolvió una incompatibilidad real: XGBoost 2.0.3 perdía el intercepto vectorial exportado por 3.4.1. El backend ahora restaura y verifica el valor guardado. La reevaluación completa local reproduce las 1.661 decisiones de Colab (diferencia máxima de score 7,45e-9): F1=0,969325, FP=13, FN=42. Pasan 20/20 pruebas A100/pipeline, 3/3 nuevas regresiones en ambas versiones de XGBoost y 4/4 pruebas del candidato CPU. Reporte: `reports/hybrid_a100_windows_verified.json`.
+
+El diagnóstico de 14 casos pasa completo. El corpus adicional de 12 casos tiene 1 falsa alarma (`hybrid-challenge-06`, aviso defensivo legítimo en inglés), 7 TP y 4 TN. Próxima prioridad: estudiar los errores por fuente y reunir ejemplos contrastivos revisados, manteniendo un nuevo test independiente para mejoras posteriores. No hace falta repetir el entrenamiento A100 para resolver la incompatibilidad de carga.
+
+Las pérdidas medias finales registradas son CPU train=0,37319/validation=0,24094 y A100 train=0,10091/validation=0,11955. Las referencias anteriores a una pérdida final de 0,17 y a una verificación completamente limpia no describen el estado confirmado por esta revisión. Las limitaciones de 128 tokens y una época que figuran más abajo corresponden al candidato CPU.
+
 ## Pedido y restricciones del usuario
 
 - Construir la opción híbrida: Transformer multilingüe ajustado con correos propios + XGBoost con features técnicas.
