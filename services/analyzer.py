@@ -7,6 +7,7 @@ import hashlib
 import pickle
 import os
 import json
+from collections import OrderedDict
 from html import unescape
 from html.parser import HTMLParser
 
@@ -74,12 +75,65 @@ _load_model()
 # 3. REGLAS NLU (6 CATEGORÍAS)
 def _crear_matcher():
     matcher = Matcher(nlp.vocab)
-    matcher.add("URGENCIA", [[{"LOWER": {"IN": ["inmediatamente", "asap", "suspensión", "suspendida", "bloqueada", "bloqueado"]}}], [{"LOWER": "acción"}, {"LOWER": "requerida"}], [{"LOWER": "último"}, {"LOWER": "aviso"}], [{"LOWER": "evitar"}, {"LOWER": "la"}, {"LOWER": "suspensión"}]])
-    matcher.add("AUTORIDAD", [[{"LOWER": {"IN": ["afip", "arca", "anses", "bcra", "mastercard", "mercadopago", "netflix"]}}], [{"LOWER": "red"}, {"LOWER": "link"}], [{"LOWER": "cajero"}, {"LOWER": "link"}], [{"LOWER": "banco"}, {"IS_TITLE": True}], [{"LOWER": "agencia"}, {"LOWER": "de"}, {"LOWER": "recaudación"}]])
-    matcher.add("FINANCIERO", [[{"LOWER": {"IN": ["cbu", "alias", "deuda", "token", "cvv", "embargo"]}}], [{"LOWER": "código"}, {"LOWER": "de"}, {"LOWER": "seguridad"}], [{"LOWER": "código"}, {"LOWER": "pin"}], [{"LOWER": "código"}, {"LOWER": "sms"}], [{"LOWER": "clave"}, {"LOWER": "fiscal"}], [{"LOWER": "actualizar"}, {"LOWER": "datos"}]])
-    matcher.add("AMENAZA", [[{"LOWER": "acciones"}, {"LOWER": "legales"}], [{"LOWER": "embargo"}, {"LOWER": "preventivo"}], [{"LOWER": "embargo"}, {"LOWER": "de"}, {"LOWER": {"IN": ["bienes", "cuentas"]}}], [{"LOWER": {"IN": ["infracción", "sanción", "sanciones", "penalidad"]}}], [{"LOWER": "será"}, {"LOWER": {"IN": ["bloqueada", "bloqueado", "suspendida", "suspendido", "embargada", "embargado"]}}]])
-    matcher.add("CALL_TO_ACTION", [[{"LOWER": "haciendo"}, {"LOWER": "clic"}], [{"LOWER": "haga"}, {"LOWER": "clic"}], [{"LOWER": "ingrese"}, {"LOWER": {"IN": ["al", "a", "en"]}}], [{"LOWER": "acceda"}, {"LOWER": {"IN": ["al", "a"]}}], [{"LOWER": "verifique"}, {"LOWER": "su"}], [{"LOWER": "verificá"}, {"LOWER": "tu"}], [{"LOWER": "actualizá"}, {"LOWER": "tu"}], [{"LOWER": "complete"}, {"LOWER": "la"}, {"LOWER": "verificación"}]])
-    matcher.add("TEMPORAL", [[{"LIKE_NUM": True}, {"LOWER": {"IN": ["horas", "días", "minutos"]}}], [{"LOWER": "plazo"}, {"LOWER": {"IN": ["máximo", "de"]}}], [{"LOWER": "días"}, {"LOWER": "hábiles"}]])
+    matcher.add("URGENCIA", [
+        [{"LOWER": {"IN": ["inmediatamente", "asap", "suspensión", "suspendida", "bloqueada", "bloqueado", "immediately", "urgent", "urgently", "suspended", "suspension", "blocked"]}}],
+        [{"LOWER": "acción"}, {"LOWER": "requerida"}],
+        [{"LOWER": "action"}, {"LOWER": "required"}],
+        [{"LOWER": "último"}, {"LOWER": "aviso"}],
+        [{"LOWER": "final"}, {"LOWER": "notice"}],
+        [{"LOWER": "evitar"}, {"LOWER": "la"}, {"LOWER": "suspensión"}],
+        [{"LOWER": "account"}, {"LOWER": "suspended"}],
+    ])
+    matcher.add("AUTORIDAD", [
+        [{"LOWER": {"IN": ["afip", "arca", "anses", "bcra", "mastercard", "mercadopago", "netflix", "microsoft", "apple", "google", "paypal", "support"]}}],
+        [{"LOWER": "red"}, {"LOWER": "link"}],
+        [{"LOWER": "cajero"}, {"LOWER": "link"}],
+        [{"LOWER": "banco"}, {"IS_TITLE": True}],
+        [{"LOWER": "bank"}, {"IS_TITLE": True}],
+        [{"LOWER": "agencia"}, {"LOWER": "de"}, {"LOWER": "recaudación"}],
+        [{"LOWER": "help"}, {"LOWER": "desk"}],
+    ])
+    matcher.add("FINANCIERO", [
+        [{"LOWER": {"IN": ["cbu", "alias", "deuda", "token", "cvv", "embargo", "invoice", "payment", "wire", "password", "credentials"]}}],
+        [{"LOWER": "código"}, {"LOWER": "de"}, {"LOWER": "seguridad"}],
+        [{"LOWER": "código"}, {"LOWER": "pin"}],
+        [{"LOWER": "código"}, {"LOWER": "sms"}],
+        [{"LOWER": "clave"}, {"LOWER": "fiscal"}],
+        [{"LOWER": "actualizar"}, {"LOWER": "datos"}],
+        [{"LOWER": "bank"}, {"LOWER": "account"}],
+        [{"LOWER": "security"}, {"LOWER": "code"}],
+        [{"LOWER": "authentication"}, {"LOWER": "code"}],
+    ])
+    matcher.add("AMENAZA", [
+        [{"LOWER": "acciones"}, {"LOWER": "legales"}],
+        [{"LOWER": "legal"}, {"LOWER": "action"}],
+        [{"LOWER": "embargo"}, {"LOWER": "preventivo"}],
+        [{"LOWER": "embargo"}, {"LOWER": "de"}, {"LOWER": {"IN": ["bienes", "cuentas"]}}],
+        [{"LOWER": {"IN": ["infracción", "sanción", "sanciones", "penalidad", "penalty", "termination", "terminated"]}}],
+        [{"LOWER": "será"}, {"LOWER": {"IN": ["bloqueada", "bloqueado", "suspendida", "suspendido", "embargada", "embargado"]}}],
+        [{"LOWER": "will"}, {"LOWER": "be"}, {"LOWER": {"IN": ["suspended", "blocked", "terminated", "closed"]}}],
+    ])
+    matcher.add("CALL_TO_ACTION", [
+        [{"LOWER": "haciendo"}, {"LOWER": "clic"}],
+        [{"LOWER": "haga"}, {"LOWER": "clic"}],
+        [{"LOWER": "ingrese"}, {"LOWER": {"IN": ["al", "a", "en"]}}],
+        [{"LOWER": "acceda"}, {"LOWER": {"IN": ["al", "a"]}}],
+        [{"LOWER": "verifique"}, {"LOWER": "su"}],
+        [{"LOWER": "verificá"}, {"LOWER": "tu"}],
+        [{"LOWER": "actualizá"}, {"LOWER": "tu"}],
+        [{"LOWER": "complete"}, {"LOWER": "la"}, {"LOWER": "verificación"}],
+        [{"LOWER": "click"}, {"LOWER": "here"}],
+        [{"LOWER": "sign"}, {"LOWER": "in"}],
+        [{"LOWER": "log"}, {"LOWER": "in"}],
+        [{"LOWER": "verify"}, {"LOWER": "your"}],
+        [{"LOWER": "approve"}, {"LOWER": "the"}],
+    ])
+    matcher.add("TEMPORAL", [
+        [{"LIKE_NUM": True}, {"LOWER": {"IN": ["horas", "días", "minutos", "hours", "days", "minutes"]}}],
+        [{"LOWER": "plazo"}, {"LOWER": {"IN": ["máximo", "de"]}}],
+        [{"LOWER": "días"}, {"LOWER": "hábiles"}],
+        [{"LOWER": "today"}],
+    ])
     return matcher
 
 matcher_global = _crear_matcher()
@@ -154,12 +208,36 @@ def _apply_security_adjustments(risk_score, is_phishing, security_features):
     total_delta = sum(adj.delta for adj in adjustments)
     # Limitar el delta acumulado para evitar que múltiples señales leves
     # empujen un correo legítimo por encima del umbral de phishing.
-    total_delta = max(min(total_delta, 0.35), -0.25)
+    total_delta = max(min(total_delta, 0.35), -0.35)
     adjusted_score = min(max(risk_score + total_delta, 0.0), 1.0)
     adjusted_is_phishing = adjusted_score >= UMBRAL_CRITICO
     return adjusted_score, adjusted_is_phishing, adjustments
 
-_ANALYSIS_CACHE = {}
+_ANALYSIS_CACHE = OrderedDict()
+_CACHE_MAX_SIZE = 1000
+
+def _get_cached_analysis(key: str):
+    if key in _ANALYSIS_CACHE:
+        if hasattr(_ANALYSIS_CACHE, "move_to_end"):
+            _ANALYSIS_CACHE.move_to_end(key)
+        return _ANALYSIS_CACHE[key]
+    return None
+
+def _set_cached_analysis(key: str, value):
+    _ANALYSIS_CACHE[key] = value
+    if hasattr(_ANALYSIS_CACHE, "move_to_end"):
+        _ANALYSIS_CACHE.move_to_end(key)
+    if len(_ANALYSIS_CACHE) > _CACHE_MAX_SIZE:
+        if hasattr(_ANALYSIS_CACHE, "popitem"):
+            try:
+                _ANALYSIS_CACHE.popitem(last=False)
+                return
+            except TypeError:
+                pass
+        try:
+            _ANALYSIS_CACHE.pop(next(iter(_ANALYSIS_CACHE)))
+        except Exception:
+            pass
 
 def _classify_payload(payload: EmailPayloadSchema) -> dict:
     """Run the authoritative classifier and expose internal evaluation diagnostics."""
@@ -274,11 +352,13 @@ def _classify_payload(payload: EmailPayloadSchema) -> dict:
 
     if not is_phishing:
         intent = "comunicacion_operativa"
-    elif any(s.rule == 'credential_disclosure_request' for s in content_signals):
+    elif any(s.rule in ('credential_disclosure_request', 'mfa_push_coercion', 'device_code_coercion') for s in content_signals):
         intent = "solicitar_credenciales"
     elif any(s.rule == 'payment_redirection_no_verification' for s in content_signals):
         intent = "desviar_pago"
-    elif slots_count['FINANCIERO'] > 0:
+    elif any(s.rule == 'unverified_app_consent_coercion' for s in content_signals):
+        intent = "suplantacion_o_malware"
+    elif any(s.rule == 'delivery_fee_fraud' for s in content_signals) or slots_count['FINANCIERO'] > 0:
         intent = "coaccionar_pago"
     else:
         intent = "solicitar_credenciales"
@@ -295,6 +375,7 @@ def _classify_payload(payload: EmailPayloadSchema) -> dict:
         "feature_count": int(X_input.shape[1]),
         "urls_detectadas": urls,
         "content_signals": content_signals,
+        "X_input": X_input,
     }
 
 
@@ -308,8 +389,9 @@ def analyze_email(payload: EmailPayloadSchema) -> AnalysisResultSchema:
     content_hash = hashlib.sha256(
         json.dumps(payload.model_dump(mode="json"), sort_keys=True, ensure_ascii=False).encode("utf-8")
     ).hexdigest()
-    if content_hash in _ANALYSIS_CACHE:
-        return _ANALYSIS_CACHE[content_hash]
+    cached = _get_cached_analysis(content_hash)
+    if cached is not None:
+        return cached
 
     try:
         diagnostics = _classify_payload(payload)
@@ -346,7 +428,7 @@ def analyze_email(payload: EmailPayloadSchema) -> AnalysisResultSchema:
                 slm_explanation=express_explanation,
                 decision_source="critical_security_rule",
             )
-            _ANALYSIS_CACHE[content_hash] = resultado_express
+            _set_cached_analysis(content_hash, resultado_express)
             return resultado_express
 
     risk_score = diagnostics["risk_score"]
@@ -374,18 +456,19 @@ def analyze_email(payload: EmailPayloadSchema) -> AnalysisResultSchema:
     if is_phishing:
         try:
             from services.explainer import extract_shap_insights
-            # Extraemos las palabras exactas que dispararon la alerta
-            shap_words = extract_shap_insights(calibrated_model, X_input, tfidf_vectorizer)
-            if shap_words:
-                from services.slm_explanation import ExplanationEvidence, EvidenceSource
-                for w in shap_words:
-                    if w and not w.startswith("Tiene_") and not w.startswith("URL_"):
+            X_input_mat = diagnostics.get("X_input")
+            if X_input_mat is not None and calibrated_model is not None and tfidf is not None:
+                shap_words = extract_shap_insights(calibrated_model, X_input_mat, tfidf)
+                if shap_words:
+                    from services.slm_explanation import ExplanationEvidence, EvidenceSource
+                    valid_words = [w for w in shap_words if w and not w.startswith("Tiene_") and not w.startswith("URL_")]
+                    if valid_words:
                         explanation_evidence.append(ExplanationEvidence(
-                            evidence_id="shap.keyword",
-                            text=f"El modelo detectó esta palabra como sospechosa: '{w}'",
-                            source=EvidenceSource.OBSERVED_SIGNAL
+                            evidence_id="evidence.keywords",
+                            text=f"Palabras clave detectadas: {', '.join(valid_words[:5])}",
+                            source=EvidenceSource.CLASSIFIER,
                         ))
-        except Exception as e:
+        except Exception:
             pass
     explanation_context = build_explanation_context(
         is_phishing=is_phishing,
@@ -417,5 +500,5 @@ def analyze_email(payload: EmailPayloadSchema) -> AnalysisResultSchema:
         decision_source=diagnostics["decision_source"],
         content_signals=content_signals,
     )
-    _ANALYSIS_CACHE[content_hash] = final_result
+    _set_cached_analysis(content_hash, final_result)
     return final_result

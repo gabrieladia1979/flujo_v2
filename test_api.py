@@ -67,11 +67,34 @@ def test_analyze_valid_request():
     assert "is_phishing" in data
     assert "risk_score" in data
 
+def test_health_endpoint():
+    response = client.get("/api/v1/health")
+    assert response.status_code == 200
+    data = response.json()
+    assert data["status"] == "ok"
+    assert "classifier" in data
+    assert data["classifier"]["model_type"] == "phisharg_xgboost"
+    assert "loaded" in data["classifier"]
+
+def test_analyze_with_aliases():
+    headers = {API_KEY_NAME: API_KEY}
+    payload = {
+        "metadata": {"subject": "Alerta de Factura", "from": "facturas@proveedor.com"},
+        "body": "Por favor revise la factura adjunta.",
+    }
+    response = client.post("/api/v1/analyze", headers=headers, json=payload)
+    assert response.status_code == 200
+    data = response.json()
+    assert "is_phishing" in data
+    assert "risk_score" in data
+
 if __name__ == "__main__":
     print("Ejecutando tests de API de FastAPI...")
     test_root()
+    test_health_endpoint()
     test_analyze_no_api_key()
     test_analyze_wrong_api_key()
     test_analyze_invalid_payload()
     test_analyze_valid_request()
-    print("✅ Todos los tests de la API (Seguridad y Pydantic) pasaron correctamente.")
+    test_analyze_with_aliases()
+    print("✅ Todos los tests de la API (Seguridad, Health y Aliases) pasaron correctamente.")

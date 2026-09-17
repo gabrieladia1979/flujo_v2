@@ -1,11 +1,26 @@
 from typing import Optional, List, Any
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, model_validator
 
 
 class MetadataSchema(BaseModel):
     asunto: Optional[str] = Field(default=None, max_length=1000)
     remitente_nombre: Optional[str] = Field(default=None, max_length=500)
     remitente_email: Optional[str] = Field(default=None, max_length=500)
+
+    @model_validator(mode="before")
+    @classmethod
+    def allow_metadata_aliases(cls, data: Any) -> Any:
+        if isinstance(data, dict):
+            if not data.get("asunto") and data.get("subject"):
+                data["asunto"] = data["subject"]
+            if not data.get("remitente_email"):
+                if data.get("from"):
+                    data["remitente_email"] = data["from"]
+                elif data.get("sender"):
+                    data["remitente_email"] = data["sender"]
+            if not data.get("remitente_nombre") and data.get("sender_name"):
+                data["remitente_nombre"] = data["sender_name"]
+        return data
 
 
 class SecurityFeaturesSchema(BaseModel):
@@ -66,6 +81,14 @@ class EmailPayloadSchema(BaseModel):
     contenido: Optional[str] = Field(default=None, max_length=1000000) # Máximo 1MB de texto
     cabeceras_red: Optional[Any] = None
     security_features: Optional[SecurityFeaturesSchema] = None
+
+    @model_validator(mode="before")
+    @classmethod
+    def allow_body_alias(cls, data: Any) -> Any:
+        if isinstance(data, dict):
+            if not data.get("contenido") and data.get("body"):
+                data["contenido"] = data["body"]
+        return data
 
 
 class ContentSignal(BaseModel):

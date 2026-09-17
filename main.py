@@ -60,6 +60,31 @@ def read_root():
     return {"message": "PhishARG API está funcionando. Motor: FastAPI + XGBoost + NLP."}
 
 
+@app.get("/api/v1/health")
+def health_check():
+    """
+    Endpoint de salud público para monitoreo y despliegue cloud (Render, Railway, Kubernetes).
+    No requiere autenticación.
+    """
+    from services.analyzer import calibrated_model, tfidf
+    from services.slm_client import MODEL_PATH
+
+    return {
+        "status": "ok",
+        "service": "PhishARG Backend Light",
+        "version": "2.0.0",
+        "classifier": {
+            "loaded": calibrated_model is not None and tfidf is not None,
+            "model_type": "phisharg_xgboost",
+            "features_expected": 6022,
+        },
+        "slm_service": {
+            "model_path": MODEL_PATH,
+            "model_file_exists": os.path.exists(MODEL_PATH),
+        },
+    }
+
+
 @app.post("/api/v1/analyze", response_model=AnalysisResultSchema)
 def analyze_email_endpoint(
     payload: EmailPayloadSchema, 
