@@ -52,6 +52,80 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+
+def is_truthy(value: str | None) -> bool:
+    return (value or "").strip().lower() in {"1", "true", "yes", "on"}
+
+
+@app.on_event("startup")
+def preload_models_when_configured() -> None:
+    if is_truthy(os.getenv("PRELOAD_SLM")):
+        from scripts.bootstrap_models import ensure_slm_model_available
+        from services.slm_client import get_slm_instance
+
+        ensure_slm_model_available()
+        get_slm_instance()
+    if is_truthy(os.getenv("PRELOAD_HYBRID")):
+        from scripts.bootstrap_hybrid import ensure_hybrid_model_available
+        from services.hybrid_classifier import _load
+
+        _load(str(ensure_hybrid_model_available()))
+
+
+def _hybrid_ready() -> bool:
+    directory = os.getenv("PHISHARG_HYBRID_MODEL_DIR")
+    if not directory:
+        return False
+    from services.hybrid_classifier import _load
+
+    try:
+        _load(directory)
+        return True
+    except (ImportError, OSError, ValueError, RuntimeError, KeyError):
+        return False
+
+
+@app.get("/api/v1/health")
+def health_check():
+    from services.analyzer import calibrated_model, tfidf
+    from services.slm_client import slm_runtime_status
+
+    return {
+        "status": "ok",
+        "classifier_loaded": calibrated_model is not None and tfidf is not None,
+        "slm_service": slm_runtime_status(),
+        "hybrid_loaded": _hybrid_ready(),
+    }
+
+
+@app.get("/api/v1/health/ready")
+def readiness_check():
+    from services.analyzer import calibrated_model, tfidf
+    from services.slm_client import slm_runtime_status
+
+    classifier_loaded = calibrated_model is not None and tfidf is not None
+    hybrid_loaded = _hybrid_ready()
+    slm_loaded = slm_runtime_status()["loaded"]
+    ready = classifier_loaded and (not is_truthy(os.getenv("PRELOAD_HYBRID")) or hybrid_loaded)
+    ready = ready and (not is_truthy(os.getenv("PRELOAD_SLM")) or slm_loaded)
+    if not ready:
+        raise HTTPException(status_code=503, detail={
+            "classifier_loaded": classifier_loaded,
+            "hybrid_loaded": hybrid_loaded,
+            "slm_loaded": slm_loaded,
+        })
+    return {"status": "ready", "classifier_loaded": True, "hybrid_loaded": hybrid_loaded, "slm_loaded": slm_loaded}
+
+
+@app.post("/api/v1/internal/warmup")
+def warmup_slm(api_key: str = Depends(get_api_key)):
+    from scripts.bootstrap_models import ensure_slm_model_available
+    from services.slm_client import get_slm_instance, slm_runtime_status
+
+    ensure_slm_model_available()
+    get_slm_instance()
+    return {"status": "ready", "component": "slm", "slm_service": slm_runtime_status()}
+
 # ============================================================
 # Endpoints
 # ============================================================
