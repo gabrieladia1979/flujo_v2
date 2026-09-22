@@ -108,7 +108,7 @@ class HybridClassifier:
         from services.slm_explanation import build_analyzer_evidence, build_explanation_context, build_safe_fallback
         security = payload.security_features
         critical, reason = check_critical_threats(security) if security else (False, '')
-        signals = detect_content_signals(payload.contenido or '')
+        signals = detect_content_signals(payload.contenido or '', payload.metadata.asunto or '')
         adjustments = []
         raw = None
         if critical:
@@ -130,6 +130,10 @@ class HybridClassifier:
             intent = 'solicitar_credenciales'
         elif any(s.rule == 'payment_redirection_no_verification' for s in signals):
             intent = 'desviar_pago'
+        elif any(s.rule == 'mfa_push_fatigue' for s in signals):
+            intent = 'robo_de_sesion'
+        elif any(s.rule == 'qr_phishing' for s in signals):
+            intent = 'solicitar_credenciales'
         evidence = build_analyzer_evidence({}, adjustments, is_phishing=phishing,
                                            critical_reason=reason if critical else None, content_signals=signals)
         context = build_explanation_context(is_phishing=bool(phishing), risk_score=float(score), intent=intent, evidence=evidence)

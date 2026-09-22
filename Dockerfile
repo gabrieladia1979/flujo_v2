@@ -1,23 +1,22 @@
-# Usar una imagen oficial y super liviana de Python
-FROM python:3.11-slim
+# Multi-stage build for PhishARG Hybrid NLP classifier
+FROM python:3.11-slim AS base
 
-# Establecer el directorio de trabajo en el contenedor
 WORKDIR /app
 
-# Copiar el archivo de dependencias primero (para optimizar caché de Docker)
-COPY requirements.txt .
+# Install hybrid dependencies (includes sentence-transformers + XGBoost)
+COPY requirements-hybrid.txt requirements.txt ./
+RUN pip install --no-cache-dir -r requirements-hybrid.txt -r requirements.txt
 
-# Instalar dependencias
-RUN pip install --no-cache-dir -r requirements.txt
-
-# Descargar el modelo de idioma spaCy (requerido para lematización NLP)
-RUN python -m spacy download es_core_news_sm
-
-# Copiar el resto del código (incluyendo el modelo XGBoost .pkl)
+# Copy application code
 COPY . .
 
-# Exponer el puerto que va a usar Flask/Gunicorn
+# The hybrid model artifacts should be mounted or downloaded at runtime
+# via PHISHARG_HYBRID_MODEL_DIR environment variable
+
 EXPOSE 8080
 
-# Comando para iniciar el servidor FastAPI
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8080"]
+# Health check for production readiness
+HEALTHCHECK --interval=30s --timeout=10s --retries=3 \
+    CMD python -c "import requests; requests.get('http://localhost:8080/', timeout=5)" || exit 1
+
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8080", "--workers", "1"]

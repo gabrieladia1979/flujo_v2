@@ -19,7 +19,7 @@ class _VisibleText(HTMLParser):
         self.ignored = []
 
     def handle_starttag(self, tag, attrs):
-        if tag in {'blockquote', 'script', 'style'}:
+        if tag in {'script', 'style'}:
             self.ignored.append(tag)
         elif not self.ignored and tag in {'p', 'div', 'br', 'li'}:
             self.parts.append('\n')
@@ -53,8 +53,18 @@ _PAY = re.compile(r'\b(?:transfiera|transferi|transfieran|pague|paga|paguen|depo
 _NEW_ACCOUNT = re.compile(r'\b(?:(?:nueva|otra) cuenta|cuenta (?:nueva|actualizada)|nuevo (?:cbu|alias)|(?:cbu|alias) (?:nuevo|actualizado))\b')
 _NO_VERIFY = re.compile(r'\b(?:no (?:llame|llames|llamen|contacte|contactes|contacten|verifique|verifiques|consulte|consultes)|sin (?:llamar|contactar|verificar|consultar))\b')
 _VERIFY_TARGET = re.compile(r'\b(?:proveedor|banco|titular|beneficiario|telefono|telefonicamente)\b')
-_INDIRECT_REQUEST = re.compile(r'\b(?:si|sin|no|nunca|jamas|instrucciones|consejos|informacion|enlaces?|recordatorio|aviso|ejemplo|politica|sobre|acerca|cambiar|restablecer|recuperar|olvidaste|olvido|necesitas|dudas|problemas|estado)\b')
+_INDIRECT_REQUEST = re.compile(r'\b(?:sin|no|nunca|jamas|instrucciones|consejos|informacion|enlaces?|recordatorio|aviso|ejemplo|politica|sobre|acerca|cambiar|restablecer|recuperar|olvidaste|olvido|necesitas|dudas|problemas|estado)\b')
 _PRIOR_VERIFICATION = re.compile(r'\b(?:despues de|tras|previa|solo si|una vez)\b.{0,70}\b(?:verificar|verificacion|confirmar|confirmado|validar|validado)\b')
+
+# --- MFA Push Fatigue patterns ---
+_MFA_APPROVE = re.compile(r'\b(?:apruebe|aprueba|acepte|acepta|autorice|autoriza|authorize|approve|accept)\b')
+_MFA_CONTEXT = re.compile(r'\b(?:notificacion|solicitud de (?:acceso|inicio)|sign.?in|authenticator|segundo factor|mfa|2fa|sesion|login)\b')
+_MFA_COERCION = re.compile(r'\b(?:suspendida|bloqueada|desactivar[ae]?|cancelar[ae]?|perdida de acceso|quedara? (?:sin acceso|suspendid[ao]))\b')
+
+# --- QR Code Phishing (Quishing) patterns ---
+_QR_SCAN = re.compile(r'\b(?:escanee|escanea|escane[ae] (?:el|este|la)|scan|abra (?:la camara|su camara)|codigo qr|qr code)\b')
+_QR_ACTION = re.compile(r'\b(?:ingrese|ingresa|acceda|valide|configure|reconfigure|vincule|vincular|registre)\b')
+_QR_THREAT = re.compile(r'\b(?:expir[oa]|caduc[oa]|venci[oa]|suspendid[ao]|bloqueada?|desactivad[ao]|perder[ae]? acceso)\b')
 
 
 def _affirmative_match(pattern, clause):
@@ -68,8 +78,9 @@ def _affirmative_match(pattern, clause):
         yield match
 
 
-def detect_content_signals(body: str) -> list[ContentSignal]:
-    clauses = _clauses(body)
+def detect_content_signals(body: str, subject: str = '') -> list[ContentSignal]:
+    full_text = f'{subject}\n{body}' if subject else body
+    clauses = _clauses(full_text)
     signals = []
     for clause in clauses:
         requested = False
@@ -94,4 +105,26 @@ def detect_content_signals(body: str) -> list[ContentSignal]:
             signals.append(ContentSignal(rule='payment_redirection_no_verification', description=
                 'El mensaje pide pagar a una cuenta nueva y desalienta verificarlo con el proveedor, banco o titular.'))
             break
+
+    # --- MFA Push Fatigue Detection ---
+    if not signals:
+        for clause in clauses:
+            if _MFA_APPROVE.search(clause) and _MFA_CONTEXT.search(clause):
+                nearby_text = ' '.join(clauses)
+                if _MFA_COERCION.search(nearby_text):
+                    signals.append(ContentSignal(rule='mfa_push_fatigue', description=
+                        'El mensaje pide aprobar una solicitud de acceso no iniciada por el usuario y amenaza con suspensión.'))
+                    break
+
+    # --- QR Code Phishing (Quishing) Detection ---
+    if not signals:
+        for clause in clauses:
+            if _QR_SCAN.search(clause):
+                nearby_text = ' '.join(clauses)
+                if (_QR_ACTION.search(nearby_text) and _QR_THREAT.search(nearby_text)):
+                    signals.append(ContentSignal(rule='qr_phishing', description=
+                        'El mensaje solicita escanear un código QR para evitar la suspensión o bloqueo de la cuenta.'))
+                    break
+
     return signals
+
