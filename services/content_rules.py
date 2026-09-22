@@ -40,7 +40,8 @@ def _clauses(text):
     parser.feed(text)
     visible = ''.join(parser.parts)
     visible = re.sub(r'(?m)^\s*>[^\n]*', '', visible)
-    visible = re.sub(r'"[^"\n]*"|“[^”\n]*”|«[^»\n]*»', '', visible)
+    # Remove quoted text ONLY if preceded by educational/reporting cues
+    visible = re.sub(r'(?i)\b(?:ejemplo|frase|dice|decía|decia|dicen|solicitud|mensaje sospechoso)\s*:\s*(?:"[^"\n]*"|“[^”\n]*”|«[^»\n]*»)', '', visible)
     normalized = ''.join(c for c in unicodedata.normalize('NFKD', visible.lower())
                          if not unicodedata.combining(c))
     return [re.sub(r'\s+', ' ', s).strip() for s in re.split(r'[.!?;\n]+', normalized) if s.strip()]

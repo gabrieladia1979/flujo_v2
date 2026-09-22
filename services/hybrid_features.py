@@ -72,6 +72,7 @@ def prepare_email(subject, body):
     parser.feed(body)
     visible = re.sub(r'\s+', ' ', unescape(''.join(parser.text))).strip()
     text = re.sub(r'\s+', ' ', f'{subject or ""} {visible}').strip()
+    text = unicodedata.normalize('NFKC', text)
     urls = list(dict.fromkeys(URL_PATTERN.findall(text) + parser.urls))
     return text, urls
 
