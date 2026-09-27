@@ -4,35 +4,58 @@
   "requiresCompatibilities": ["FARGATE"],
   "cpu": "2048",
   "memory": "8192",
-  "executionRoleArn": "arn:aws:iam::<ACCOUNT_ID>:role/ecsTaskExecutionRole",
-  "taskRoleArn": "arn:aws:iam::<ACCOUNT_ID>:role/phishargTaskRole",
+  "executionRoleArn": "arn:aws:iam::668281913895:role/ecsTaskExecutionRole",
+  "taskRoleArn": "arn:aws:iam::668281913895:role/phishargTaskRole",
   "containerDefinitions": [
     {
       "name": "phisharg-api",
-      "image": "<ACCOUNT_ID>.dkr.ecr.<REGION>.amazonaws.com/phisharg-api:<IMAGE_TAG>",
+      "image": "668281913895.dkr.ecr.us-east-1.amazonaws.com/phisharg-api:aws-demo-v1",
       "essential": true,
-      "portMappings": [{"containerPort": 8080, "protocol": "tcp"}],
+      "portMappings": [{ "containerPort": 8080, "protocol": "tcp" }],
       "environment": [
-        {"name": "MODEL_BOOTSTRAP_ON_START", "value": "true"},
-        {"name": "PRELOAD_SLM", "value": "true"},
-        {"name": "SLM_MODEL_S3_BUCKET", "value": "<MODEL_BUCKET>"},
-        {"name": "SLM_MODEL_S3_KEY", "value": "slm/qwen2.5-3b-instruct-q4_k_m/v1/model.gguf"},
-        {"name": "SLM_MODEL_S3_VERSION_ID", "value": "<S3_OBJECT_VERSION_ID>"},
-        {"name": "SLM_MODEL_SHA256", "value": "<SHA256_OF_EXACT_GGUF_BYTES>"},
-        {"name": "SLM_MODEL_LOCAL_PATH", "value": "/app/model/qwen2.5-3b-instruct-q4_k_m.gguf"},
-        {"name": "SLM_THREADS", "value": "2"}
+        { "name": "MODEL_BOOTSTRAP_ON_START", "value": "true" },
+        { "name": "PRELOAD_SLM", "value": "true" },
+        {
+          "name": "SLM_MODEL_S3_BUCKET",
+          "value": "phisharg-models-668281913895-us-east-1-an"
+        },
+        {
+          "name": "SLM_MODEL_S3_KEY",
+          "value": "qwen2.5-3b-instruct-q4_k_m.gguf"
+        },
+        {
+          "name": "SLM_MODEL_S3_VERSION_ID",
+          "value": "tCL4aY4DPIHhTK_l5OL97o5VnWNsXia"
+        },
+        {
+          "name": "SLM_MODEL_SHA256",
+          "value": "C3BA6D838A8615E9048C9D37642C5009ED0195FD8783EB04384102FFECD75CC5"
+        },
+        {
+          "name": "SLM_MODEL_LOCAL_PATH",
+          "value": "/app/model/qwen2.5-3b-instruct-q4_k_m.gguf"
+        },
+        { "name": "SLM_THREADS", "value": "2" }
       ],
-      "secrets": [{"name": "API_KEY", "valueFrom": "arn:aws:secretsmanager:<REGION>:<ACCOUNT_ID>:secret:phisharg/api-key"}],
+      "secrets": [
+        {
+          "name": "API_KEY",
+          "valueFrom": "arn:aws:secretsmanager:us-east-1:668281913895:secret:phisharg/api-key-wyFU3E"
+        }
+      ],
       "logConfiguration": {
         "logDriver": "awslogs",
         "options": {
           "awslogs-group": "/ecs/phisharg-api",
-          "awslogs-region": "<REGION>",
+          "awslogs-region": "us-east-1",
           "awslogs-stream-prefix": "ecs"
         }
       },
       "healthCheck": {
-        "command": ["CMD-SHELL", "python -c \"import urllib.request; urllib.request.urlopen('http://localhost:8080/api/v1/health/ready')\""],
+        "command": [
+          "CMD-SHELL",
+          "python -c \"import urllib.request; urllib.request.urlopen('http://localhost:8080/api/v1/health/ready')\""
+        ],
         "interval": 30,
         "timeout": 10,
         "retries": 3,

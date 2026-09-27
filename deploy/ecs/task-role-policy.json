@@ -5,7 +5,7 @@
       "Sid": "ReadOnlyVersionedSlmArtifact",
       "Effect": "Allow",
       "Action": ["s3:GetObject", "s3:GetObjectVersion"],
-      "Resource": "arn:aws:s3:::<MODEL_BUCKET>/slm/qwen2.5-3b-instruct-q4_k_m/v1/model.gguf"
+      "Resource": "arn:aws:s3:::phisharg-models-668281913895-us-east-1-an/qwen2.5-3b-instruct-q4_k_m.gguf"
     }
   ]
 }
