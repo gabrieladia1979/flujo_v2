@@ -1,0 +1,17 @@
+id,expected_label,predicted_label,raw_score,final_score,decision_source,security_adjustments,content_signals,elapsed_ms,category,correct
+contrast-v2-01,legitimate,phishing,0.9987230896949768,0.9987,hybrid_model,[],[],70.44949999999517,technical_email,False
+contrast-v2-02,phishing,phishing,0.9989720582962036,0.999,hybrid_model,[],[],34.14419999990059,credential_theft,True
+contrast-v2-03,legitimate,legitimate,0.7592147588729858,0.7592,hybrid_model,[],[],32.48440000015762,technical_email,True
+contrast-v2-04,phishing,phishing,0.9929342269897461,0.9929,hybrid_model,[],[],36.51239999999234,credential_theft,True
+contrast-v2-05,legitimate,legitimate,0.05935756117105484,0.0594,hybrid_model,[],[],33.62409999999727,technical_email,True
+contrast-v2-06,phishing,legitimate,0.00602293387055397,0.006,hybrid_model,[],[],36.21529999963968,credential_theft,False
+contrast-v2-07,legitimate,legitimate,0.009649278596043587,0.0096,hybrid_model,[],[],32.584399999905145,technical_email,True
+contrast-v2-08,phishing,legitimate,0.0022581222001463175,0.0023,hybrid_model,[],[],37.60370000009061,credential_theft,False
+contrast-v2-09,legitimate,phishing,0.9968151450157166,0.9968,hybrid_model,[],[],41.63689999995768,technical_email,False
+contrast-v2-10,phishing,phishing,0.9991481304168701,0.9991,hybrid_model,[],[],35.06919999972524,fake_invoice,True
+contrast-v2-11,legitimate,legitimate,0.4413304626941681,0.4413,hybrid_model,[],[],33.52610000001732,technical_email,True
+contrast-v2-12,phishing,phishing,0.9970930814743042,0.9971,hybrid_model,[],[],35.03730000011274,fake_invoice,True
+contrast-v2-13,legitimate,phishing,0.9955321550369263,0.9955,hybrid_model,[],[],32.6561000001675,password_recovery,False
+contrast-v2-14,phishing,phishing,0.9977078437805176,0.9977,hybrid_model,[],[],36.00090000009004,credential_theft,True
+contrast-v2-15,legitimate,phishing,0.9586382508277893,0.9586,hybrid_model,[],[],35.50069999982952,password_recovery,False
+contrast-v2-16,phishing,phishing,0.9977703094482422,0.9978,hybrid_content_security_rule,[],"[{""description"": ""El mensaje pide enviar o compartir contraseñas, claves o códigos de autenticación."", ""rule"": ""credential_disclosure_request""}]",31.648199999835924,credential_theft,True

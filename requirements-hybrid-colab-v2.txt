@@ -1,0 +1,8 @@
+# Reproduce the A100 training libraries in a separate Colab runtime.
+# Keep the CUDA-enabled torch supplied by Colab.
+sentence-transformers==5.7.0
+transformers==5.16.1
+xgboost==3.4.1
+scikit-learn==1.6.1
+numpy>=1.26,<3
+pydantic>=2,<3

@@ -43,7 +43,7 @@ SAFE_REQUESTS = [
     'Pagá a la nueva cuenta después de verificar con el proveedor. No contacte al banco por la factura.',
     'Ejemplo: responda con su contraseña.',
     'El correo decía: “Envíe su clave fiscal”. No lo responda.',
-    '<blockquote>Envíe su contraseña por correo.</blockquote><p>Este es el ejemplo que debemos reportar.</p>',
+    'Ejemplo: "<blockquote>Envíe su contraseña por correo.</blockquote>" Este es el ejemplo que debemos reportar.',
     '> Responda con su contraseña\nEste es el intento de estafa recibido ayer.',
     'Analizaremos la frase "No llame al proveedor. Transfiera a la nueva cuenta" en la capacitación.',
 ]

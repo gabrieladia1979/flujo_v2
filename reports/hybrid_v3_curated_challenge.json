@@ -1,0 +1,20 @@
+{
+  "model": "artifacts\\hybrid\\multilingual-candidate-v3-curated",
+  "dataset": "data\\classifier_eval_v1.jsonl",
+  "split": "test",
+  "threshold": 0.8901044726371765,
+  "metrics": {
+    "count": 14,
+    "f1": 1.0,
+    "precision": 1.0,
+    "recall": 1.0,
+    "roc_auc": 1.0,
+    "brier_score": 0.0035448647866170935,
+    "confusion_matrix": {
+      "true_positive": 6,
+      "true_negative": 8,
+      "false_positive": 0,
+      "false_negative": 0
+    }
+  }
+}

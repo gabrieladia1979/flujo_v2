@@ -1,0 +1,12 @@
+{
+  "description": "Fixed original split for seed/ablation comparisons; separate expanded-data experiment.",
+  "common": {"epochs": 5, "max_tokens": 384, "trainable_layers": 4, "batch_size": 64},
+  "runs": [
+    {"id": "seed7", "seed": 7},
+    {"id": "seed21", "seed": 21},
+    {"id": "context128", "seed": 42, "max_tokens": 128},
+    {"id": "layers2", "seed": 42, "trainable_layers": 2},
+    {"id": "epoch1", "seed": 42, "epochs": 1},
+    {"id": "expanded", "seed": 42, "expanded": true}
+  ]
+}

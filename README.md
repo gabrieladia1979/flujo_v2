@@ -1,5 +1,9 @@
 # Proyecto Flujo
 
+## Experimento NLP híbrido
+
+Esta rama prepara un piloto del clasificador híbrido v3-curated en AWS Fargate, sobre la configuración de `aws-fargate-deployment`. Ver [preparación y carga del artefacto](docs/HYBRID_CLOUD_PREP.md) y [entrenamiento, datasets y evaluación](docs/HYBRID_NLP.md). El endpoint híbrido es optativo.
+
 Este repositorio contiene el código fuente del proyecto Flujo.
 
 ## Clasificador y respuesta del backend

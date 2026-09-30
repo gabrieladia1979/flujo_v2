@@ -10,6 +10,9 @@ data/
 model/*.gguf
 model/*.bin
 model/*.safetensors
+artifacts/hybrid/
+.venv-hybrid/
+*.zip
 .env
 .env.*
 test_*.py

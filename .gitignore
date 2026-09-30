@@ -16,4 +16,5 @@ reports_a100.zip
 .cache-hybrid/
 artifacts/
 .venv*/
+*.zip
 

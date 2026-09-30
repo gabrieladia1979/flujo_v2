@@ -1,0 +1,26 @@
+{
+  "count": 475,
+  "raw": {
+    "count": 475,
+    "confusion_matrix": {
+      "true_positive": 172,
+      "true_negative": 298,
+      "false_positive": 2,
+      "false_negative": 3
+    },
+    "precision_phishing": 0.9885057471264368,
+    "recall_phishing": 0.9828571428571429,
+    "f1_phishing": 0.98567335243553,
+    "pr_auc": 0.9989549963825475,
+    "roc_auc": 0.9993714285714286,
+    "false_positive_rate": 0.006666666666666667,
+    "false_negative_rate": 0.017142857142857144,
+    "brier_score": 0.01281615359298687
+  },
+  "raw_brier": 0.01281615359298687,
+  "calibrated_brier": 0.012171261617411921,
+  "raw_log_loss": 0.044439554125058754,
+  "calibrated_log_loss": 0.04535428413357523,
+  "calibration_fit": "original validation only",
+  "deployed": false
+}

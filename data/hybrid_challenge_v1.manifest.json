@@ -1,0 +1,45 @@
+{
+  "version": "1.0.0",
+  "generated_on": "2026-09-14",
+  "dataset": "hybrid_challenge_v1.jsonl",
+  "sha256": "2ea1f3f1533911d34a70d6f22929831dd1d53145ee38f5e78a0c90b7c21046fa",
+  "status": "incomplete",
+  "holdout_status": "unverified",
+  "counts": {
+    "total": 12,
+    "by_label": {
+      "legitimate": 5,
+      "phishing": 7
+    },
+    "by_category": {
+      "bank_notification": 1,
+      "credential_theft": 4,
+      "fake_invoice": 1,
+      "legitimate_invoice": 1,
+      "other_legitimate": 2,
+      "tax_impersonation": 2,
+      "technical_email": 1
+    }
+  },
+  "shortfalls": {
+    "phishing": 193,
+    "legitimate": 195,
+    "used_categories": {
+      "bank_notification": 9,
+      "credential_theft": 6,
+      "fake_invoice": 9,
+      "legitimate_invoice": 9,
+      "other_legitimate": 8,
+      "tax_impersonation": 8,
+      "technical_email": 9
+    }
+  },
+  "warnings": [],
+  "provenance": {
+    "description": "Manually authored bilingual diagnostic examples; not real incidents and not fed to training.",
+    "training_overlap": "not_in_current_run_by_construction; semantic similarity to training is possible"
+  },
+  "notes": [
+    "Synthetic probe only. Described QR content does not imply the model can inspect images. Topics are test scenarios, not claims of observed recent incidents."
+  ]
+}

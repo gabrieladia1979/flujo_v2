@@ -133,6 +133,10 @@ _DELIVERY_ACTION = re.compile(
     r'\b(?:pay|pague|paga|pagar|abonar|abone|abona)\b'
 )
 
+_QR_SCAN = re.compile(r'\b(?:escanee|escanea|escane[ae] (?:el|este|la)|scan|abra (?:la camara|su camara)|codigo qr|qr code)\b')
+_QR_ACTION = re.compile(r'\b(?:ingrese|ingresa|acceda|valide|configure|reconfigure|vincule|vincular|registre)\b')
+_QR_THREAT = re.compile(r'\b(?:expir[oa]|caduc[oa]|venci[oa]|suspendid[ao]|bloqueada?|desactivad[ao]|perder[ae]? acceso)\b')
+
 
 def _affirmative_match(pattern, clause):
     for match in pattern.finditer(clause):
@@ -145,8 +149,8 @@ def _affirmative_match(pattern, clause):
         yield match
 
 
-def detect_content_signals(body: str) -> list[ContentSignal]:
-    clauses = _clauses(body)
+def detect_content_signals(body: str, subject: str = '') -> list[ContentSignal]:
+    clauses = _clauses(f'{subject}\n{body}' if subject else body)
     signals = []
 
     # 1. Petición directa de credenciales / contraseñas / códigos (Español e Inglés)
@@ -206,5 +210,12 @@ def detect_content_signals(body: str) -> list[ContentSignal]:
             signals.append(ContentSignal(rule='delivery_fee_fraud', description=
                 'El mensaje solicita el pago de tarifas de entrega o reenvío de paquetes no solicitados.'))
             break
+
+    if not signals:
+        for clause in clauses:
+            if _QR_SCAN.search(clause) and _QR_ACTION.search(' '.join(clauses)) and _QR_THREAT.search(' '.join(clauses)):
+                signals.append(ContentSignal(rule='qr_phishing', description=
+                    'El mensaje solicita escanear un código QR para evitar la suspensión o bloqueo de la cuenta.'))
+                break
 
     return signals

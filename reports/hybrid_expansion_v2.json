@@ -1,0 +1,64 @@
+{
+  "full_audit": {
+    "dataset_sha256": "84c6fc1ede7cf6e2381713f15331a33f195af48cfb6b846a1673dd75e5171ee0",
+    "source_rows": 31874,
+    "usable_rows": 31455,
+    "groups": 27676,
+    "label_counts": {
+      "1": 8965,
+      "0": 22490
+    },
+    "skipped": {
+      "duplicates": 381,
+      "exceeds_api_limits": 3,
+      "conflicting_group_rows": 35
+    },
+    "source_phishing_label": "1",
+    "grouping": "normalized body without URLs/numbers; fallback to subject for empty body",
+    "warnings": [
+      "Campaign IDs and training provenance are unavailable. Grouping reduces but does not prove absence of leakage.",
+      "Existing legacy pickle may have seen these records; its metrics are not independent holdout performance."
+    ]
+  },
+  "training_rows": 28496,
+  "reserved_rows": 2959,
+  "reserved_groups": 2908,
+  "old_groups_preserved": 8573,
+  "splits": {
+    "train": 24533,
+    "validation": 1787,
+    "test": 2176
+  },
+  "external_evaluation_rows": 475,
+  "external_sources": {
+    "Enron.csv": 100,
+    "Nazario.csv": 75,
+    "Nigerian_Fraud.csv": 100,
+    "SpamAssasin.csv": 100,
+    "Ling.csv": 100
+  },
+  "unseen_ham_audit": {
+    "columns": [
+      "subject",
+      "body",
+      "label"
+    ],
+    "rows": 2859,
+    "labels": {
+      "0": 2401,
+      "1": 458
+    },
+    "eligible": 2401,
+    "selected": 2401,
+    "status": "sampled",
+    "sha256": "c133792260f18b251e9377b9cb31bef226322af6dc0d79841f61c67489929eca",
+    "mapping_basis": "Inherited ham=0 only; source spam is excluded"
+  },
+  "novel_unseen_ham": 2391,
+  "warnings": [
+    "Labels are inherited, not individually verified.",
+    "Group exclusion reduces overlap but is not proof of campaign independence.",
+    "Ling ham tests false positives on an unseen source, not phishing recall.",
+    "No verified collection dates: this is not a temporal holdout."
+  ]
+}

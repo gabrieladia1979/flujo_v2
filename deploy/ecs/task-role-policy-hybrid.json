@@ -1,0 +1,11 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "ReadOnlyVersionedHybridArtifact",
+      "Effect": "Allow",
+      "Action": ["s3:GetObject", "s3:GetObjectVersion"],
+      "Resource": "arn:aws:s3:::<MODEL_BUCKET>/hybrid/multilingual-candidate-v3-curated/v1/model.zip"
+    }
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "version": "2.0.0",
+  "dataset": "hybrid_contrastive_v2.jsonl",
+  "sha256": "a60b2ce724d622904410b30bea6c968e63d1a7dcf48119f5f421e3606b5de7ca",
+  "status": "diagnostic_only",
+  "holdout_status": "synthetic_not_independent",
+  "generated_on": "2026-09-15",
+  "counts": {
+    "total": 16,
+    "phishing": 8,
+    "legitimate": 8
+  },
+  "provenance": {
+    "description": "Authored bilingual contrast pairs. No real incident emails. Used only for diagnosis, not training.",
+    "sources": [
+      "https://www.microsoft.com/en-us/security/blog/2026/04/06/ai-enabled-device-code-phishing-campaign-april-2026/",
+      "https://www.cisa.gov/sites/default/files/2023-01/fact-sheet-implementing-phishing-resistant-mfa-508c.pdf"
+    ]
+  },
+  "notes": [
+    "Device-code and MFA themes are informed by cited threat guidance; messages are synthetic.",
+    "Paired labels reflect explicit requested actions; no sender authenticity is inferred.",
+    "Do not use this evaluated corpus as an independent future test."
+  ]
+}

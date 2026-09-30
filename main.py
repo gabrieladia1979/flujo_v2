@@ -1,4 +1,5 @@
 import os
+import secrets
 
 from fastapi import Depends, FastAPI, HTTPException, Security
 from fastapi.middleware.cors import CORSMiddleware
@@ -16,13 +17,13 @@ api_key_header = APIKeyHeader(name=API_KEY_NAME, auto_error=False)
 
 
 def is_truthy(value: str | None) -> bool:
-    return (value or "").lower() in {"1", "true", "yes", "on"}
+    return (value or "").strip().lower() in {"1", "true", "yes", "on"}
 
 
 async def get_api_key(api_key_header: str = Security(api_key_header)):
     if not api_key_header:
         raise HTTPException(status_code=401, detail="Se requiere API Key en el header X-API-Key")
-    if api_key_header != API_KEY:
+    if not secrets.compare_digest(api_key_header, API_KEY):
         raise HTTPException(status_code=401, detail="API Key inválida")
     return api_key_header
 
@@ -43,14 +44,27 @@ app.add_middleware(
 
 
 @app.on_event("startup")
-def preload_slm_when_configured() -> None:
-    """Optionally turn task startup into an explicit SLM readiness gate."""
+def preload_models_when_configured() -> None:
+    """Load only the model components selected for this task."""
     if is_truthy(os.getenv("PRELOAD_SLM")):
         from scripts.bootstrap_models import ensure_slm_model_available
         from services.slm_client import get_slm_instance
 
         ensure_slm_model_available()
         get_slm_instance()
+    if is_truthy(os.getenv("PRELOAD_HYBRID")):
+        from scripts.bootstrap_hybrid import ensure_hybrid_model_available
+        from services.hybrid_classifier import _load
+
+        _load(str(ensure_hybrid_model_available()))
+
+
+def _hybrid_ready() -> bool:
+    if not os.getenv("PHISHARG_HYBRID_MODEL_DIR"):
+        return False
+    from services.hybrid_classifier import _load
+
+    return _load.cache_info().currsize > 0
 
 
 @app.get("/")
@@ -74,28 +88,34 @@ def health_check():
             "features_expected": 6022,
         },
         "slm_service": slm_runtime_status(),
+        "hybrid_loaded": _hybrid_ready(),
     }
 
 
 @app.get("/api/v1/health/ready")
 def readiness_check():
-    """Return 503 until both classifier and initialized SLM are ready for traffic."""
+    """Return 503 until all components selected for this task are ready."""
     from services.analyzer import calibrated_model, tfidf
     from services.slm_client import slm_runtime_status
 
     slm_status = slm_runtime_status()
     classifier_loaded = calibrated_model is not None and tfidf is not None
-    ready = classifier_loaded and slm_status["loaded"]
+    hybrid_loaded = _hybrid_ready()
+    ready = classifier_loaded
+    ready = ready and (not is_truthy(os.getenv("PRELOAD_SLM")) or slm_status["loaded"])
+    ready = ready and (not is_truthy(os.getenv("PRELOAD_HYBRID")) or hybrid_loaded)
     if not ready:
         raise HTTPException(
             status_code=503,
             detail={
-                "message": "Classifier or initialized SLM is not ready",
+                "message": "A required model is not ready",
                 "classifier_loaded": classifier_loaded,
                 "slm_service": slm_status,
+                "hybrid_loaded": hybrid_loaded,
             },
         )
-    return {"status": "ready", "classifier_loaded": True, "slm_service": slm_status}
+    return {"status": "ready", "classifier_loaded": True, "slm_service": slm_status,
+            "hybrid_loaded": hybrid_loaded}
 
 
 @app.post("/api/v1/internal/warmup")
@@ -121,6 +141,17 @@ def analyze_email_endpoint(
         return analyze_email(payload)
     except Exception as error:
         raise HTTPException(status_code=500, detail=f"Error en el análisis: {str(error)}") from error
+
+
+@app.post("/api/v1/analyze/hybrid", response_model=AnalysisResultSchema)
+def analyze_hybrid_endpoint(payload: EmailPayloadSchema, api_key: str = Depends(get_api_key)):
+    """Experimental route that uses the separately provisioned hybrid artifact."""
+    from services.hybrid_classifier import HybridUnavailableError, analyze_hybrid_email
+
+    try:
+        return analyze_hybrid_email(payload)
+    except HybridUnavailableError as error:
+        raise HTTPException(status_code=503, detail=str(error)) from error
 
 
 if __name__ == "__main__":

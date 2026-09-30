@@ -1,0 +1,177 @@
+{
+  "case_count": 14,
+  "dataset": "data\\classifier_eval_v1.jsonl",
+  "dataset_sha256": "004f6d69bc1e1f7df6b397ef3d9593496f0a1157b72af1ead054c9b67a37daae",
+  "metrics": {
+    "by_category": {
+      "bank_impersonation": {
+        "brier_score": 0.0,
+        "confusion_matrix": {
+          "false_negative": 0,
+          "false_positive": 0,
+          "true_negative": 0,
+          "true_positive": 4
+        },
+        "count": 4,
+        "f1_phishing": 1.0,
+        "false_negative_rate": 0.0,
+        "false_positive_rate": null,
+        "pr_auc": 1.0,
+        "precision_phishing": 1.0,
+        "recall_phishing": 1.0,
+        "roc_auc": null
+      },
+      "credential_theft": {
+        "brier_score": 0.0,
+        "confusion_matrix": {
+          "false_negative": 0,
+          "false_positive": 0,
+          "true_negative": 0,
+          "true_positive": 1
+        },
+        "count": 1,
+        "f1_phishing": 1.0,
+        "false_negative_rate": 0.0,
+        "false_positive_rate": null,
+        "pr_auc": 1.0,
+        "precision_phishing": 1.0,
+        "recall_phishing": 1.0,
+        "roc_auc": null
+      },
+      "internal_communication": {
+        "brier_score": 1.3625e-06,
+        "confusion_matrix": {
+          "false_negative": 0,
+          "false_positive": 0,
+          "true_negative": 4,
+          "true_positive": 0
+        },
+        "count": 4,
+        "f1_phishing": null,
+        "false_negative_rate": null,
+        "false_positive_rate": 0.0,
+        "pr_auc": null,
+        "precision_phishing": null,
+        "recall_phishing": null,
+        "roc_auc": null
+      },
+      "legitimate_invoice": {
+        "brier_score": 0.0,
+        "confusion_matrix": {
+          "false_negative": 0,
+          "false_positive": 0,
+          "true_negative": 1,
+          "true_positive": 0
+        },
+        "count": 1,
+        "f1_phishing": null,
+        "false_negative_rate": null,
+        "false_positive_rate": 0.0,
+        "pr_auc": null,
+        "precision_phishing": null,
+        "recall_phishing": null,
+        "roc_auc": null
+      },
+      "other_legitimate": {
+        "brier_score": 0.0,
+        "confusion_matrix": {
+          "false_negative": 0,
+          "false_positive": 0,
+          "true_negative": 1,
+          "true_positive": 0
+        },
+        "count": 1,
+        "f1_phishing": null,
+        "false_negative_rate": null,
+        "false_positive_rate": 0.0,
+        "pr_auc": null,
+        "precision_phishing": null,
+        "recall_phishing": null,
+        "roc_auc": null
+      },
+      "tax_impersonation": {
+        "brier_score": 5.289999999999856e-06,
+        "confusion_matrix": {
+          "false_negative": 0,
+          "false_positive": 0,
+          "true_negative": 0,
+          "true_positive": 1
+        },
+        "count": 1,
+        "f1_phishing": 1.0,
+        "false_negative_rate": 0.0,
+        "false_positive_rate": null,
+        "pr_auc": 1.0,
+        "precision_phishing": 1.0,
+        "recall_phishing": 1.0,
+        "roc_auc": null
+      },
+      "technical_email": {
+        "brier_score": 3.5279999999999994e-05,
+        "confusion_matrix": {
+          "false_negative": 0,
+          "false_positive": 0,
+          "true_negative": 2,
+          "true_positive": 0
+        },
+        "count": 2,
+        "f1_phishing": null,
+        "false_negative_rate": null,
+        "false_positive_rate": 0.0,
+        "pr_auc": null,
+        "precision_phishing": null,
+        "recall_phishing": null,
+        "roc_auc": null
+      }
+    },
+    "final": {
+      "brier_score": 5.807142857142846e-06,
+      "confusion_matrix": {
+        "false_negative": 0,
+        "false_positive": 0,
+        "true_negative": 8,
+        "true_positive": 6
+      },
+      "count": 14,
+      "f1_phishing": 1.0,
+      "false_negative_rate": 0.0,
+      "false_positive_rate": 0.0,
+      "pr_auc": 1.0,
+      "precision_phishing": 1.0,
+      "recall_phishing": 1.0,
+      "roc_auc": 1.0
+    },
+    "raw_model": {
+      "brier_score": 0.0006619516931379264,
+      "confusion_matrix": {
+        "false_negative": 0,
+        "false_positive": 0,
+        "true_negative": 8,
+        "true_positive": 4
+      },
+      "count": 12,
+      "f1_phishing": 1.0,
+      "false_negative_rate": 0.0,
+      "false_positive_rate": 0.0,
+      "pr_auc": 1.0,
+      "precision_phishing": 1.0,
+      "recall_phishing": 1.0,
+      "roc_auc": 1.0
+    },
+    "timing_ms": {
+      "average": 25.031964285744834,
+      "p95": 63.12530000013794
+    }
+  },
+  "model": "artifacts\\hybrid\\multilingual-candidate-a100",
+  "partial": false,
+  "seed": 42,
+  "threshold": 0.8593735098838806,
+  "warnings": [
+    "The evaluation corpus is incomplete.",
+    "The corpus is not a verified holdout from model training.",
+    "Raw-model metrics exclude 2 critical-rule cases.",
+    "Some category metrics are undefined because the category does not contain both classes.",
+    "Diagnostic corpus is not independent validation."
+  ]
+}

@@ -1,0 +1,7 @@
+# Install in .venv-hybrid, not in the production environment.
+sentence-transformers==5.7.0
+transformers==5.8.1
+torch>=2.2,<3
+scikit-learn>=1.5,<2
+xgboost==3.4.1
+numpy>=1.26,<3
