@@ -33,6 +33,16 @@ def test_lime_rejects_unbounded_work(monkeypatch):
     assert client.post("/api/v1/analyze/hybrid/lime?num_samples=5000", json=PAYLOAD, headers=headers).status_code == 422
 
 
+def test_lime_rejects_text_without_enough_words():
+    from schemas import EmailPayloadSchema
+    from services.hybrid_lime import explain_hybrid_text
+
+    with pytest.raises(ValueError, match="at least two words"):
+        explain_hybrid_text(object(), EmailPayloadSchema.model_validate({
+            "metadata": {"asunto": "Aviso"}, "contenido": "hola",
+        }))
+
+
 @pytest.mark.skipif(not os.getenv("HYBRID_TEST_ARTIFACT"), reason="Requires explicit local trained artifact")
 def test_lime_real_artifact_explains_raw_score(monkeypatch):
     import main
@@ -53,3 +63,10 @@ def test_lime_real_artifact_explains_raw_score(monkeypatch):
     assert result["scope"].startswith("raw_hybrid_model_score")
     assert result["word_weights"]
     assert result["num_samples"] == 128
+    assert result["heldout_fidelity_r2"] is None or isinstance(result["heldout_fidelity_r2"], float)
+    assert result["heldout_mae"] >= 0
+    assert result["reliable_local_fit"] is (
+        result["local_fidelity_r2"] >= 0.7
+        and result["heldout_fidelity_r2"] is not None
+        and result["heldout_fidelity_r2"] >= 0.7
+    )

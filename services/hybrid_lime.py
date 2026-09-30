@@ -8,6 +8,7 @@ import time
 MAX_BODY_CHARS = 4000
 MIN_SAMPLES = 64
 MAX_SAMPLES = 256
+VALIDATION_SAMPLES = 32
 
 
 def explain_hybrid_text(classifier, payload, *, num_samples: int = 128) -> dict:
@@ -19,13 +20,15 @@ def explain_hybrid_text(classifier, payload, *, num_samples: int = 128) -> dict:
         raise ValueError(f"Email body must contain 1 to {MAX_BODY_CHARS} characters")
 
     import numpy as np
-    from lime.lime_text import LimeTextExplainer
+    from lime.lime_text import IndexedString, LimeTextExplainer
     from xgboost import DMatrix
 
     from services.hybrid_encoder import embed
     from services.hybrid_features import encoder_text, technical_features
 
     subject = payload.metadata.asunto or ""
+    if IndexedString(body).num_words() < 2:
+        raise ValueError("Email body needs at least two words for LIME")
     security = payload.security_features
     attachments = security.attachment_count if security else 0
     hops = security.received_hop_count if security else 0
@@ -59,15 +62,38 @@ def explain_hybrid_text(classifier, payload, *, num_samples: int = 128) -> dict:
     fidelity = float(explanation.score)
     if not math.isfinite(score) or not math.isfinite(fidelity):
         raise ValueError("LIME returned non-finite explanation values")
+
+    # LIME's score is measured on the perturbations used to fit the surrogate.
+    # Check the same surrogate against fresh perturbations before calling it reliable.
+    indexed = explanation.domain_mapper.indexed_string
+    word_count = indexed.num_words()
+    rng = np.random.default_rng(43)
+    removed = [set(rng.choice(word_count, size=int(rng.integers(1, word_count + 1)),
+                              replace=False).tolist()) for _ in range(VALIDATION_SAMPLES)]
+    heldout_bodies = [indexed.inverse_removing(sorted(indices)) for indices in removed]
+    heldout_actual = predict_proba(heldout_bodies)[:, 1]
+    coefficients = dict(explanation.local_exp[1])
+    intercept = float(explanation.intercept[1])
+    heldout_estimated = np.asarray([
+        intercept + sum(weight for index, weight in coefficients.items() if index not in indices)
+        for indices in removed
+    ])
+    squared_error = float(np.square(heldout_actual - heldout_estimated).sum())
+    total_variance = float(np.square(heldout_actual - heldout_actual.mean()).sum())
+    heldout_r2 = 1 - squared_error / total_variance if total_variance > 1e-10 else None
+    heldout_mae = float(np.mean(np.abs(heldout_actual - heldout_estimated)))
+    reliable = fidelity >= 0.7 and heldout_r2 is not None and heldout_r2 >= 0.7
     return {
         "method": "LIME text",
         "scope": "raw_hybrid_model_score; body words perturbed; subject and header features fixed; body-derived features recalculated",
         "phishing_probability": score,
         "local_fidelity_r2": fidelity,
-        "reliable_local_fit": fidelity >= 0.7,
+        "heldout_fidelity_r2": heldout_r2,
+        "heldout_mae": heldout_mae,
+        "reliable_local_fit": reliable,
         "interpretation_warning": (
-            "Low local fidelity: do not treat these word weights as an explanation of the model."
-            if fidelity < 0.7 else
+            "Local explanation failed the fit or fresh-perturbation check; do not show word weights to end users."
+            if not reliable else
             "Local approximation only; security rules can change the final decision."
         ),
         "word_weights": [
