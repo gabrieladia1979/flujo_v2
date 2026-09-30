@@ -1,6 +1,6 @@
 import os
 import secrets
-from fastapi import FastAPI, Depends, HTTPException, Security
+from fastapi import FastAPI, Depends, HTTPException, Query, Security
 from fastapi.security.api_key import APIKeyHeader
 from fastapi.middleware.cors import CORSMiddleware
 from dotenv import load_dotenv
@@ -86,6 +86,30 @@ def analyze_hybrid_endpoint(payload: EmailPayloadSchema, api_key: str = Depends(
         return analyze_hybrid_email(payload)
     except HybridUnavailableError as exc:
         raise HTTPException(status_code=503, detail=str(exc)) from exc
+
+
+@app.post("/api/v1/analyze/hybrid/lime")
+def explain_hybrid_lime_endpoint(
+    payload: EmailPayloadSchema,
+    num_samples: int = Query(default=128, ge=64, le=256),
+    api_key: str = Depends(get_api_key),
+):
+    """Optional, costly local explanation of the raw hybrid model score."""
+    if os.getenv("ENABLE_HYBRID_LIME", "").strip().lower() not in {"1", "true", "yes"}:
+        raise HTTPException(status_code=404, detail="LIME experimental no está habilitado")
+    directory = os.getenv("PHISHARG_HYBRID_MODEL_DIR")
+    if not directory:
+        raise HTTPException(status_code=503, detail="El modelo híbrido no está configurado")
+    from pathlib import Path
+    from services.hybrid_classifier import _load
+    from services.hybrid_lime import explain_hybrid_text
+
+    try:
+        return explain_hybrid_text(_load(str(Path(directory).resolve())), payload, num_samples=num_samples)
+    except ValueError as exc:
+        raise HTTPException(status_code=422, detail=str(exc)) from exc
+    except (ImportError, OSError, RuntimeError, KeyError) as exc:
+        raise HTTPException(status_code=503, detail="No se pudo generar la explicación LIME") from exc
 
 
 if __name__ == "__main__":

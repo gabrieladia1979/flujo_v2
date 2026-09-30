@@ -66,6 +66,14 @@ $env:HYBRID_TEST_REPORT = 'reports/hybrid_multilingual_v1.json'
 
 El segundo bloque requiere entrenamiento completado: comprueba pesos modificados, tokenización, reproducción de scores reservados y respuesta HTTP con el modelo real.
 
+## Ensayo opcional de LIME para el híbrido
+
+`POST /api/v1/analyze/hybrid/lime` es una ruta experimental separada. Requiere `X-API-Key`, `PHISHARG_HYBRID_MODEL_DIR`, instalar `requirements-hybrid.txt` y establecer `ENABLE_HYBRID_LIME=true`. Está desactivada por defecto y no altera `/api/v1/analyze` ni `/api/v1/analyze/hybrid`. Acepta `num_samples` entre 64 y 256 y un cuerpo de hasta 4.000 caracteres.
+
+LIME elimina palabras del cuerpo y consulta el puntaje **crudo** de MiniLM + XGBoost. Mantiene fijo el asunto y las variables de cabeceras, pero recalcula las variables técnicas derivadas del cuerpo. La respuesta incluye probabilidad del modelo, pesos de hasta ocho palabras, tiempo y `local_fidelity_r2`. Los pesos describen la aproximación local; no son atribuciones causales ni explican ajustes de reglas que pueden cambiar el veredicto final. Con fidelidad menor a 0,7 la respuesta indica expresamente que no se debe interpretar la lista como explicación confiable. No usar esta ruta automáticamente en el Add-in antes de medir latencia y estabilidad en el entorno real.
+
+Prueba local con los pesos v3-curated disponibles el 30/09/2026: las probabilidades LIME coincidieron con `raw_score` en tres correos. Con 64/128/256 muestras y modelo ya cargado, el cálculo duró aproximadamente 0,24–1,43 s en esta PC. La fidelidad local fue baja en un correo legítimo (R² 0,29–0,37) y en una solicitud de credenciales (0,41–0,46); en un correo con URL fue 0,75–0,79, aunque algunas palabras recibieron pesos contraintuitivos al perturbar la URL. Es una prueba técnica, no evidencia suficiente para mostrar estas palabras como razones al usuario final.
+
 ## Agregar amenazas actuales después
 
 Incorporar nuevos correos con etiqueta revisada, procedencia, fecha, idioma y, cuando exista, campaña. Separar ejemplos reales revisados de ejemplos sintéticos y de informes que solo describen una amenaza. No etiquetar automáticamente un artículo de seguridad como correo malicioso ni tomar generación sintética como prueba independiente.
