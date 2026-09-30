@@ -1,0 +1,46 @@
+{
+  "family": "phisharg-hybrid-pilot",
+  "networkMode": "awsvpc",
+  "requiresCompatibilities": ["FARGATE"],
+  "cpu": "2048",
+  "memory": "8192",
+  "ephemeralStorage": {"sizeInGiB": 30},
+  "executionRoleArn": "arn:aws:iam::<ACCOUNT_ID>:role/ecsTaskExecutionRole",
+  "taskRoleArn": "arn:aws:iam::<ACCOUNT_ID>:role/phishargHybridTaskRole",
+  "containerDefinitions": [
+    {
+      "name": "phisharg-hybrid",
+      "image": "<ACCOUNT_ID>.dkr.ecr.<REGION>.amazonaws.com/phisharg-hybrid:<IMAGE_TAG>",
+      "essential": true,
+      "portMappings": [{"containerPort": 8080, "protocol": "tcp"}],
+      "environment": [
+        {"name": "PRELOAD_HYBRID", "value": "true"},
+        {"name": "PHISHARG_HYBRID_MODEL_DIR", "value": "/app/artifacts/hybrid/cloud-a100"},
+        {"name": "HYBRID_MODEL_S3_BUCKET", "value": "<MODEL_BUCKET>"},
+        {"name": "HYBRID_MODEL_S3_KEY", "value": "hybrid/multilingual-candidate-a100/v1/model.zip"},
+        {"name": "HYBRID_MODEL_S3_VERSION_ID", "value": "<S3_OBJECT_VERSION_ID>"},
+        {"name": "HYBRID_MODEL_SHA256", "value": "<SHA256_OF_EXACT_ZIP_BYTES>"},
+        {"name": "PRELOAD_SLM", "value": "false"},
+        {"name": "MODEL_BOOTSTRAP_ON_START", "value": "false"}
+      ],
+      "secrets": [
+        {"name": "API_KEY", "valueFrom": "arn:aws:secretsmanager:<REGION>:<ACCOUNT_ID>:secret:phisharg/api-key"}
+      ],
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-group": "/ecs/phisharg-hybrid",
+          "awslogs-region": "<REGION>",
+          "awslogs-stream-prefix": "ecs"
+        }
+      },
+      "healthCheck": {
+        "command": ["CMD-SHELL", "python -c \"import urllib.request; urllib.request.urlopen('http://localhost:8080/api/v1/health/ready')\""],
+        "interval": 30,
+        "timeout": 10,
+        "retries": 3,
+        "startPeriod": 300
+      }
+    }
+  ]
+}

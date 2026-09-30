@@ -77,12 +77,7 @@ def _hybrid_ready() -> bool:
     if not directory:
         return False
     from services.hybrid_classifier import _load
-
-    try:
-        _load(directory)
-        return True
-    except (ImportError, OSError, ValueError, RuntimeError, KeyError):
-        return False
+    return _load.cache_info().currsize > 0
 
 
 @app.get("/api/v1/health")
