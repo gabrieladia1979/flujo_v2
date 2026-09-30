@@ -1,0 +1,243 @@
+{
+  "scope": "eight word indices, Ridge 0.01, four previously favorable cases; no raw email text",
+  "seeds": [
+    42,
+    7,
+    21
+  ],
+  "negligible_effect_threshold": 1e-06,
+  "interpretation": "Sign agreement on shared words alone does not establish stable explanations. Single deletion measures a model response, not causal ground truth. This selected sample cannot estimate population reliability.",
+  "comparisons": [
+    {
+      "id": "row-856",
+      "seeds": [
+        42,
+        7
+      ],
+      "shared_words": 6,
+      "union_words": 10,
+      "jaccard": 0.6,
+      "same_sign_shared_words": 6,
+      "sign_agreement": 1.0
+    },
+    {
+      "id": "row-856",
+      "seeds": [
+        42,
+        21
+      ],
+      "shared_words": 6,
+      "union_words": 10,
+      "jaccard": 0.6,
+      "same_sign_shared_words": 6,
+      "sign_agreement": 1.0
+    },
+    {
+      "id": "row-856",
+      "seeds": [
+        7,
+        21
+      ],
+      "shared_words": 6,
+      "union_words": 10,
+      "jaccard": 0.6,
+      "same_sign_shared_words": 6,
+      "sign_agreement": 1.0
+    },
+    {
+      "id": "row-1131",
+      "seeds": [
+        42,
+        7
+      ],
+      "shared_words": 8,
+      "union_words": 8,
+      "jaccard": 1.0,
+      "same_sign_shared_words": 8,
+      "sign_agreement": 1.0
+    },
+    {
+      "id": "row-1131",
+      "seeds": [
+        42,
+        21
+      ],
+      "shared_words": 7,
+      "union_words": 9,
+      "jaccard": 0.7777777777777778,
+      "same_sign_shared_words": 7,
+      "sign_agreement": 1.0
+    },
+    {
+      "id": "row-1131",
+      "seeds": [
+        7,
+        21
+      ],
+      "shared_words": 7,
+      "union_words": 9,
+      "jaccard": 0.7777777777777778,
+      "same_sign_shared_words": 7,
+      "sign_agreement": 1.0
+    },
+    {
+      "id": "row-2760",
+      "seeds": [
+        42,
+        7
+      ],
+      "shared_words": 7,
+      "union_words": 9,
+      "jaccard": 0.7777777777777778,
+      "same_sign_shared_words": 7,
+      "sign_agreement": 1.0
+    },
+    {
+      "id": "row-2760",
+      "seeds": [
+        42,
+        21
+      ],
+      "shared_words": 6,
+      "union_words": 10,
+      "jaccard": 0.6,
+      "same_sign_shared_words": 6,
+      "sign_agreement": 1.0
+    },
+    {
+      "id": "row-2760",
+      "seeds": [
+        7,
+        21
+      ],
+      "shared_words": 6,
+      "union_words": 10,
+      "jaccard": 0.6,
+      "same_sign_shared_words": 6,
+      "sign_agreement": 1.0
+    },
+    {
+      "id": "row-5594",
+      "seeds": [
+        42,
+        7
+      ],
+      "shared_words": 5,
+      "union_words": 11,
+      "jaccard": 0.45454545454545453,
+      "same_sign_shared_words": 5,
+      "sign_agreement": 1.0
+    },
+    {
+      "id": "row-5594",
+      "seeds": [
+        42,
+        21
+      ],
+      "shared_words": 5,
+      "union_words": 11,
+      "jaccard": 0.45454545454545453,
+      "same_sign_shared_words": 4,
+      "sign_agreement": 0.8
+    },
+    {
+      "id": "row-5594",
+      "seeds": [
+        7,
+        21
+      ],
+      "shared_words": 3,
+      "union_words": 13,
+      "jaccard": 0.23076923076923078,
+      "same_sign_shared_words": 3,
+      "sign_agreement": 1.0
+    }
+  ],
+  "single_deletion_checks": [
+    {
+      "id": "row-856",
+      "seed": 42,
+      "comparable_words": 8,
+      "consistent_signs": 6,
+      "agreement": 0.75
+    },
+    {
+      "id": "row-1131",
+      "seed": 42,
+      "comparable_words": 8,
+      "consistent_signs": 8,
+      "agreement": 1.0
+    },
+    {
+      "id": "row-2760",
+      "seed": 42,
+      "comparable_words": 8,
+      "consistent_signs": 8,
+      "agreement": 1.0
+    },
+    {
+      "id": "row-5594",
+      "seed": 42,
+      "comparable_words": 6,
+      "consistent_signs": 6,
+      "agreement": 1.0
+    },
+    {
+      "id": "row-856",
+      "seed": 7,
+      "comparable_words": 8,
+      "consistent_signs": 7,
+      "agreement": 0.875
+    },
+    {
+      "id": "row-1131",
+      "seed": 7,
+      "comparable_words": 8,
+      "consistent_signs": 8,
+      "agreement": 1.0
+    },
+    {
+      "id": "row-2760",
+      "seed": 7,
+      "comparable_words": 8,
+      "consistent_signs": 8,
+      "agreement": 1.0
+    },
+    {
+      "id": "row-5594",
+      "seed": 7,
+      "comparable_words": 5,
+      "consistent_signs": 5,
+      "agreement": 1.0
+    },
+    {
+      "id": "row-856",
+      "seed": 21,
+      "comparable_words": 8,
+      "consistent_signs": 7,
+      "agreement": 0.875
+    },
+    {
+      "id": "row-1131",
+      "seed": 21,
+      "comparable_words": 8,
+      "consistent_signs": 8,
+      "agreement": 1.0
+    },
+    {
+      "id": "row-2760",
+      "seed": 21,
+      "comparable_words": 8,
+      "consistent_signs": 7,
+      "agreement": 0.875
+    },
+    {
+      "id": "row-5594",
+      "seed": 21,
+      "comparable_words": 4,
+      "consistent_signs": 4,
+      "agreement": 1.0
+    }
+  ],
+  "median_pairwise_jaccard": 0.6
+}
