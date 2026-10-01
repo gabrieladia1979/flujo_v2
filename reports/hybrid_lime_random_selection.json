@@ -1,0 +1,153 @@
+{
+  "selection_seed": 20261001,
+  "per_stratum": 5,
+  "criteria": "Saved test IDs; body 120-1000 characters; excludes all previous 20-case LIME selections; five randomly selected IDs per label/source-language stratum; IDs frozen before model evaluation.",
+  "excluded_previous_cases": [
+    "row-10399",
+    "row-10564",
+    "row-10723",
+    "row-10728",
+    "row-1080",
+    "row-11085",
+    "row-1131",
+    "row-1334",
+    "row-1428",
+    "row-1680",
+    "row-2498",
+    "row-2621",
+    "row-2760",
+    "row-382",
+    "row-4769",
+    "row-5098",
+    "row-5142",
+    "row-5524",
+    "row-5594",
+    "row-6078",
+    "row-6122",
+    "row-6401",
+    "row-6528",
+    "row-7033",
+    "row-7197",
+    "row-7413",
+    "row-7788",
+    "row-7840",
+    "row-7987",
+    "row-8131",
+    "row-8246",
+    "row-856",
+    "row-8578",
+    "row-8620",
+    "row-8675",
+    "row-8709",
+    "row-8722",
+    "row-8935",
+    "row-8979",
+    "row-9081"
+  ],
+  "sha256": {
+    "artifacts\\hybrid\\corpus-v3\\training.csv": "8aa55e98a0bfd199c6d1416dfa935e0dcc4ed13e5b3e0f7604c97e6527f63f46",
+    "artifacts\\hybrid\\corpus-v3\\splits.json": "43f45627f572bcf2f742e89e723a037822bedf191d7dff236e7f98341fb4cea7"
+  },
+  "cases": [
+    {
+      "id": "row-7806",
+      "label": "0",
+      "language": "en"
+    },
+    {
+      "id": "row-7927",
+      "label": "0",
+      "language": "en"
+    },
+    {
+      "id": "row-7971",
+      "label": "0",
+      "language": "en"
+    },
+    {
+      "id": "row-10434",
+      "label": "0",
+      "language": "en"
+    },
+    {
+      "id": "row-10598",
+      "label": "0",
+      "language": "en"
+    },
+    {
+      "id": "row-6112",
+      "label": "0",
+      "language": "es"
+    },
+    {
+      "id": "row-5447",
+      "label": "0",
+      "language": "es"
+    },
+    {
+      "id": "row-3399",
+      "label": "0",
+      "language": "es"
+    },
+    {
+      "id": "row-6928",
+      "label": "0",
+      "language": "es"
+    },
+    {
+      "id": "row-11102",
+      "label": "0",
+      "language": "es"
+    },
+    {
+      "id": "row-8325",
+      "label": "1",
+      "language": "en"
+    },
+    {
+      "id": "row-9080",
+      "label": "1",
+      "language": "en"
+    },
+    {
+      "id": "row-8382",
+      "label": "1",
+      "language": "en"
+    },
+    {
+      "id": "row-8420",
+      "label": "1",
+      "language": "en"
+    },
+    {
+      "id": "row-8238",
+      "label": "1",
+      "language": "en"
+    },
+    {
+      "id": "row-1745",
+      "label": "1",
+      "language": "es"
+    },
+    {
+      "id": "row-519",
+      "label": "1",
+      "language": "es"
+    },
+    {
+      "id": "row-2340",
+      "label": "1",
+      "language": "es"
+    },
+    {
+      "id": "row-6118",
+      "label": "1",
+      "language": "es"
+    },
+    {
+      "id": "row-4983",
+      "label": "1",
+      "language": "es"
+    }
+  ]
+}

@@ -146,6 +146,21 @@ La selección de cuatro casos favorables, las semillas reutilizadas y el cambio 
 
 La caché local ignorada `artifacts/hybrid/lime-independent-cache` guarda máscaras y probabilidades, sin texto de correos. Se reutiliza solo si coinciden máscaras y huella de datos, código de inferencia, pesos, configuración, dispositivo y versiones. Se comprobaron ocho aciertos de caché en la repetición 256/64 y la reproducción exacta de ambos ajustes; el comparador 768/128 reprodujo los resultados anteriores de LIME. Pasaron cuatro pruebas nuevas de invalidación de caché ante cambios de datos, tokenizador, pesos, procesamiento y dispositivo. No se repitió la suite del endpoint, que sigue sin cambios.
 
+### Muestra aleatoria estratificada, 01/10/2026
+
+`scripts/select_lime_random_cases.py` fija veinte IDs nuevos del test guardado antes de ejecutar LIME: cinco por clase e idioma de fuente (inglés/español), cuerpos de 120–1.000 caracteres. Excluye los cuarenta IDs de las muestras previas. La selección está en [JSON](../reports/hybrid_lime_random_selection.json); sus hashes vinculan el resultado al corpus, particiones y manifiesto del modelo. No se seleccionaron casos por puntuación de explicación.
+
+`scripts/evaluate_lime_random_comparison.py` compara LIME estándar de todas las palabras en log-odds con Ridge anclado al puntaje original. Para cada correo ambos métodos reciben las mismas probabilidades y máscaras; cada semilla separa ajuste y validación y no reutiliza máscaras nuevas de la otra semilla. Se usaron 512 máscaras de ajuste y 64 de validación para cada una de dos semillas independientes (303 y 404). Un caso pasa si R² del ajuste y de validación son ≥0,7 y el error de probabilidad sobre el correo original es ≤0,01.
+
+| Método | Semilla 303 | Semilla 404 | Mediana de R² de validación, 303 / 404 | Correos que pasan ambas semillas |
+| --- | ---: | ---: | ---: | ---: |
+| LIME log-odds, todas las palabras | 6/20 | 6/20 | 0,653 / 0,685 | 4/20 |
+| Ridge log-odds anclado | 5/20 | 3/20 | 0,624 / 0,643 | 2/20 |
+
+LIME estándar superó levemente al anclaje en esta muestra y mantuvo el mismo total aprobado en ambas semillas. Ambos métodos fallaron en la mayoría de los correos; el anclaje no se justifica como mejora general. Los cuatro casos aprobados por LIME en ambas semillas no demuestran cobertura o utilidad general, y el conjunto pertenece al test ya guardado, no a una evaluación prospectiva. No se cambia el endpoint ni se habilita LIME para el Add-in.
+
+Los informes completos conservan métricas por correo y semilla: [303](../reports/hybrid_lime_random_comparison_512_seed303.json), [404](../reports/hybrid_lime_random_comparison_512_seed404.json). Una repetición idéntica obtuvo **20/20 aciertos de caché** y reprodujo el resumen: [comprobación](../reports/hybrid_lime_random_comparison_512_seed404_cachecheck.json). La caché local ignorada guarda máscaras y puntajes, nunca el texto del correo, y exige coincidencia del fingerprint de datos, modelo, código de inferencia y versiones.
+
 ## Agregar amenazas actuales después
 
 Incorporar nuevos correos con etiqueta revisada, procedencia, fecha, idioma y, cuando exista, campaña. Separar ejemplos reales revisados de ejemplos sintéticos y de informes que solo describen una amenaza. No etiquetar automáticamente un artículo de seguridad como correo malicioso ni tomar generación sintética como prueba independiente.
