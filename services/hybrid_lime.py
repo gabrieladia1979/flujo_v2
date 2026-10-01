@@ -87,6 +87,7 @@ def explain_hybrid_text(classifier, payload, *, num_samples: int = 128) -> dict:
     original_error = abs(original_estimated - score)
     reliable = (fidelity >= 0.7 and heldout_r2 is not None and heldout_r2 >= 0.7
                 and original_error <= MAX_ORIGINAL_SCORE_ERROR)
+    weights = [{"word": word, "weight": float(weight)} for word, weight in explanation.as_list(label=1)]
     return {
         "method": "LIME text",
         "scope": "raw_hybrid_model_score; body words perturbed; subject and header features fixed; body-derived features recalculated",
@@ -103,10 +104,8 @@ def explain_hybrid_text(classifier, payload, *, num_samples: int = 128) -> dict:
             if not reliable else
             "Local approximation only; security rules can change the final decision."
         ),
-        "word_weights": [
-            {"word": word, "weight": float(weight)}
-            for word, weight in explanation.as_list(label=1)
-        ],
+        "word_weights": weights if reliable else [],
+        "diagnostic_word_weights": weights,
         "num_samples": num_samples,
         "elapsed_seconds": round(time.perf_counter() - start, 3),
     }

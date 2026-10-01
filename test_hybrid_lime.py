@@ -61,7 +61,8 @@ def test_lime_real_artifact_explains_raw_score(monkeypatch):
     raw = _load(directory).raw_score(EmailPayloadSchema.model_validate(PAYLOAD))
     assert result["phishing_probability"] == pytest.approx(raw, abs=1e-6)
     assert result["scope"].startswith("raw_hybrid_model_score")
-    assert result["word_weights"]
+    assert result["diagnostic_word_weights"]
+    assert result["word_weights"] == (result["diagnostic_word_weights"] if result["reliable_local_fit"] else [])
     assert result["num_samples"] == 128
     assert result["heldout_fidelity_r2"] is None or isinstance(result["heldout_fidelity_r2"], float)
     assert result["heldout_mae"] >= 0
@@ -104,3 +105,5 @@ def test_high_fidelity_does_not_hide_original_score_mismatch(monkeypatch):
     assert result['heldout_fidelity_r2'] == pytest.approx(1.0)
     assert result['original_prediction_error'] == pytest.approx(0.02, abs=1e-6)
     assert result['reliable_local_fit'] is False
+    assert result['word_weights'] == []
+    assert result['diagnostic_word_weights']
