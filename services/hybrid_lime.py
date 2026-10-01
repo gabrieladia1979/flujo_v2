@@ -9,6 +9,7 @@ MAX_BODY_CHARS = 4000
 MIN_SAMPLES = 64
 MAX_SAMPLES = 256
 VALIDATION_SAMPLES = 32
+MAX_ORIGINAL_SCORE_ERROR = 0.01
 
 
 def explain_hybrid_text(classifier, payload, *, num_samples: int = 128) -> dict:
@@ -82,7 +83,10 @@ def explain_hybrid_text(classifier, payload, *, num_samples: int = 128) -> dict:
     total_variance = float(np.square(heldout_actual - heldout_actual.mean()).sum())
     heldout_r2 = 1 - squared_error / total_variance if total_variance > 1e-10 else None
     heldout_mae = float(np.mean(np.abs(heldout_actual - heldout_estimated)))
-    reliable = fidelity >= 0.7 and heldout_r2 is not None and heldout_r2 >= 0.7
+    original_estimated = intercept + sum(coefficients.values())
+    original_error = abs(original_estimated - score)
+    reliable = (fidelity >= 0.7 and heldout_r2 is not None and heldout_r2 >= 0.7
+                and original_error <= MAX_ORIGINAL_SCORE_ERROR)
     return {
         "method": "LIME text",
         "scope": "raw_hybrid_model_score; body words perturbed; subject and header features fixed; body-derived features recalculated",
@@ -90,9 +94,12 @@ def explain_hybrid_text(classifier, payload, *, num_samples: int = 128) -> dict:
         "local_fidelity_r2": fidelity,
         "heldout_fidelity_r2": heldout_r2,
         "heldout_mae": heldout_mae,
+        "original_surrogate_probability": original_estimated,
+        "original_prediction_error": original_error,
+        "max_original_prediction_error": MAX_ORIGINAL_SCORE_ERROR,
         "reliable_local_fit": reliable,
         "interpretation_warning": (
-            "Local explanation failed the fit or fresh-perturbation check; do not show word weights to end users."
+            "Local explanation failed the fit, fresh-perturbation or original-score check; do not show word weights to end users."
             if not reliable else
             "Local approximation only; security rules can change the final decision."
         ),

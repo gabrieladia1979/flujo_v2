@@ -69,4 +69,38 @@ def test_lime_real_artifact_explains_raw_score(monkeypatch):
         result["local_fidelity_r2"] >= 0.7
         and result["heldout_fidelity_r2"] is not None
         and result["heldout_fidelity_r2"] >= 0.7
+        and result["original_prediction_error"] <= result["max_original_prediction_error"]
     )
+
+
+def test_high_fidelity_does_not_hide_original_score_mismatch(monkeypatch):
+    import threading
+    from types import SimpleNamespace
+    import numpy as np
+    from lime.lime_text import IndexedString, LimeTextExplainer
+    from schemas import EmailPayloadSchema
+    from services.hybrid_lime import explain_hybrid_text
+
+    def explanation(_self, body, callback, **kwargs):
+        return SimpleNamespace(predict_proba=callback([body])[0], score=0.99,
+            domain_mapper=SimpleNamespace(indexed_string=IndexedString(body)),
+            local_exp={1: [(0, 0.1), (1, 0.1)]}, intercept={1: 0.52},
+            as_list=lambda **kwargs: [('alpha', 0.1), ('beta', 0.1)])
+
+    monkeypatch.setattr(LimeTextExplainer, 'explain_instance', explanation)
+    monkeypatch.setattr('services.hybrid_encoder.embed',
+                        lambda encoder, texts: np.array([[len(t.split())] for t in texts], dtype=np.float32))
+    monkeypatch.setattr('services.hybrid_features.encoder_text', lambda subject, body: body)
+    monkeypatch.setattr('services.hybrid_features.technical_features', lambda *args: [0.0])
+
+    def predict(matrix):
+        counts = matrix.get_data().toarray()[:, 0]
+        return np.where(counts == 2, 0.7, 0.52 + 0.1 * counts)
+
+    classifier = SimpleNamespace(lock=threading.Lock(), encoder=object(), head=SimpleNamespace(predict=predict))
+    result = explain_hybrid_text(classifier, EmailPayloadSchema.model_validate({
+        'metadata': {'asunto': ''}, 'contenido': 'alpha beta'}))
+    assert result['local_fidelity_r2'] == 0.99
+    assert result['heldout_fidelity_r2'] == pytest.approx(1.0)
+    assert result['original_prediction_error'] == pytest.approx(0.02, abs=1e-6)
+    assert result['reliable_local_fit'] is False
