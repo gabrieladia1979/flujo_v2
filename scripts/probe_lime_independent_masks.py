@@ -15,13 +15,14 @@ from sklearn.metrics import r2_score
 from xgboost import DMatrix
 
 from scripts.probe_lime_fragments import measure_stability
+from scripts.hybrid_lime_cache import inference_fingerprint
 from services.hybrid_classifier import HybridClassifier
 from services.hybrid_encoder import embed
 from services.hybrid_features import encoder_text, technical_features
 
 
 def evaluate(training_samples=256, validation_samples=64,
-             output='reports/hybrid_lime_independent_masks.json'):
+             output='reports/hybrid_lime_independent_masks.json', compare_anchored=False):
     previous = json.loads(Path('reports/hybrid_lime_full_stability.json').read_text())
     selected = {c['id'] for c in previous['summary']['passes_all_seeds']}
     csv.field_size_limit(10_000_000)
@@ -30,7 +31,13 @@ def evaluate(training_samples=256, validation_samples=64,
     if {i for i, _ in rows} != selected:
         raise ValueError('Selected cases missing from the local dataset')
     classifier = HybridClassifier('artifacts/hybrid/multilingual-candidate-v3-curated')
+    fingerprint = inference_fingerprint('artifacts/hybrid/multilingual-candidate-v3-curated',
+        'artifacts/hybrid/corpus-v3/training.csv', classifier.encoder.device)
+    cache_directory = Path('artifacts/hybrid/lime-independent-cache')
+    cache_directory.mkdir(parents=True, exist_ok=True)
+    cache_hits = 0
     results = []
+    anchored_results = []
     for identifier, row in rows:
         indexed = IndexedString(row['body'])
         n = indexed.num_words()
@@ -66,9 +73,20 @@ def evaluate(training_samples=256, validation_samples=64,
             features = np.asarray([technical_features(subject, text,
                 int(float(row.get('attachments_count') or 0)), int(float(row.get('hops_count') or 0)))
                 for text in bodies], dtype=np.float32)
-            with classifier.lock:
-                vectors = embed(classifier.encoder, [encoder_text(subject, text) for text in bodies])
-                scores = classifier.head.predict(DMatrix(np.hstack([vectors, features]))).astype(float)
+            cache_path = cache_directory / f'{identifier}-{target}-{validation_samples}-{seed}.npz'
+            scores = None
+            if cache_path.exists():
+                with np.load(cache_path, allow_pickle=False) as cache:
+                    if str(cache['fingerprint']) == fingerprint and np.array_equal(cache['masks'], masks):
+                        scores = cache['scores'].copy()
+                        cache_hits += 1
+            if scores is None:
+                with classifier.lock:
+                    vectors = embed(classifier.encoder, [encoder_text(subject, text) for text in bodies])
+                    scores = classifier.head.predict(DMatrix(np.hstack([vectors, features]))).astype(float)
+                np.savez_compressed(cache_path, fingerprint=fingerprint, masks=masks, scores=scores)
+            if scores.shape != (target + validation_samples,) or not np.isfinite(scores).all() or ((scores < 0) | (scores > 1)).any():
+                raise ValueError('Invalid inferred or cached probabilities')
             distances = (1 - np.sqrt(masks[:target].sum(axis=1) / n)) * 100
             targets = logit(np.clip(scores[:target], 1e-6, 1 - 1e-6))
             intercept, weights, _, _ = LimeBase(lambda d: np.sqrt(np.exp(-d ** 2 / 25 ** 2)),
@@ -88,6 +106,20 @@ def evaluate(training_samples=256, validation_samples=64,
                 mae=float(np.mean(np.abs(scores[target:] - prediction[target:]))),
                 weights=[dict(token_index=i, weight=float(w)) for i, w in enumerate(coefficients)],
                 passes=fit >= .7 and fresh is not None and fresh >= .7 and error <= .01))
+            if compare_anchored:
+                original_logit = float(logit(np.clip(scores[0], 1e-6, 1 - 1e-6)))
+                absent = 1 - masks
+                anchored = Ridge(alpha=.01, fit_intercept=False).fit(absent[:target], original_logit - targets,
+                    sample_weight=np.sqrt(np.exp(-distances ** 2 / 25 ** 2)))
+                anchored_prediction = expit(original_logit - absent @ anchored.coef_)
+                anchored_fit = float(r2_score(scores[:target], anchored_prediction[:target]))
+                anchored_fresh = float(r2_score(scores[target:], anchored_prediction[target:])) if np.var(scores[target:]) > 1e-10 else None
+                anchored_error = float(abs(anchored_prediction[0] - scores[0]))
+                anchored_results.append(dict(id=identifier, label=row['Label'], seed=seed, scale='logodds',
+                    word_count=n, fit_r2=anchored_fit, heldout_r2=anchored_fresh, original_score_error=anchored_error,
+                    mae=float(np.mean(np.abs(scores[target:] - anchored_prediction[target:]))),
+                    weights=[dict(token_index=i, weight=float(w)) for i, w in enumerate(anchored.coef_)],
+                    passes=anchored_fit >= .7 and anchored_fresh is not None and anchored_fresh >= .7 and anchored_error <= .01))
             print(identifier, seed, flush=True)
     combined = results + [c for c in previous['cases'] if c['id'] in selected]
     summary = dict(cases=len(selected),
@@ -95,6 +127,7 @@ def evaluate(training_samples=256, validation_samples=64,
         passes_all_five=[dict(id=i, label=next(c['label'] for c in results if c['id'] == i)) for i in sorted(selected)
                         if all(c['passes'] for c in combined if c['id'] == i)])
     report = dict(scope='all-word logodds LIME, validated on raw probability after sigmoid',
+        inference_cache_fingerprint=fingerprint, inference_cache_hits=cache_hits,
         selection='four favorable previously inspected cases; cannot estimate population reliability',
         masks='Original/single word deletions shared. New 2-3 word fit and validation masks exclude historical pool '
               'and each other across seeds 101/202. Increased budgets use the same seeds and can overlap earlier budget trials.',
@@ -103,8 +136,17 @@ def evaluate(training_samples=256, validation_samples=64,
             'reports/hybrid_lime_full_stability.json', 'artifacts/hybrid/corpus-v3/training.csv',
             'artifacts/hybrid/multilingual-candidate-v3-curated/manifest.json')},
         summary=summary, stability=measure_stability(combined), cases=results)
+    if compare_anchored:
+        report['anchored'] = dict(scope='anchored all-word logodds Ridge; not standard LIME; same probabilities/masks as comparator',
+            summary=dict(cases=len(selected),
+                passes_per_new_seed={str(s): sum(c['passes'] for c in anchored_results if c['seed'] == s) for s in (101, 202)},
+                passes_both_new=[dict(id=i, label=next(c['label'] for c in anchored_results if c['id'] == i)) for i in sorted(selected)
+                                 if all(c['passes'] for c in anchored_results if c['id'] == i)]),
+            stability=measure_stability(anchored_results), cases=anchored_results)
     Path(output).write_text(json.dumps(report, indent=2, allow_nan=False) + '\n')
     print(json.dumps(summary, indent=2))
+    if compare_anchored:
+        print(json.dumps(report['anchored']['summary'], indent=2))
 
 
 if __name__ == '__main__':
@@ -112,7 +154,8 @@ if __name__ == '__main__':
     parser.add_argument('--training-samples', type=int, default=256)
     parser.add_argument('--validation-samples', type=int, default=64)
     parser.add_argument('--output', default='reports/hybrid_lime_independent_masks.json')
+    parser.add_argument('--compare-anchored', action='store_true')
     args = parser.parse_args()
     if args.training_samples < 256 or args.validation_samples < 32:
         parser.error('Diagnostic requires at least 256 training and 32 validation samples')
-    evaluate(args.training_samples, args.validation_samples, args.output)
+    evaluate(args.training_samples, args.validation_samples, args.output, args.compare_anchored)
