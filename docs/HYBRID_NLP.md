@@ -128,6 +128,16 @@ La variante en probabilidades pasó los tres controles en 1/20 casos con cada se
 
 El script de estabilidad requiere la caché local ignorada que genera `probe_lime_coverage` y exige su huella registrada. Los reportes contienen índices y pesos, sin texto de correos. La variante completa sigue siendo experimental. Se adoptó el filtrado de `word_weights` para explicaciones rechazadas; pasaron **23 pruebas** del endpoint, pipeline y fragmentación, incluida inferencia con pesos reales. El Add-in y la rama AWS no cambiaron.
 
+### Combinaciones nuevas y mayor presupuesto, 01/10/2026
+
+`python -m scripts.probe_lime_independent_masks` selecciona los cuatro casos que pasaron las tres particiones anteriores. Genera combinaciones nuevas de dos o tres palabras, excluyendo todo el conjunto de máscaras histórico y evitando superposición entre ajuste y validación y entre semillas 101/202. El correo original y las eliminaciones individuales se comparten intencionalmente. Se vuelven a inferir las probabilidades con los pesos reales. Esta selección favorable no permite estimar fiabilidad general.
+
+Con 256 muestras de ajuste y 64 nuevas de validación por semilla, pasaron los tres controles **1/4 y 2/4**; ninguno pasó ambas semillas nuevas además de las tres particiones históricas. [Reporte de combinaciones nuevas](../reports/hybrid_lime_independent_masks.json).
+
+Con 768 muestras de ajuste y 128 de validación, pasaron **3/4 y 1/4**. Solo `row-4769`, un phishing, pasó ambas semillas de este ensayo y las tres particiones históricas. Había fallado en la semilla 202 del ensayo anterior de 256 muestras, por lo que tampoco es un resultado consistente a través de todos los presupuestos. Los ensayos de presupuesto comparten semillas y pueden compartir máscaras; no son repeticiones completamente independientes entre sí. [Reporte de 768 muestras](../reports/hybrid_lime_independent_masks_768.json). Comando: `python -m scripts.probe_lime_independent_masks --training-samples 768 --validation-samples 128 --output reports/hybrid_lime_independent_masks_768.json`. Aumentar las muestras no resolvió la variación ni el error del puntaje original en todos los casos. Estos presupuestos son de laboratorio y exceden el límite del endpoint.
+
+Se probó además Ridge logarítmico anclado al puntaje original sobre las predicciones guardadas de veinte casos: **9/20, 6/20 y 7/20** pasaron los tres controles, y cuatro pasaron las tres particiones (un phishing y tres legítimos). Es una modificación de la aproximación, no LIME estándar, y no se validó con nuevas máscaras. [Reporte de anclaje](../reports/hybrid_lime_anchored_logodds.json). Comando: `python -m scripts.probe_lime_full_stability --anchored --output reports/hybrid_lime_anchored_logodds.json`. Se comprobó que el modo estándar sigue reproduciendo su resumen previo 7/20, 5/20, 6/20. El endpoint, el Add-in y AWS no cambiaron por estos ensayos; las 23 pruebas del endpoint corresponden a `5594138`.
+
 ## Agregar amenazas actuales después
 
 Incorporar nuevos correos con etiqueta revisada, procedencia, fecha, idioma y, cuando exista, campaña. Separar ejemplos reales revisados de ejemplos sintéticos y de informes que solo describen una amenaza. No etiquetar automáticamente un artículo de seguridad como correo malicioso ni tomar generación sintética como prueba independiente.
