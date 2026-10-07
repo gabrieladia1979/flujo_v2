@@ -1,0 +1,43 @@
+{
+  "dataset_sha256": "8aa55e98a0bfd199c6d1416dfa935e0dcc4ed13e5b3e0f7604c97e6527f63f46",
+  "test_count": 1662,
+  "test_groups": 1289,
+  "direct": {
+    "precision_phishing": 0.9895833333333334,
+    "recall_phishing": 0.9364731653888281,
+    "f1_phishing": 0.9622960045019696,
+    "roc_auc": 0.9934560428874133,
+    "average_precision": 0.9950742290438747,
+    "confusion_matrix": {
+      "true_positive": 855,
+      "true_negative": 740,
+      "false_positive": 9,
+      "false_negative": 58
+    }
+  },
+  "hybrid": {
+    "precision_phishing": 0.9897377423033067,
+    "recall_phishing": 0.9507119386637459,
+    "f1_phishing": 0.9698324022346368,
+    "roc_auc": 0.995048527646208,
+    "average_precision": 0.9962230381517873,
+    "confusion_matrix": {
+      "true_positive": 868,
+      "true_negative": 740,
+      "false_positive": 9,
+      "false_negative": 45
+    }
+  },
+  "delta_f1_direct_minus_hybrid": -0.007536397732667233,
+  "group_bootstrap_f1_delta_95_percent_interval": [
+    -0.01279781581809417,
+    -0.0034894090633980275
+  ],
+  "paired_correctness": {
+    "both_correct": 1594,
+    "direct_only_correct": 1,
+    "hybrid_only_correct": 14,
+    "both_wrong": 53
+  },
+  "caveat": "Same historical test used for model development; the interval characterizes this split only, not future campaigns."
+}

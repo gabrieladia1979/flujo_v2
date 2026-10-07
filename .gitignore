@@ -10,6 +10,7 @@ venv/
 .venv-hybrid/
 .venv-a100-verify/
 artifacts/hybrid/
+artifacts/direct-transformer/
 .cache-hybrid/
 
 # ONNX (no se usa en V2)
