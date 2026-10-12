@@ -1,4 +1,4 @@
-from typing import Optional, List, Any
+from typing import Optional, List, Any, Literal
 from pydantic import BaseModel, Field, model_validator
 
 
@@ -81,6 +81,32 @@ class ContentSignal(BaseModel):
     description: str
 
 
+class HybridTechnicalAttribution(BaseModel):
+    feature: str
+    value: float
+    contribution_log_odds: float
+
+
+class HybridWordAttribution(BaseModel):
+    word: str
+    weight: float
+
+
+class HybridXAIResult(BaseModel):
+    """Attributions refer to the raw hybrid score, before security rules."""
+    scope: Literal["raw_hybrid_model_score"] = "raw_hybrid_model_score"
+    supports_final_verdict: bool = False
+    technical_status: Literal["available", "skipped", "error"]
+    technical_attributions: List[HybridTechnicalAttribution] = Field(default_factory=list)
+    embedding_contribution_log_odds: Optional[float] = None
+    baseline_log_odds: Optional[float] = None
+    lime_status: Literal["reliable", "unreliable", "skipped", "error", "disabled"]
+    lime_word_attributions: List[HybridWordAttribution] = Field(default_factory=list)
+    lime_fit_r2: Optional[float] = None
+    lime_heldout_r2: Optional[float] = None
+    lime_original_prediction_error: Optional[float] = None
+
+
 class AnalysisResultSchema(BaseModel):
     is_phishing: bool
     risk_score: float
@@ -92,4 +118,5 @@ class AnalysisResultSchema(BaseModel):
     raw_model_score: Optional[float] = Field(default=None, ge=0.0, le=1.0)
     decision_source: Optional[str] = None
     content_signals: List[ContentSignal] = Field(default_factory=list)
+    hybrid_xai: Optional[HybridXAIResult] = None
 

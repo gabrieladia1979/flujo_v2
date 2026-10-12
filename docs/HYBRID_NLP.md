@@ -1,6 +1,6 @@
 # NLP híbrido experimental
 
-Rama: `codex/hybrid-nlp`. El modelo `model/phisharg_xgboost.pkl`, la convención productiva de columna 0 y `POST /api/v1/analyze` se conservan. Los candidatos nuevos se guardan exclusivamente en `artifacts/hybrid/`, excluido de Git. No se despliega ni se promueve automáticamente ningún candidato.
+Línea de investigación iniciada en `codex/hybrid-nlp` y extendida con XAI en `codex/hybrid-xai`. El modelo `model/phisharg_xgboost.pkl`, la convención productiva de columna 0 y `POST /api/v1/analyze` se conservan. Los candidatos nuevos se guardan exclusivamente en `artifacts/hybrid/`, excluido de Git. No se despliega ni se promueve automáticamente ningún candidato.
 
 ## Qué se entrena
 
@@ -168,3 +168,11 @@ Incorporar nuevos correos con etiqueta revisada, procedencia, fecha, idioma y, c
 Temas a cubrir con casos maliciosos y contrapartes legítimas: consentimiento OAuth, QR que dirige a credenciales, suplantación de reuniones, solicitudes de MFA, cambios de cuenta de proveedores y falsas notificaciones fiscales. La fecha del informe debe distinguirse de la fecha del ataque; los corpus históricos actuales no prueban esa cobertura.
 
 Al crear la siguiente mezcla, reutilizar `--previous-splits artifacts/hybrid/multilingual-candidate-v1/splits.json` en el entrenador. Conserva las particiones de los grupos ya conocidos y asigna los nuevos de manera determinista. Mantener además una evaluación temporal/campañas nueva para detectar regresiones y no ajustar una y otra vez contra el mismo test. El agrupamiento automático actual por cuerpo/plantilla no sustituye particiones humanas por campañas cuando se disponga de ellas.
+
+## XAI en la ruta híbrida experimental (12/10/2026)
+
+`POST /api/v1/analyze/hybrid` devuelve `hybrid_xai` sin cambiar el veredicto. La contribución TreeSHAP del XGBoost se calcula en escala de *log-odds* sobre el puntaje bruto del modelo. Se exponen por separado la suma de las dimensiones del embedding, la base y las 16 variables técnicas con sus valores y aportes. Antes de publicar la atribución se verifica que la suma reconstruya el puntaje bruto. Las dimensiones del embedding no se traducen artificialmente a palabras.
+
+Para alertas no críticas, la misma ruta ejecuta LIME sobre palabras del cuerpo (128 perturbaciones por defecto; 64–256 mediante `lime_samples`). Su explicación corresponde al puntaje bruto, con asunto fijo y variables derivadas del cuerpo recalculadas. Solo se incluyen `lime_word_attributions` y una mención pedagógica a las palabras cuando el ajuste local, perturbaciones nuevas y puntaje original superan los controles existentes. Si falla, la respuesta indica `unreliable`, `error` o `skipped` sin mostrar pesos diagnósticos; se conservan las reglas observables. Las decisiones por regla crítica omiten el modelo y ambas atribuciones. `?include_lime=false` conserva TreeSHAP y evita el costo de LIME.
+
+Esto **no valida** todavía la estabilidad general de LIME ni la latencia de la ruta completa. En una única medición local con el artefacto V3 ya cargado y un correo de prueba, el análisis sin LIME tardó 0,047 s y con 128 muestras LIME tardó 1,267 s; LIME marcó esa explicación como `unreliable`. Son tiempos orientativos, no un ensayo de rendimiento. El resultado final puede diferir del puntaje bruto por reglas; `hybrid_xai.scope` identifica ese límite y `supports_final_verdict` indica si el veredicto bruto coincide con el final. Cuando una regla cambia la clase, las atribuciones del modelo permanecen solo como diagnóstico y no se convierten en motivos narrativos del veredicto. El endpoint diagnóstico `/api/v1/analyze/hybrid/lime` sigue separado y optativo para investigación. El Add-in aún no llama la ruta híbrida ni utiliza `hybrid_xai`.

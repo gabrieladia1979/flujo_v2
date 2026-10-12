@@ -79,11 +79,16 @@ def analyze_email_endpoint(
 
 # (Opcional) Bloque para correr localmente sin uvicorn CLI
 @app.post("/api/v1/analyze/hybrid", response_model=AnalysisResultSchema)
-def analyze_hybrid_endpoint(payload: EmailPayloadSchema, api_key: str = Depends(get_api_key)):
-    """Experimental route. Requires a separately trained local artifact directory."""
+def analyze_hybrid_endpoint(
+    payload: EmailPayloadSchema,
+    include_lime: bool = Query(default=True),
+    lime_samples: int = Query(default=128, ge=64, le=256),
+    api_key: str = Depends(get_api_key),
+):
+    """Experimental hybrid route with bounded XAI; LIME can add substantial latency."""
     from services.hybrid_classifier import analyze_hybrid_email, HybridUnavailableError
     try:
-        return analyze_hybrid_email(payload)
+        return analyze_hybrid_email(payload, include_lime=include_lime, lime_samples=lime_samples)
     except HybridUnavailableError as exc:
         raise HTTPException(status_code=503, detail=str(exc)) from exc
 

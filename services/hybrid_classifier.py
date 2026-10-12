@@ -3,13 +3,30 @@
 from functools import lru_cache
 import hashlib
 import json
+import logging
 import math
 import os
 from pathlib import Path
+import re
 import threading
 
-from schemas import AnalysisResultSchema
+from schemas import AnalysisResultSchema, HybridXAIResult
 from services.hybrid_features import FEATURE_NAMES, FEATURE_VERSION, encoder_text, technical_features
+
+
+logger = logging.getLogger(__name__)
+
+_FEATURE_EVIDENCE = {
+    'http_count': 'enlaces HTTP sin cifrar',
+    'ip_host_count': 'enlaces con una dirección IP como dominio',
+    'brand_external_count': 'dominios que mencionan una marca fuera de sus dominios oficiales',
+    'punycode_count': 'dominios codificados con Punycode',
+    'urgency_count': 'expresiones de urgencia',
+    'secret_count': 'menciones de credenciales o datos sensibles',
+    'payment_count': 'expresiones relacionadas con pagos',
+    'threat_count': 'expresiones de amenaza o bloqueo',
+    'action_count': 'solicitudes de acción',
+}
 
 
 class HybridUnavailableError(RuntimeError):
@@ -102,10 +119,70 @@ class HybridClassifier:
             raise ValueError('Invalid hybrid score')
         return score
 
-    def analyze(self, payload):
+    def technical_attributions(self, payload, raw_score):
+        """XGBoost TreeSHAP contributions to the raw log-odds, not to rule-adjusted risk."""
+        import numpy as np
+        from xgboost import DMatrix
+        from services.hybrid_encoder import embed
+        subject, body = payload.metadata.asunto or '', payload.contenido or ''
+        security = payload.security_features
+        features = technical_features(subject, body,
+                                      security.attachment_count if security else 0,
+                                      security.received_hop_count if security else 0)
+        with self.lock:
+            vectors = embed(self.encoder, [encoder_text(subject, body)])
+            values = np.hstack([vectors, np.asarray([features], dtype=np.float32)])
+            contributions = np.asarray(self.head.predict(DMatrix(values), pred_contribs=True))[0]
+        if contributions.shape != (values.shape[1] + 1,) or not np.all(np.isfinite(contributions)):
+            raise ValueError('Invalid hybrid SHAP contributions')
+        margin = float(contributions.sum())
+        reconstructed = 1 / (1 + math.exp(-margin)) if margin >= 0 else math.exp(margin) / (1 + math.exp(margin))
+        if not math.isclose(reconstructed, raw_score, abs_tol=1e-5):
+            raise ValueError('Hybrid SHAP contributions do not reconstruct the raw score')
+        start = vectors.shape[1]
+        attributions = [
+            {'feature': name, 'value': float(features[index]),
+             'contribution_log_odds': float(contributions[start + index])}
+            for index, name in enumerate(FEATURE_NAMES)
+        ]
+        attributions.sort(key=lambda item: abs(item['contribution_log_odds']), reverse=True)
+        return attributions, float(contributions[:start].sum()), float(contributions[-1])
+
+    def explain(self, payload, raw_score, *, include_lime=True, lime_samples=128):
+        """Return bounded diagnostics; rejected LIME weights never enter the main response."""
+        details = dict(technical_status='skipped', lime_status='disabled' if not include_lime else 'skipped')
+        if raw_score is None:
+            return HybridXAIResult(**details)
+        try:
+            attributions, embedding, baseline = self.technical_attributions(payload, raw_score)
+            details.update(technical_status='available', technical_attributions=attributions,
+                           embedding_contribution_log_odds=embedding, baseline_log_odds=baseline)
+        except Exception:
+            logger.exception('Hybrid technical attribution failed')
+            details['technical_status'] = 'error'
+        body = (payload.contenido or '').strip()
+        if include_lime and 1 <= len(body) <= 4000 and len(body.split()) >= 2:
+            try:
+                from services.hybrid_lime import explain_hybrid_text
+                lime = explain_hybrid_text(self, payload, num_samples=lime_samples)
+                if not math.isclose(lime['phishing_probability'], raw_score, abs_tol=1e-5):
+                    raise ValueError('LIME explained a different hybrid score')
+                reliable = bool(lime['reliable_local_fit'])
+                details.update(lime_status='reliable' if reliable else 'unreliable',
+                               lime_word_attributions=lime['word_weights'] if reliable else [],
+                               lime_fit_r2=lime['local_fidelity_r2'],
+                               lime_heldout_r2=lime['heldout_fidelity_r2'],
+                               lime_original_prediction_error=lime['original_prediction_error'])
+            except Exception:
+                logger.exception('Hybrid LIME explanation failed')
+                details['lime_status'] = 'error'
+        return HybridXAIResult(**details)
+
+    def analyze(self, payload, *, include_lime=True, lime_samples=128):
         from services.content_rules import detect_content_signals
         from services.security_rules import check_critical_threats, apply_security_rules
-        from services.slm_explanation import build_analyzer_evidence, build_explanation_context, build_safe_fallback
+        from services.slm_explanation import (ExplanationEvidence, EvidenceSource,
+                                               build_analyzer_evidence, build_explanation_context, build_safe_fallback)
         security = payload.security_features
         critical, reason = check_critical_threats(security) if security else (False, '')
         signals = detect_content_signals(payload.contenido or '', payload.metadata.asunto or '')
@@ -136,6 +213,36 @@ class HybridClassifier:
             intent = 'solicitar_credenciales'
         evidence = build_analyzer_evidence({}, adjustments, is_phishing=phishing,
                                            critical_reason=reason if critical else None, content_signals=signals)
+        # A critical rule bypasses the model. For other alerts, keep model evidence
+        # separate from the rules that may have raised the final risk score.
+        xai = self.explain(payload, raw, include_lime=include_lime and phishing,
+                           lime_samples=lime_samples)
+        if include_lime and not phishing:
+            xai.lime_status = 'skipped'
+        xai.supports_final_verdict = (raw is not None and
+                                      (raw >= self.manifest['threshold']) == bool(phishing))
+        if (phishing and raw is not None and raw >= self.manifest['threshold']
+                and source in {'hybrid_model', 'hybrid_model_and_security_rules'}):
+            model_evidence = []
+            if xai.technical_status == 'available':
+                for item in xai.technical_attributions:
+                    label = _FEATURE_EVIDENCE.get(item.feature)
+                    if label and item.value > 0 and item.contribution_log_odds > 0:
+                        model_evidence.append(ExplanationEvidence(
+                            evidence_id=f'model.{item.feature}',
+                            text=f'En la puntuación del modelo, la señal de {label} aportó a favor de phishing.',
+                            source=EvidenceSource.CLASSIFIER))
+                        break
+            if xai.lime_status == 'reliable':
+                words = [item.word for item in xai.lime_word_attributions
+                         if item.weight > 0 and re.fullmatch(r'[\wáéíóúñÁÉÍÓÚÑ]{2,30}', item.word)]
+                if words:
+                    model_evidence.append(ExplanationEvidence(
+                        evidence_id='model.lime_words',
+                        text='La aproximación local LIME vinculó con mayor puntaje de phishing: ' +
+                             ', '.join(words[:3]) + '.',
+                        source=EvidenceSource.CLASSIFIER))
+            evidence = model_evidence + evidence
         context = build_explanation_context(is_phishing=bool(phishing), risk_score=float(score), intent=intent, evidence=evidence)
         summary = 'PHISHING DETECTADO' if phishing else 'LEGÍTIMO'
         return AnalysisResultSchema(is_phishing=bool(phishing), risk_score=round(score, 4),
@@ -143,7 +250,8 @@ class HybridClassifier:
                                     (': ' + ' '.join(s.description for s in signals) if signals else ''),
                                     intent=intent, security_adjustments=adjustments, content_signals=signals,
                                     raw_model_score=raw, decision_source=source,
-                                    slm_explanation=build_safe_fallback(context).model_dump_json())
+                                    slm_explanation=build_safe_fallback(context).model_dump_json(),
+                                    hybrid_xai=xai)
 
 
 @lru_cache(maxsize=1)
@@ -151,12 +259,12 @@ def _load(directory):
     return HybridClassifier(directory)
 
 
-def analyze_hybrid_email(payload):
+def analyze_hybrid_email(payload, *, include_lime=True, lime_samples=128):
     directory = os.getenv('PHISHARG_HYBRID_MODEL_DIR')
     if not directory:
         raise HybridUnavailableError('El clasificador híbrido experimental no está configurado.')
     try:
         classifier = _load(str(Path(directory).resolve()))
-        return classifier.analyze(payload)
+        return classifier.analyze(payload, include_lime=include_lime, lime_samples=lime_samples)
     except (ImportError, OSError, ValueError, RuntimeError, KeyError) as exc:
         raise HybridUnavailableError('No se pudo utilizar el clasificador híbrido experimental.') from exc

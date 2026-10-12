@@ -31,6 +31,31 @@ def test_short_text_encoding_matches_pretrained_tokenization(trained):
     assert np.allclose(embed(trained.encoder, texts), expected, atol=1e-5)
 
 
+def test_tree_contributions_reconstruct_real_hybrid_score(trained):
+    payload = EmailPayloadSchema.model_validate({
+        'metadata': {'asunto': 'Aviso de acceso'},
+        'contenido': 'Se requiere revisar su cuenta de prueba.',
+    })
+    raw = trained.raw_score(payload)
+    attributions, embedding, baseline = trained.technical_attributions(payload, raw)
+    assert len(attributions) == 16
+    assert {item['feature'] for item in attributions} == set(trained.manifest['feature_names'])
+    assert np.isfinite(embedding) and np.isfinite(baseline)
+
+
+def test_real_hybrid_response_includes_bounded_xai(trained):
+    payload = EmailPayloadSchema.model_validate({
+        'metadata': {'asunto': 'Aviso de acceso'},
+        'contenido': 'Responda este correo con su contraseña y código SMS para evitar la suspensión de la cuenta.',
+    })
+    result = trained.analyze(payload, lime_samples=64)
+    assert result.hybrid_xai.technical_status == 'available'
+    assert result.is_phishing
+    assert result.hybrid_xai.lime_status in {'reliable', 'unreliable'}
+    assert result.hybrid_xai.lime_status != 'reliable' or result.hybrid_xai.lime_word_attributions
+    assert result.raw_model_score == pytest.approx(trained.raw_score(payload), abs=1e-6)
+
+
 def test_saved_artifact_reproduces_heldout_raw_score(trained):
     report = json.loads(Path(os.environ['HYBRID_TEST_REPORT']).read_text(encoding='utf-8'))
     split = json.loads((trained.directory / 'splits.json').read_text(encoding='utf-8'))
@@ -61,6 +86,9 @@ def test_real_hybrid_http_and_explanation(trained):
     assert result['is_phishing'] is True and result['risk_score'] >= 0.95
     assert 0 <= result['raw_model_score'] <= 1
     assert result['decision_source'] == 'hybrid_content_security_rule'
+    assert result['hybrid_xai']['technical_status'] == 'available'
+    assert result['hybrid_xai']['lime_status'] in {'reliable', 'unreliable'}
+    assert result['hybrid_xai']['scope'] == 'raw_hybrid_model_score'
     explanation = json.loads(result['slm_explanation'])
     assert explanation['reasons'][0]['evidence_id'] == 'content.credential_disclosure_request'
 
