@@ -245,13 +245,22 @@ class HybridClassifier:
             evidence = model_evidence + evidence
         context = build_explanation_context(is_phishing=bool(phishing), risk_score=float(score), intent=intent, evidence=evidence)
         summary = 'PHISHING DETECTADO' if phishing else 'LEGÍTIMO'
+        if not phishing:
+            slm_explanation = build_safe_fallback(context).model_dump_json()
+        else:
+            try:
+                from services.slm_client import generate_slm_explanation
+                slm_explanation = generate_slm_explanation(context)
+            except Exception:
+                slm_explanation = build_safe_fallback(context).model_dump_json()
         return AnalysisResultSchema(is_phishing=bool(phishing), risk_score=round(score, 4),
                                     reason=summary + (': ' + reason if critical else '') +
                                     (': ' + ' '.join(s.description for s in signals) if signals else ''),
                                     intent=intent, security_adjustments=adjustments, content_signals=signals,
                                     raw_model_score=raw, decision_source=source,
-                                    slm_explanation=build_safe_fallback(context).model_dump_json(),
+                                    slm_explanation=slm_explanation,
                                     hybrid_xai=xai)
+
 
 
 @lru_cache(maxsize=1)
