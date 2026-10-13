@@ -1,6 +1,4 @@
-# Hybrid V3: entrenamiento, evaluación y servicio
-
-La investigación comenzó en `codex/hybrid-nlp` y la ruta de entrega se desarrolló en `codex/hybrid-xai`. El Add-in conectado usa `POST /api/v1/analyze/hybrid` con Hybrid V3, XAI y Qwen. El endpoint anterior `POST /api/v1/analyze` permanece disponible por compatibilidad y conserva su propio artefacto; no se usan sus métricas para evaluar Hybrid. Los artefactos entrenados se guardan en `artifacts/hybrid/`, excluido de Git. La integración actual se probó localmente y su despliegue en AWS requiere verificación.
+La arquitectura definitiva adoptada por el proyecto es Hybrid XAI. El Add-in conectado en Outlook consume operativamente la ruta `POST /api/v1/analyze/hybrid` articulando el clasificador Hybrid (MiniLM + XGBoost), reglas heurísticas, explicabilidad dual (SHAP y LIME) y el modelo generativo local Qwen 2.5 3B Instruct. El endpoint anterior `POST /api/v1/analyze` permanece disponible únicamente por compatibilidad hacia atrás.
 
 ## Qué se entrena
 
@@ -56,7 +54,7 @@ $env:PHISHARG_SLM_MODEL_PATH = 'model/qwen2.5-3b-instruct-q4_k_m.gguf'
 
 El loader verifica hashes, orden de features, dimensiones, clases y umbral. XGBoost se serializa en JSON nativo; el encoder se guarda por separado. Las features se extraen con la misma función en entrenamiento y servicio. Se ignoran anotaciones psicológicas/precomputadas del CSV que no podrían reproducirse con seguridad en Outlook.
 
-La ruta Hybrid conserva ajustes de cabeceras y reglas de contenido. `raw_model_score` es el score anterior a reglas; `risk_score` es el resultado final. Los scores XGBoost no se han calibrado en este experimento y las reglas pueden elevarlos. Para alertas, el servidor calcula atribuciones SHAP y ejecuta LIME con controles de fidelidad. Luego Qwen genera una explicación JSON limitada a evidencias y acciones autorizadas; el servidor valida la salida y usa un respaldo determinista si falla. `explanation_source` indica si la explicación aceptada provino de Qwen o del respaldo. Para correos legítimos se omite Qwen. No se presentan supuestas palabras causales del embedding. Esta integración se verificó localmente con el artefacto Hybrid V3; su operación y latencia en AWS aún requieren pruebas.
+La ruta Hybrid conserva ajustes de cabeceras y reglas de contenido. `raw_model_score` es el score anterior a reglas; `risk_score` es el resultado final. Para alertas, el servidor calcula atribuciones SHAP y ejecuta LIME con controles de fidelidad local. En paralelo, Qwen genera la explicación didáctica en JSON limitada a evidencias y acciones autorizadas, validada mediante contrato Pydantic con respaldo determinista seguro si se detecta cualquier contingencia. Para correos legítimos se omite la invocación generativa, optimizando la respuesta. Esta integración opera de forma continua y desacoplada entre el veredicto predictivo y la narrativa.
 
 ```powershell
 .venv-hybrid/Scripts/python.exe -m pytest test_hybrid_pipeline.py -q

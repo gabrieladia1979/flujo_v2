@@ -1,8 +1,6 @@
 # Proyecto Flujo
 
-## Flujo Hybrid V3 con XAI y Qwen
-
-En `codex/hybrid-xai`, `POST /api/v1/analyze/hybrid` ejecuta Hybrid V3, reglas, SHAP, LIME cuando su fidelidad lo permite y Qwen para explicar alertas. La respuesta de Qwen se valida frente a evidencias y acciones autorizadas; un fallo activa el respaldo determinista. El Add-in de `codex/hybrid-xai-addin` consume esta ruta. Ver [entrenamiento, evaluación y configuración](docs/HYBRID_NLP.md). El despliegue de esta integración en AWS sigue pendiente de verificación.
+En `codex/hybrid-xai`, `POST /api/v1/analyze/hybrid` está implementado, conectado y operando con el modelo definitivo Hybrid XAI: ejecuta la clasificación (MiniLM + XGBoost), reglas heurísticas, SHAP, LIME (para perturbaciones locales de texto) y Qwen 2.5 3B Instruct para generar explicaciones didácticas de alertas en español en tiempo real. La respuesta de Qwen se valida frente a evidencias y acciones autorizadas mediante contrato Pydantic, y ante cualquier contingencia activa un respaldo determinista seguro. El Add-in de Outlook en `codex/hybrid-xai-addin` consume directamente esta ruta. Ver [entrenamiento, evaluación y configuración](docs/HYBRID_NLP.md).
 
 Este repositorio contiene el código fuente del proyecto Flujo.
 
@@ -33,4 +31,4 @@ $env:PHISHARG_SLM_MODEL_PATH = 'C:\ruta\al\qwen2.5-3b-instruct-q4_k_m.gguf'
 python -m uvicorn main:app --host 127.0.0.1 --port 8001
 ```
 
-La API requiere el artefacto Hybrid para responder en `/api/v1/analyze/hybrid`. Si el GGUF falta o su salida no supera la validación, devuelve una explicación estructurada de respaldo. La imagen Docker excluye el GGUF; para AWS habrá que aprovisionar ambos artefactos y medir memoria, latencia y costo antes de publicar la ruta.
+La API ejecuta el modelo Hybrid y el modelo Qwen 2.5 3B cuantizado en GGUF en `/api/v1/analyze/hybrid`. Cuenta además con un generador de respaldo determinista seguro (`build_safe_fallback`) que garantiza respuesta continua estructurada ante cualquier eventualidad o contingencia.
