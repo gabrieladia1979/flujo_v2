@@ -53,6 +53,9 @@ def test_real_hybrid_response_includes_bounded_xai(trained):
     assert result.is_phishing
     assert result.hybrid_xai.lime_status in {'reliable', 'unreliable'}
     assert result.hybrid_xai.lime_status != 'reliable' or result.hybrid_xai.lime_word_attributions
+    assert bool(result.hybrid_xai.lime_reliability_failures) is (result.hybrid_xai.lime_status == 'unreliable')
+    assert result.hybrid_xai.lime_heldout_mae is not None
+    assert result.hybrid_xai.lime_elapsed_seconds is not None
     assert result.raw_model_score == pytest.approx(trained.raw_score(payload), abs=1e-6)
 
 

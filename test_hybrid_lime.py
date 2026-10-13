@@ -66,6 +66,7 @@ def test_lime_real_artifact_explains_raw_score(monkeypatch):
     assert result["num_samples"] == 128
     assert result["heldout_fidelity_r2"] is None or isinstance(result["heldout_fidelity_r2"], float)
     assert result["heldout_mae"] >= 0
+    assert bool(result["reliability_failures"]) is not result["reliable_local_fit"]
     assert result["reliable_local_fit"] is (
         result["local_fidelity_r2"] >= 0.7
         and result["heldout_fidelity_r2"] is not None
@@ -105,5 +106,6 @@ def test_high_fidelity_does_not_hide_original_score_mismatch(monkeypatch):
     assert result['heldout_fidelity_r2'] == pytest.approx(1.0)
     assert result['original_prediction_error'] == pytest.approx(0.02, abs=1e-6)
     assert result['reliable_local_fit'] is False
+    assert result['reliability_failures'] == ['original_score_mismatch']
     assert result['word_weights'] == []
     assert result['diagnostic_word_weights']

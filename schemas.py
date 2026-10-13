@@ -105,6 +105,9 @@ class HybridXAIResult(BaseModel):
     lime_fit_r2: Optional[float] = None
     lime_heldout_r2: Optional[float] = None
     lime_original_prediction_error: Optional[float] = None
+    lime_reliability_failures: List[Literal["training_fit", "heldout_fit", "insufficient_heldout_variation", "original_score_mismatch"]] = Field(default_factory=list)
+    lime_heldout_mae: Optional[float] = None
+    lime_elapsed_seconds: Optional[float] = None
 
 
 class AnalysisResultSchema(BaseModel):

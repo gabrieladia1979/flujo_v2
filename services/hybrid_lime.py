@@ -85,8 +85,16 @@ def explain_hybrid_text(classifier, payload, *, num_samples: int = 128) -> dict:
     heldout_mae = float(np.mean(np.abs(heldout_actual - heldout_estimated)))
     original_estimated = intercept + sum(coefficients.values())
     original_error = abs(original_estimated - score)
-    reliable = (fidelity >= 0.7 and heldout_r2 is not None and heldout_r2 >= 0.7
-                and original_error <= MAX_ORIGINAL_SCORE_ERROR)
+    failures = []
+    if fidelity < 0.7:
+        failures.append("training_fit")
+    if heldout_r2 is None:
+        failures.append("insufficient_heldout_variation")
+    elif heldout_r2 < 0.7:
+        failures.append("heldout_fit")
+    if original_error > MAX_ORIGINAL_SCORE_ERROR:
+        failures.append("original_score_mismatch")
+    reliable = not failures
     weights = [{"word": word, "weight": float(weight)} for word, weight in explanation.as_list(label=1)]
     return {
         "method": "LIME text",
@@ -99,6 +107,7 @@ def explain_hybrid_text(classifier, payload, *, num_samples: int = 128) -> dict:
         "original_prediction_error": original_error,
         "max_original_prediction_error": MAX_ORIGINAL_SCORE_ERROR,
         "reliable_local_fit": reliable,
+        "reliability_failures": failures,
         "interpretation_warning": (
             "Local explanation failed the fit, fresh-perturbation or original-score check; do not show word weights to end users."
             if not reliable else

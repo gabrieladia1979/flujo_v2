@@ -172,7 +172,10 @@ class HybridClassifier:
                                lime_word_attributions=lime['word_weights'] if reliable else [],
                                lime_fit_r2=lime['local_fidelity_r2'],
                                lime_heldout_r2=lime['heldout_fidelity_r2'],
-                               lime_original_prediction_error=lime['original_prediction_error'])
+                               lime_original_prediction_error=lime['original_prediction_error'],
+                               lime_reliability_failures=lime.get('reliability_failures', []),
+                               lime_heldout_mae=lime.get('heldout_mae'),
+                               lime_elapsed_seconds=lime.get('elapsed_seconds'))
             except Exception:
                 logger.exception('Hybrid LIME explanation failed')
                 details['lime_status'] = 'error'
