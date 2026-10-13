@@ -1,8 +1,8 @@
 # Proyecto Flujo
 
-## Experimento NLP híbrido
+## Flujo Hybrid V3 con XAI y Qwen
 
-La rama `codex/hybrid-nlp` agrega un encoder multilingüe ajustable y un XGBoost nuevo, con comparación contra TF-IDF y embeddings congelados. El clasificador y endpoint actuales se conservan. Ver [entrenamiento, datasets, evaluación y endpoint experimental](docs/HYBRID_NLP.md).
+En `codex/hybrid-xai`, `POST /api/v1/analyze/hybrid` ejecuta Hybrid V3, reglas, SHAP, LIME cuando su fidelidad lo permite y Qwen para explicar alertas. La respuesta de Qwen se valida frente a evidencias y acciones autorizadas; un fallo activa el respaldo determinista. El Add-in de `codex/hybrid-xai-addin` consume esta ruta. Ver [entrenamiento, evaluación y configuración](docs/HYBRID_NLP.md). El despliegue de esta integración en AWS sigue pendiente de verificación.
 
 Este repositorio contiene el código fuente del proyecto Flujo.
 
@@ -20,26 +20,17 @@ Asegurate de tener Python instalado y luego instala las dependencias:
 
 ```bash
 pip install -r requirements.txt
+pip install -r requirements-hybrid.txt
 ```
 
-## Configuración del Modelo (¡Importante!)
+## Configuración local de Hybrid y Qwen
 
-Debido al tamaño de los archivos del modelo (como `model.safetensors`), la carpeta `model/` **no** está incluida en este repositorio para no exceder los límites de tamaño de GitHub.
+Los pesos de Hybrid y el GGUF de Qwen no se guardan en Git. Antes de iniciar el backend, ubicá el artefacto Hybrid V3 entrenado y el archivo `qwen2.5-3b-instruct-q4_k_m.gguf` en rutas accesibles al proceso. Se configuran por separado:
 
-**Pasos para configurar el modelo localmente:**
-
-1.  Pedile a un compañero de equipo el archivo comprimido con la carpeta `model/`.
-2.  Descomprimí el archivo.
-3.  Colocá la carpeta `model/` en la raíz de este proyecto (al mismo nivel que este archivo `README.md`).
-
-La estructura final debería verse así:
-```text
-Flujo/
-├── model/
-│   └── model.safetensors
-├── README.md
-├── requirements.txt
-└── ... resto de los archivos ...
+```powershell
+$env:PHISHARG_HYBRID_MODEL_DIR = 'C:\ruta\al\artefacto\multilingual-candidate-v3-curated'
+$env:PHISHARG_SLM_MODEL_PATH = 'C:\ruta\al\qwen2.5-3b-instruct-q4_k_m.gguf'
+python -m uvicorn main:app --host 127.0.0.1 --port 8001
 ```
 
-*(Nota: La carpeta `model/` está incluida en el archivo `.gitignore` y no se subirá al repositorio remoto accidentalmente).*
+La API requiere el artefacto Hybrid para responder en `/api/v1/analyze/hybrid`. Si el GGUF falta o su salida no supera la validación, devuelve una explicación estructurada de respaldo. La imagen Docker excluye el GGUF; para AWS habrá que aprovisionar ambos artefactos y medir memoria, latencia y costo antes de publicar la ruta.

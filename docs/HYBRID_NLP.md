@@ -1,6 +1,6 @@
-# NLP híbrido experimental
+# Hybrid V3: entrenamiento, evaluación y servicio
 
-Línea de investigación iniciada en `codex/hybrid-nlp` y extendida con XAI en `codex/hybrid-xai`. El modelo `model/phisharg_xgboost.pkl`, la convención productiva de columna 0 y `POST /api/v1/analyze` se conservan. Los candidatos nuevos se guardan exclusivamente en `artifacts/hybrid/`, excluido de Git. No se despliega ni se promueve automáticamente ningún candidato.
+La investigación comenzó en `codex/hybrid-nlp` y la ruta de entrega se desarrolló en `codex/hybrid-xai`. El Add-in conectado usa `POST /api/v1/analyze/hybrid` con Hybrid V3, XAI y Qwen. El endpoint anterior `POST /api/v1/analyze` permanece disponible por compatibilidad y conserva su propio artefacto; no se usan sus métricas para evaluar Hybrid. Los artefactos entrenados se guardan en `artifacts/hybrid/`, excluido de Git. La integración actual se probó localmente y su despliegue en AWS requiere verificación.
 
 ## Qué se entrena
 
@@ -46,16 +46,17 @@ La etiqueta `1` de este CSV representa phishing según los scripts de `Clasifica
 ## Servir y verificar
 
 ```powershell
-$env:PHISHARG_HYBRID_MODEL_DIR = 'artifacts/hybrid/multilingual-candidate-v1'
+$env:PHISHARG_HYBRID_MODEL_DIR = 'artifacts/hybrid/multilingual-candidate-v3-curated'
+$env:PHISHARG_SLM_MODEL_PATH = 'model/qwen2.5-3b-instruct-q4_k_m.gguf'
 .venv-hybrid/Scripts/python.exe -m uvicorn main:app --host 127.0.0.1 --port 8001
 ```
 
-- `POST /api/v1/analyze`: flujo existente.
-- `POST /api/v1/analyze/hybrid`: candidato experimental con la misma autenticación `X-API-Key` y payload. Si no hay configuración o el artefacto no es válido, responde 503.
+- `POST /api/v1/analyze/hybrid`: ruta que consume el Add-in de `codex/hybrid-xai-addin`, con autenticación `X-API-Key`. Si no hay configuración o el artefacto no es válido, responde 503.
+- `POST /api/v1/analyze`: ruta anterior conservada por compatibilidad.
 
 El loader verifica hashes, orden de features, dimensiones, clases y umbral. XGBoost se serializa en JSON nativo; el encoder se guarda por separado. Las features se extraen con la misma función en entrenamiento y servicio. Se ignoran anotaciones psicológicas/precomputadas del CSV que no podrían reproducirse con seguridad en Outlook.
 
-La ruta experimental conserva ajustes de cabeceras y reglas de contenido. `raw_model_score` es el score anterior a reglas; `risk_score` es el resultado final. Los scores XGBoost no se han calibrado en este experimento y las reglas pueden elevarlos. La explicación experimental es determinista y estructurada, sin invocar Qwen; el explicador y comportamiento de la ruta original se conservan. No se presentan supuestas palabras causales del embedding.
+La ruta Hybrid conserva ajustes de cabeceras y reglas de contenido. `raw_model_score` es el score anterior a reglas; `risk_score` es el resultado final. Los scores XGBoost no se han calibrado en este experimento y las reglas pueden elevarlos. Para alertas, el servidor calcula atribuciones SHAP y ejecuta LIME con controles de fidelidad. Luego Qwen genera una explicación JSON limitada a evidencias y acciones autorizadas; el servidor valida la salida y usa un respaldo determinista si falla. `explanation_source` indica si la explicación aceptada provino de Qwen o del respaldo. Para correos legítimos se omite Qwen. No se presentan supuestas palabras causales del embedding. Esta integración se verificó localmente con el artefacto Hybrid V3; su operación y latencia en AWS aún requieren pruebas.
 
 ```powershell
 .venv-hybrid/Scripts/python.exe -m pytest test_hybrid_pipeline.py -q

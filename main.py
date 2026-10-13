@@ -85,7 +85,7 @@ def analyze_hybrid_endpoint(
     lime_samples: int = Query(default=128, ge=64, le=256),
     api_key: str = Depends(get_api_key),
 ):
-    """Experimental hybrid route with bounded XAI; LIME can add substantial latency."""
+    """Analyze with Hybrid V3, bounded SHAP/LIME evidence, and Qwen when alerted."""
     from services.hybrid_classifier import analyze_hybrid_email, HybridUnavailableError
     try:
         return analyze_hybrid_email(payload, include_lime=include_lime, lime_samples=lime_samples)

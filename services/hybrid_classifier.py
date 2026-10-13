@@ -1,4 +1,4 @@
-"""Opt-in experimental hybrid inference; never replaces the legacy endpoint."""
+"""Hybrid V3 inference with bounded model attribution and SLM explanations."""
 
 from functools import lru_cache
 import hashlib
@@ -182,7 +182,8 @@ class HybridClassifier:
         from services.content_rules import detect_content_signals
         from services.security_rules import check_critical_threats, apply_security_rules
         from services.slm_explanation import (ExplanationEvidence, EvidenceSource,
-                                               build_analyzer_evidence, build_explanation_context, build_safe_fallback)
+                                               build_analyzer_evidence, build_explanation_context,
+                                               build_safe_fallback, validate_or_fallback_slm_output)
         security = payload.security_features
         critical, reason = check_critical_threats(security) if security else (False, '')
         signals = detect_content_signals(payload.contenido or '', payload.metadata.asunto or '')
@@ -245,22 +246,27 @@ class HybridClassifier:
             evidence = model_evidence + evidence
         context = build_explanation_context(is_phishing=bool(phishing), risk_score=float(score), intent=intent, evidence=evidence)
         summary = 'PHISHING DETECTADO' if phishing else 'LEGÍTIMO'
-        if not phishing:
-            slm_explanation = build_safe_fallback(context).model_dump_json()
-        else:
+        explanation_source = 'fallback'
+        if phishing:
             try:
                 from services.slm_client import generate_slm_explanation
-                slm_explanation = generate_slm_explanation(context)
+                generated = generate_slm_explanation(context)
+                validated = validate_or_fallback_slm_output(generated, context)
+                slm_explanation = validated.explanation.model_dump_json()
+                if not validated.used_fallback:
+                    explanation_source = 'qwen'
             except Exception:
+                logger.exception('Hybrid SLM explanation failed')
                 slm_explanation = build_safe_fallback(context).model_dump_json()
+        else:
+            slm_explanation = build_safe_fallback(context).model_dump_json()
         return AnalysisResultSchema(is_phishing=bool(phishing), risk_score=round(score, 4),
                                     reason=summary + (': ' + reason if critical else '') +
                                     (': ' + ' '.join(s.description for s in signals) if signals else ''),
                                     intent=intent, security_adjustments=adjustments, content_signals=signals,
                                     raw_model_score=raw, decision_source=source,
-                                    slm_explanation=slm_explanation,
+                                    slm_explanation=slm_explanation, explanation_source=explanation_source,
                                     hybrid_xai=xai)
-
 
 
 @lru_cache(maxsize=1)
@@ -271,9 +277,9 @@ def _load(directory):
 def analyze_hybrid_email(payload, *, include_lime=True, lime_samples=128):
     directory = os.getenv('PHISHARG_HYBRID_MODEL_DIR')
     if not directory:
-        raise HybridUnavailableError('El clasificador híbrido experimental no está configurado.')
+        raise HybridUnavailableError('El clasificador Hybrid no está configurado.')
     try:
         classifier = _load(str(Path(directory).resolve()))
         return classifier.analyze(payload, include_lime=include_lime, lime_samples=lime_samples)
     except (ImportError, OSError, ValueError, RuntimeError, KeyError) as exc:
-        raise HybridUnavailableError('No se pudo utilizar el clasificador híbrido experimental.') from exc
+        raise HybridUnavailableError('No se pudo utilizar el clasificador Hybrid.') from exc

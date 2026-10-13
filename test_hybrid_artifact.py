@@ -91,6 +91,8 @@ def test_real_hybrid_http_and_explanation(trained):
     assert result['hybrid_xai']['scope'] == 'raw_hybrid_model_score'
     explanation = json.loads(result['slm_explanation'])
     assert explanation['reasons'][0]['evidence_id'] == 'content.credential_disclosure_request'
+    if os.getenv('HYBRID_TEST_QWEN') == '1':
+        assert result['explanation_source'] == 'qwen'
 
 
 def test_neural_weights_actually_changed(trained):

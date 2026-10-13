@@ -9,3 +9,4 @@ docker-compose.yml
 *.code-workspace
 DataSet/
 model_onnx/
+model/*.gguf

@@ -2,9 +2,7 @@ import os
 import json
 import time
 import logging
-from typing import Optional, Dict, Any
 
-from pydantic import ValidationError
 from services.slm_explanation import (
     SLMExplanationContext,
     build_slm_prompt_messages,
@@ -14,7 +12,50 @@ from services.slm_explanation import (
 logger = logging.getLogger(__name__)
 
 # Configuramos la ruta del modelo descargado
-MODEL_PATH = os.path.join(os.path.dirname(os.path.dirname(__file__)), "model", "qwen2.5-3b-instruct-q4_k_m.gguf")
+MODEL_PATH = os.getenv("PHISHARG_SLM_MODEL_PATH") or os.path.join(
+    os.path.dirname(os.path.dirname(__file__)), "model", "qwen2.5-3b-instruct-q4_k_m.gguf"
+)
+
+
+def _response_schema(context: SLMExplanationContext) -> dict:
+    """Constrain Qwen to the existing server-owned explanation contract."""
+    from services.slm_explanation import SAFE_ACTION_TEXTS, SafeActionCode
+
+    allowed_actions = {
+        code: text for code, text in SAFE_ACTION_TEXTS.items()
+        if not context.is_phishing or code is not SafeActionCode.NO_ACTION_NEEDED
+    }
+
+    return {
+        "type": "object",
+        "properties": {
+            "summary": {"type": "string", "enum": [context.authoritative_summary]},
+            "reasons": {
+                "type": "array", "minItems": 1, "maxItems": 5,
+                "items": {
+                    "type": "object",
+                    "properties": {
+                        "evidence_id": {"type": "string", "enum": [item.evidence_id for item in context.evidence]},
+                        "text": {"type": "string", "enum": [item.text for item in context.evidence]},
+                    },
+                    "required": ["evidence_id", "text"], "additionalProperties": False,
+                },
+            },
+            "recommended_actions": {
+                "type": "array", "minItems": 1, "maxItems": 3,
+                "items": {
+                    "type": "object",
+                    "properties": {
+                        "code": {"type": "string", "enum": [code.value for code in allowed_actions]},
+                        "text": {"type": "string", "enum": list(allowed_actions.values())},
+                    },
+                    "required": ["code", "text"], "additionalProperties": False,
+                },
+            },
+        },
+        "required": ["summary", "reasons", "recommended_actions"],
+        "additionalProperties": False,
+    }
 
 # Instancia global (singleton lazy)
 _slm_instance = None
@@ -58,7 +99,7 @@ def generate_slm_explanation(context: SLMExplanationContext) -> str:
             messages=messages,
             temperature=0.1,
             max_tokens=300, 
-            response_format={"type": "json_object"}
+            response_format={"type": "json_object", "schema": _response_schema(context)}
         )
         raw_output = response['choices'][0]['message']['content'].strip()
         
@@ -75,7 +116,7 @@ def generate_slm_explanation(context: SLMExplanationContext) -> str:
                 messages=messages,
                 temperature=0.1,
                 max_tokens=300, 
-                response_format={"type": "json_object"}
+                response_format={"type": "json_object", "schema": _response_schema(context)}
             )
             retry_output = retry_response['choices'][0]['message']['content'].strip()
             

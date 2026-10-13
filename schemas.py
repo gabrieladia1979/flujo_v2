@@ -115,6 +115,7 @@ class AnalysisResultSchema(BaseModel):
     slots_detectados: Optional[dict] = None
     security_adjustments: Optional[List[SecurityAdjustment]] = None
     slm_explanation: Optional[str] = None
+    explanation_source: Optional[Literal["qwen", "fallback"]] = None
     raw_model_score: Optional[float] = Field(default=None, ge=0.0, le=1.0)
     decision_source: Optional[str] = None
     content_signals: List[ContentSignal] = Field(default_factory=list)

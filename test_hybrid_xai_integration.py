@@ -4,6 +4,7 @@ import json
 from unittest.mock import patch
 
 from fastapi.testclient import TestClient
+import pytest
 
 from schemas import EmailPayloadSchema
 from services.hybrid_classifier import HybridClassifier
@@ -13,6 +14,11 @@ PAYLOAD = EmailPayloadSchema.model_validate({
     'metadata': {'asunto': 'Aviso de prueba'},
     'contenido': 'Mensaje de prueba sobre cuenta y acceso.',
 })
+
+
+@pytest.fixture(autouse=True)
+def avoid_real_qwen_in_unit_tests(monkeypatch):
+    monkeypatch.setattr('services.slm_client.generate_slm_explanation', lambda context: '')
 
 
 def classifier():
@@ -124,3 +130,28 @@ def test_legitimate_result_skips_lime_but_keeps_technical_attribution(monkeypatc
     assert result.is_phishing is False
     assert result.hybrid_xai.technical_status == 'available'
     assert result.hybrid_xai.lime_status == 'skipped'
+
+
+def test_hybrid_uses_validated_qwen_explanation(monkeypatch):
+    from services.slm_explanation import build_safe_fallback
+    instance = classifier()
+    monkeypatch.setattr(instance, 'raw_score', lambda payload: 0.95)
+    monkeypatch.setattr(instance, 'technical_attributions', lambda payload, raw: ([], 1.0, 0.0))
+    monkeypatch.setattr('services.slm_client.generate_slm_explanation',
+                        lambda context: build_safe_fallback(context).model_dump_json())
+
+    result = instance.analyze(PAYLOAD, include_lime=False)
+    assert result.explanation_source == 'qwen'
+    assert json.loads(result.slm_explanation)['summary'] == 'El clasificador determinó que el correo es phishing.'
+
+
+def test_hybrid_rejects_unverified_qwen_claims(monkeypatch):
+    instance = classifier()
+    monkeypatch.setattr(instance, 'raw_score', lambda payload: 0.95)
+    monkeypatch.setattr(instance, 'technical_attributions', lambda payload, raw: ([], 1.0, 0.0))
+    monkeypatch.setattr('services.slm_client.generate_slm_explanation',
+                        lambda context: '{"summary":"Inventé una alerta bancaria","reasons":[],"recommended_actions":[]}')
+
+    result = instance.analyze(PAYLOAD, include_lime=False)
+    assert result.explanation_source == 'fallback'
+    assert json.loads(result.slm_explanation)['summary'] == 'El clasificador determinó que el correo es phishing.'
