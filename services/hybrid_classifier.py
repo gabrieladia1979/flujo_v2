@@ -181,7 +181,7 @@ class HybridClassifier:
                 details['lime_status'] = 'error'
         return HybridXAIResult(**details)
 
-    def analyze(self, payload, *, include_lime=True, lime_samples=128):
+    def analyze(self, payload, *, include_lime=True, lime_samples=128, quick=False):
         from services.content_rules import detect_content_signals
         from services.security_rules import check_critical_threats, apply_security_rules
         from services.slm_explanation import (ExplanationEvidence, EvidenceSource,
@@ -219,9 +219,10 @@ class HybridClassifier:
                                            critical_reason=reason if critical else None, content_signals=signals)
         # A critical rule bypasses the model. For other alerts, keep model evidence
         # separate from the rules that may have raised the final risk score.
-        xai = self.explain(payload, raw, include_lime=include_lime and phishing,
-                           lime_samples=lime_samples)
-        if include_lime and not phishing:
+        xai = (HybridXAIResult(technical_status='skipped', lime_status='skipped') if quick
+               else self.explain(payload, raw, include_lime=include_lime and phishing,
+                                 lime_samples=lime_samples))
+        if include_lime and not phishing and not quick:
             xai.lime_status = 'skipped'
         xai.supports_final_verdict = (raw is not None and
                                       (raw >= self.manifest['threshold']) == bool(phishing))
@@ -250,7 +251,7 @@ class HybridClassifier:
         context = build_explanation_context(is_phishing=bool(phishing), risk_score=float(score), intent=intent, evidence=evidence)
         summary = 'PHISHING DETECTADO' if phishing else 'LEGÍTIMO'
         explanation_source = 'fallback'
-        if phishing:
+        if phishing and not quick:
             try:
                 from services.slm_client import generate_slm_explanation
                 generated = generate_slm_explanation(context)
@@ -277,12 +278,13 @@ def _load(directory):
     return HybridClassifier(directory)
 
 
-def analyze_hybrid_email(payload, *, include_lime=True, lime_samples=128):
+def analyze_hybrid_email(payload, *, include_lime=True, lime_samples=128, quick=False):
     directory = os.getenv('PHISHARG_HYBRID_MODEL_DIR')
     if not directory:
         raise HybridUnavailableError('El clasificador Hybrid no está configurado.')
     try:
         classifier = _load(str(Path(directory).resolve()))
-        return classifier.analyze(payload, include_lime=include_lime, lime_samples=lime_samples)
+        return classifier.analyze(payload, include_lime=include_lime, lime_samples=lime_samples,
+                                  quick=quick)
     except (ImportError, OSError, ValueError, RuntimeError, KeyError) as exc:
         raise HybridUnavailableError('No se pudo utilizar el clasificador Hybrid.') from exc

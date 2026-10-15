@@ -21,3 +21,4 @@ shap                # Para Explicabilidad (XAI)
 # --- Utilidades ---
 python-dotenv       # Variables de entorno desde .env
 httpx               # Necesario para FastAPI TestClient
+boto3>=1.35,<2      # Registro compartido de tokens usados en DynamoDB (AWS)

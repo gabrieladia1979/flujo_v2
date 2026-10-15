@@ -27,6 +27,32 @@ def classifier():
     return instance
 
 
+def test_quick_verdict_skips_xai_and_qwen_but_keeps_safe_explanation(monkeypatch):
+    import main
+
+    instance = classifier()
+    monkeypatch.setattr(instance, 'raw_score', lambda payload: 0.95)
+    monkeypatch.setattr(instance, 'explain', lambda *args, **kwargs: (_ for _ in ()).throw(AssertionError('XAI called')))
+    monkeypatch.setattr('services.slm_client.generate_slm_explanation',
+                        lambda context: (_ for _ in ()).throw(AssertionError('Qwen called')))
+    with patch.dict('os.environ', {'PHISHARG_HYBRID_MODEL_DIR': 'fake-artifact'}), \
+         patch('services.hybrid_classifier._load', return_value=instance):
+        response = TestClient(main.app).post(
+            '/api/v1/analyze/hybrid?quick=true',
+            headers={main.API_KEY_NAME: main.API_KEY},
+            json={'metadata': {'asunto': 'Aviso de prueba'},
+                  'contenido': 'Mensaje de prueba sobre cuenta y acceso.'},
+        )
+    assert response.status_code == 200
+    result = response.json()
+    assert result['is_phishing'] is True
+    assert result['risk_score'] == 0.95
+    assert result['explanation_source'] == 'fallback'
+    assert result['hybrid_xai']['technical_status'] == 'skipped'
+    assert result['hybrid_xai']['lime_status'] == 'skipped'
+    assert json.loads(result['slm_explanation'])['recommended_actions']
+
+
 def test_reliable_lime_and_technical_shap_reach_main_hybrid_response(monkeypatch):
     instance = classifier()
     monkeypatch.setattr(instance, 'raw_score', lambda payload: 0.95)
