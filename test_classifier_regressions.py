@@ -3,6 +3,7 @@
 from unittest.mock import patch
 
 import pytest
+import numpy as np
 
 from schemas import EmailPayloadSchema, MetadataSchema, SecurityFeaturesSchema
 from services import analyzer
@@ -52,6 +53,48 @@ def test_classification_does_not_mutate_input():
     before = payload.model_dump()
     analyzer._classify_payload(payload)
     assert payload.model_dump() == before
+
+
+def test_unexplained_model_alert_does_not_claim_credential_theft():
+    payload = EmailPayloadSchema(metadata=MetadataSchema(asunto='Resumen de reunión'),
+        contenido='Hola equipo. Compartimos el resumen semanal. No hace falta responder.')
+    with patch.object(analyzer.calibrated_model, 'predict_proba',
+                      return_value=np.array([[0.94, 0.06]])):
+        diagnostics = analyzer._classify_payload(payload)
+    assert diagnostics['is_phishing'] is True
+    assert diagnostics['content_signals'] == []
+    assert diagnostics['intent'] == 'intencion_no_determinada'
+
+
+def test_informational_meeting_email_is_legitimate():
+    payload = EmailPayloadSchema(metadata=MetadataSchema(
+        asunto='[PFI-DEMO-03] Resumen de la reunión semanal',
+        remitente_email='tomas.basualdo44@gmail.com'),
+        contenido=('Hola, equipo: Comparto el resumen de la reunión semanal. '
+                   'La entrega de la primera etapa continúa según lo planificado. '
+                   'La próxima revisión será el viernes a las 10:00. '
+                   'Cada integrante actualizará el estado de sus tareas antes de la reunión. '
+                   'Este correo es únicamente informativo. No es necesario responder '
+                   'ni realizar ninguna acción adicional. Saludos, Equipo de Proyecto'))
+    diagnostics = analyzer._classify_payload(payload)
+    assert diagnostics['is_phishing'] is False
+    assert diagnostics['risk_score'] < 0.5
+
+
+def test_authenticated_terms_update_is_not_credential_theft():
+    payload = EmailPayloadSchema(metadata=MetadataSchema(
+        asunto='Actualizaciones de nuestros términos de uso',
+        remitente_email='msa@communication.microsoft.com'),
+        contenido=('Hola: Ha recibido este correo electrónico porque vamos a actualizar '
+                   'el Contrato de servicios de Microsoft. Puede leer el contrato completo aquí. '
+                   'Las actualizaciones entrarán en vigor el 30 de septiembre de 2026. '
+                   'Si continúa usando nuestros productos y servicios, estará aceptando las actualizaciones.'),
+        security_features=SecurityFeaturesSchema(
+            spf_result='pass', dkim_result='pass', dmarc_result='pass',
+            auth_as='Anonymous', received_hop_count=5, has_headers=True))
+    diagnostics = analyzer._classify_payload(payload)
+    assert diagnostics['is_phishing'] is False
+    assert diagnostics['intent'] == 'comunicacion_operativa'
 
 
 def test_cache_distinguishes_senders_and_reuses_same_request():
