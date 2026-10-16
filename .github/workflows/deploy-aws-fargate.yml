@@ -1,0 +1,95 @@
+name: Deploy AWS Fargate
+
+on:
+  push:
+    branches: [aws-fargate-deployment]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write
+
+concurrency:
+  group: deploy-aws-fargate
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    env:
+      AWS_REGION: us-east-1
+      ECR_REPOSITORY: phisharg-api
+      ECS_CONTAINER: phisharg-api
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Verify deployment configuration
+        env:
+          ROLE_ARN: ${{ vars.AWS_DEPLOY_ROLE_ARN }}
+          ECS_CLUSTER: ${{ vars.ECS_CLUSTER }}
+          ECS_SERVICE: ${{ vars.ECS_SERVICE }}
+        run: |
+          for name in ROLE_ARN ECS_CLUSTER ECS_SERVICE; do
+            if [ -z "${!name}" ]; then
+              echo "Missing GitHub Actions variable: $name" >&2
+              exit 1
+            fi
+          done
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v6.3.0
+        with:
+          role-to-assume: ${{ vars.AWS_DEPLOY_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Log in to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Build container image
+        id: image
+        env:
+          REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+        run: |
+          IMAGE="$REGISTRY/$ECR_REPOSITORY:$GITHUB_SHA"
+          docker build --tag "$IMAGE" .
+          echo "uri=$IMAGE" >> "$GITHUB_OUTPUT"
+
+      - name: Verify packaged classifier orientation
+        env:
+          IMAGE: ${{ steps.image.outputs.uri }}
+        run: docker run --rm --entrypoint python "$IMAGE" scripts/smoke_classifier.py
+
+      - name: Push image to Amazon ECR
+        env:
+          IMAGE: ${{ steps.image.outputs.uri }}
+        run: docker push "$IMAGE"
+
+      - name: Render ECS task definition
+        id: task-def
+        uses: aws-actions/amazon-ecs-render-task-definition@v1
+        with:
+          task-definition: deploy/ecs/task-definition.json
+          container-name: ${{ env.ECS_CONTAINER }}
+          image: ${{ steps.image.outputs.uri }}
+
+      - name: Deploy ECS service
+        uses: aws-actions/amazon-ecs-deploy-task-definition@v2
+        with:
+          task-definition: ${{ steps.task-def.outputs.task-definition }}
+          cluster: ${{ vars.ECS_CLUSTER }}
+          service: ${{ vars.ECS_SERVICE }}
+          wait-for-service-stability: true
+
+      - name: Verify public health
+        run: |
+          python - <<'PY'
+          import json
+          import urllib.request
+
+          with urllib.request.urlopen("https://api.phisharg.com/api/v1/health", timeout=20) as response:
+              health = json.load(response)
+          if not health.get("classifier", {}).get("loaded"):
+              raise SystemExit(f"Classifier not loaded after deployment: {health}")
+          print("Public API reports classifier.loaded=true")
+          PY
