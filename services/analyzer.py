@@ -361,7 +361,7 @@ def _classify_payload(payload: EmailPayloadSchema) -> dict:
     elif any(s.rule == 'delivery_fee_fraud' for s in content_signals) or slots_count['FINANCIERO'] > 0:
         intent = "coaccionar_pago"
     else:
-        intent = "solicitar_credenciales"
+        intent = "intencion_no_determinada"
 
     return {
         "raw_score": raw_score,
@@ -461,7 +461,8 @@ def analyze_email(payload: EmailPayloadSchema) -> AnalysisResultSchema:
                 shap_words = extract_shap_insights(calibrated_model, X_input_mat, tfidf)
                 if shap_words:
                     from services.slm_explanation import ExplanationEvidence, EvidenceSource
-                    valid_words = [w for w in shap_words if w and not w.startswith("Tiene_") and not w.startswith("URL_")]
+                    vocabulary = set(tfidf.get_feature_names_out())
+                    valid_words = [w for w in shap_words if w in vocabulary]
                     if valid_words:
                         explanation_evidence.append(ExplanationEvidence(
                             evidence_id="evidence.keywords",
