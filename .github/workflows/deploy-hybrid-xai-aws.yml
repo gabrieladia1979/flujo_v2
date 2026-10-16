@@ -1,0 +1,117 @@
+name: Deploy Hybrid XAI pilot
+
+on:
+  push:
+    branches: [codex/hybrid-xai-aws]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write
+
+concurrency:
+  group: deploy-hybrid-xai-aws
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    env:
+      AWS_REGION: us-east-1
+      ECR_REPOSITORY: phisharg-hybrid
+      ECS_CONTAINER: phisharg-hybrid
+      HYBRID_MODEL_S3_KEY: hybrid/multilingual-candidate-v3-curated/v1/model.zip
+      ECS_EXECUTION_ROLE_ARN: ${{ vars.ECS_EXECUTION_ROLE_ARN }}
+      HYBRID_TASK_ROLE_ARN: ${{ vars.HYBRID_TASK_ROLE_ARN }}
+      API_KEY_SECRET_ARN: ${{ vars.API_KEY_SECRET_ARN }}
+      TOKEN_KEY_SECRET_ARN: ${{ vars.TOKEN_KEY_SECRET_ARN }}
+      HYBRID_MODEL_BUCKET: ${{ vars.HYBRID_MODEL_BUCKET }}
+      HYBRID_MODEL_VERSION_ID: ${{ vars.HYBRID_MODEL_VERSION_ID }}
+      HYBRID_MODEL_SHA256: ${{ vars.HYBRID_MODEL_SHA256 }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Verify pilot configuration
+        env:
+          ROLE_ARN: ${{ vars.HYBRID_AWS_DEPLOY_ROLE_ARN }}
+          HYBRID_ECS_CLUSTER: ${{ vars.HYBRID_ECS_CLUSTER }}
+          HYBRID_ECS_SERVICE: ${{ vars.HYBRID_ECS_SERVICE }}
+        run: |
+          for name in ROLE_ARN HYBRID_ECS_CLUSTER HYBRID_ECS_SERVICE ECS_EXECUTION_ROLE_ARN HYBRID_TASK_ROLE_ARN API_KEY_SECRET_ARN TOKEN_KEY_SECRET_ARN HYBRID_MODEL_BUCKET HYBRID_MODEL_VERSION_ID HYBRID_MODEL_SHA256; do
+            if [ -z "${!name}" ]; then
+              echo "Missing GitHub Actions variable: $name" >&2
+              exit 1
+            fi
+          done
+          [[ "$HYBRID_MODEL_SHA256" =~ ^[0-9a-f]{64}$ ]] || { echo 'HYBRID_MODEL_SHA256 must be lowercase hex' >&2; exit 1; }
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v6.3.0
+        with:
+          role-to-assume: ${{ vars.HYBRID_AWS_DEPLOY_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Fetch pinned Hybrid artifact
+        run: |
+          aws s3api get-object \
+            --bucket "$HYBRID_MODEL_BUCKET" \
+            --key "$HYBRID_MODEL_S3_KEY" \
+            --version-id "$HYBRID_MODEL_VERSION_ID" \
+            hybrid-model.zip > /dev/null
+          echo "$HYBRID_MODEL_SHA256  hybrid-model.zip" | sha256sum --check
+          mkdir .hybrid-model
+          python -m zipfile -e hybrid-model.zip .hybrid-model
+
+      - name: Log in to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Build pilot image
+        id: image
+        env:
+          REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+        run: |
+          IMAGE="$REGISTRY/$ECR_REPOSITORY:$GITHUB_SHA"
+          docker build --tag "$IMAGE" .
+          echo "uri=$IMAGE" >> "$GITHUB_OUTPUT"
+
+      - name: Verify Hybrid classifier in built image
+        env:
+          IMAGE: ${{ steps.image.outputs.uri }}
+        run: |
+          docker run --rm --entrypoint python \
+            --volume "$PWD/.hybrid-model:/model:ro" \
+            --env PHISHARG_HYBRID_MODEL_DIR=/model \
+            "$IMAGE" scripts/smoke_hybrid.py
+
+      - name: Push image to Amazon ECR
+        env:
+          IMAGE: ${{ steps.image.outputs.uri }}
+        run: docker push "$IMAGE"
+
+      - name: Render task configuration
+        run: python scripts/render_hybrid_task.py
+
+      - name: Insert immutable image tag
+        id: task-def
+        uses: aws-actions/amazon-ecs-render-task-definition@v1
+        with:
+          task-definition: hybrid-task-rendered.json
+          container-name: ${{ env.ECS_CONTAINER }}
+          image: ${{ steps.image.outputs.uri }}
+
+      - name: Deploy separate Hybrid ECS service
+        uses: aws-actions/amazon-ecs-deploy-task-definition@v2
+        with:
+          task-definition: ${{ steps.task-def.outputs.task-definition }}
+          cluster: ${{ vars.HYBRID_ECS_CLUSTER }}
+          service: ${{ vars.HYBRID_ECS_SERVICE }}
+          wait-for-service-stability: true
+
+      - name: Verify public readiness when URL is configured
+        if: vars.HYBRID_PUBLIC_URL != ''
+        env:
+          HYBRID_PUBLIC_URL: ${{ vars.HYBRID_PUBLIC_URL }}
+        run: |
+          curl --fail --show-error --silent --max-time 30 \
+            "${HYBRID_PUBLIC_URL%/}/api/v1/health/ready"

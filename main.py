@@ -147,6 +147,33 @@ app = FastAPI(
     version="2.0.0"
 )
 
+
+@app.on_event("startup")
+def preload_hybrid_when_configured() -> None:
+    """Make a pilot task fail before serving if the selected artifact is unusable."""
+    if os.getenv("PRELOAD_HYBRID", "").lower() in {"1", "true", "yes"}:
+        from pathlib import Path
+        from services.hybrid_classifier import _load
+
+        directory = os.getenv("PHISHARG_HYBRID_MODEL_DIR", "")
+        if not directory:
+            raise RuntimeError("PHISHARG_HYBRID_MODEL_DIR is required")
+        _load(str(Path(directory).resolve()))
+
+
+@app.get("/api/v1/health/ready")
+def hybrid_readiness_check():
+    """ECS accepts traffic only after the selected classifier is loaded."""
+    from services.analyzer import calibrated_model, tfidf
+    from services.hybrid_classifier import _load
+
+    legacy_loaded = calibrated_model is not None and tfidf is not None
+    hybrid_required = os.getenv("PRELOAD_HYBRID", "").lower() in {"1", "true", "yes"}
+    hybrid_loaded = _load.cache_info().currsize > 0
+    if not legacy_loaded or (hybrid_required and not hybrid_loaded):
+        raise HTTPException(status_code=503, detail="Classifier not ready")
+    return {"status": "ready", "classifier_loaded": legacy_loaded, "hybrid_loaded": hybrid_loaded}
+
 # El Add-in publicado obtiene un permiso breve y envía el correo directamente.
 # CORS admite solo el origen del complemento o los indicados explícitamente.
 cors_origins = [origin.strip().rstrip("/") for origin in

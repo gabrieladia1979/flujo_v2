@@ -19,6 +19,7 @@ CREDENTIAL_REQUESTS = [
     '<p>Env&iacute;e su <strong>contrase&ntilde;a</strong> por correo.</p>',
     'Nunca compartas tus claves. Para este trámite, enviame tu contraseña.',
     'Capacitación de seguridad. Respondé este correo con tu contraseña.',
+    'Ingrese a http://microsoft-login-example.net y escriba su usuario, contraseña y código MFA.',
 ]
 PAYMENT_REQUESTS = [
     'No llame al proveedor. Transfiera hoy el saldo pendiente a la nueva cuenta indicada y envíe el comprobante respondiendo este mensaje.',

@@ -42,13 +42,15 @@ def _clauses(text):
     visible = re.sub(r'(?m)^\s*>[^\n]*', '', visible)
     # Remove quoted text ONLY if preceded by educational/reporting cues
     visible = re.sub(r'(?i)\b(?:ejemplo|frase|dice|decía|decia|dicen|solicitud|mensaje sospechoso)\s*(?::\s*)?(?:"[^"\n]*"|“[^”\n]*”|«[^»\n]*»)', '', visible)
+    # A domain dot must not split an instruction from the requested secret.
+    visible = re.sub(r'(?i)\b(?:https?://|www\.)[^\s<>"\']+', ' sitio ', visible)
     normalized = ''.join(c for c in unicodedata.normalize('NFKD', visible.lower())
                          if not unicodedata.combining(c))
     return [re.sub(r'\s+', ' ', s).strip() for s in re.split(r'[.!?;\n]+', normalized) if s.strip()]
 
 
-_SEND = re.compile(r'\b(?:responda|responde|respondeme|respondanos|envie|envia|enviame|envienos|mande|manda|mandame|comparta|comparti|compartime|facilite|facilita|ingrese|ingresa|ingresando|actualice|actualiza|actualizando|confirme|confirma|confirmar)\b')
-_SECRET = re.compile(r'\b(?:contrasenas?|passwords?|claves? (?:fiscal(?:es)?|bancarias?|de acceso)|tokens?|cvv|pin|codigos? (?:sms|de (?:seguridad|verificacion|autenticacion)))\b')
+_SEND = re.compile(r'\b(?:responda|responde|respondeme|respondanos|envie|envia|enviame|envienos|mande|manda|mandame|comparta|comparti|compartime|facilite|facilita|ingrese|ingresa|ingresando|escriba|escribe|escriban|actualice|actualiza|actualizando|confirme|confirma|confirmar)\b')
+_SECRET = re.compile(r'\b(?:contrasenas?|passwords?|claves? (?:fiscal(?:es)?|bancarias?|de acceso)|tokens?|cvv|pin|codigos? (?:sms|mfa|2fa|de (?:seguridad|verificacion|autenticacion)))\b')
 _PAY = re.compile(r'\b(?:transfiera|transferi|transfieran|pague|paga|paguen|deposite|deposita|realice (?:el pago|la transferencia))\b')
 _NEW_ACCOUNT = re.compile(r'\b(?:(?:nueva|otra) cuenta|cuenta (?:nueva|actualizada)|nuevo (?:cbu|alias)|(?:cbu|alias) (?:nuevo|actualizado))\b')
 _NO_VERIFY = re.compile(r'\b(?:no (?:llame|llames|llamen|contacte|contactes|contacten|verifique|verifiques|consulte|consultes)|sin (?:llamar|contactar|verificar|consultar))\b')
