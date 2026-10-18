@@ -263,6 +263,7 @@ class AnalyzerSLMIntegrationTests(unittest.TestCase):
                 "slots_detectados",
                 "security_adjustments",
                 "slm_explanation",
+                "explanation_source",
                 "raw_model_score",
                 "decision_source",
                 "content_signals",

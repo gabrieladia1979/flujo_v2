@@ -379,11 +379,26 @@ def _classify_payload(payload: EmailPayloadSchema) -> dict:
     }
 
 
+def _structured_explanation(context, *, use_slm: bool) -> tuple[str, str]:
+    """Return a validated JSON explanation and disclose whether the SLM supplied it."""
+    from services.slm_explanation import build_safe_fallback, validate_or_fallback_slm_output
+
+    if not use_slm:
+        return build_safe_fallback(context).model_dump_json(), "fallback"
+
+    try:
+        from services.slm_client import generate_slm_explanation
+        raw_output = generate_slm_explanation(context)
+    except Exception:
+        raw_output = None
+    result = validate_or_fallback_slm_output(raw_output, context)
+    return result.explanation.model_dump_json(), "fallback" if result.used_fallback else "slm"
+
+
 def analyze_email(payload: EmailPayloadSchema) -> AnalysisResultSchema:
     from services.slm_explanation import (
         build_analyzer_evidence,
         build_explanation_context,
-        render_server_fallback,
     )
 
     content_hash = hashlib.sha256(
@@ -412,11 +427,9 @@ def analyze_email(payload: EmailPayloadSchema) -> AnalysisResultSchema:
                 intent=critical_intent,
                 evidence=critical_evidence,
             )
-            try:
-                from services.slm_client import generate_slm_explanation
-                express_explanation = generate_slm_explanation(critical_context)
-            except Exception:
-                express_explanation = render_server_fallback(critical_context)
+            express_explanation, explanation_source = _structured_explanation(
+                critical_context, use_slm=True
+            )
 
             resultado_express = AnalysisResultSchema(
                 is_phishing=True,
@@ -426,6 +439,7 @@ def analyze_email(payload: EmailPayloadSchema) -> AnalysisResultSchema:
                 slots_detectados={},
                 security_adjustments=[],
                 slm_explanation=express_explanation,
+                explanation_source=explanation_source,
                 decision_source="critical_security_rule",
             )
             _set_cached_analysis(content_hash, resultado_express)
@@ -478,16 +492,11 @@ def analyze_email(payload: EmailPayloadSchema) -> AnalysisResultSchema:
         evidence=explanation_evidence,
     )
     
-    if not is_phishing:
-        # Fast-path: Si es legítimo, no consumimos recursos del SLM ni SHAP
-        slm_explanation = render_server_fallback(explanation_context)
-    else:
-        try:
-            from services.slm_client import generate_slm_explanation
-            slm_explanation = generate_slm_explanation(explanation_context)
-        except Exception:
-            # Evita que un fallo del SLM impida devolver el veredicto
-            slm_explanation = render_server_fallback(explanation_context)
+    # Legitimate mail takes the fast path. Phishing mail may use the SLM, but
+    # only a validated response is exposed as model-generated content.
+    slm_explanation, explanation_source = _structured_explanation(
+        explanation_context, use_slm=is_phishing
+    )
 
     final_result = AnalysisResultSchema(
         is_phishing=is_phishing,
@@ -497,6 +506,7 @@ def analyze_email(payload: EmailPayloadSchema) -> AnalysisResultSchema:
         slots_detectados=slots_text,
         security_adjustments=security_adjustments,
         slm_explanation=slm_explanation,
+        explanation_source=explanation_source,
         raw_model_score=diagnostics.get("raw_score"),
         decision_source=diagnostics["decision_source"],
         content_signals=content_signals,

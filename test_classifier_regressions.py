@@ -1,5 +1,6 @@
 """Regression coverage for email representation, cache and bulk-mail decisions."""
 
+import json
 from unittest.mock import patch
 
 import pytest
@@ -111,6 +112,41 @@ def test_cache_distinguishes_senders_and_reuses_same_request():
         analyzer.analyze_email(payload)
         analyzer.analyze_email(other)
     assert classify.call_count == 2
+
+
+def test_fallback_explanation_is_structured_and_identified():
+    payload = EmailPayloadSchema(metadata=MetadataSchema(
+        asunto='Resumen de reunión', remitente_email='equipo@example.invalid'),
+        contenido='La reunión será mañana a las 10:00. No se requiere ninguna acción.')
+    diagnostics = dict(raw_score=0.01, risk_score=0.01, is_phishing=False,
+                       intent='comunicacion_operativa', slots_detectados={},
+                       security_adjustments=None, decision_source='model_only', critical_reason=None)
+    with patch.object(analyzer, '_ANALYSIS_CACHE', {}), \
+         patch.object(analyzer, '_classify_payload', return_value=diagnostics):
+        result = analyzer.analyze_email(payload)
+    explanation = json.loads(result.slm_explanation)
+    assert result.explanation_source == 'fallback'
+    assert explanation['summary']
+    assert explanation['reasons']
+    assert explanation['recommended_actions']
+
+
+def test_valid_slm_explanation_is_identified_and_invalid_output_falls_back():
+    from services.slm_explanation import build_explanation_context, build_safe_fallback
+
+    context = build_explanation_context(is_phishing=True, risk_score=0.95,
+        intent='desviar_pago', evidence=[dict(evidence_id='content.payment',
+        text='El mensaje pide pagar a una cuenta nueva.', source='observed_signal')])
+    valid_json = build_safe_fallback(context).model_dump_json()
+    with patch('services.slm_client.generate_slm_explanation', return_value=valid_json):
+        explanation, source = analyzer._structured_explanation(context, use_slm=True)
+    assert source == 'slm'
+    assert json.loads(explanation)['summary'] == context.authoritative_summary
+
+    with patch('services.slm_client.generate_slm_explanation', return_value='texto plano'):
+        explanation, source = analyzer._structured_explanation(context, use_slm=True)
+    assert source == 'fallback'
+    assert json.loads(explanation)['summary'] == context.authoritative_summary
 
 
 def test_comparison_restores_production_index():
