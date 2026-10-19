@@ -36,6 +36,12 @@ class Adjustment:
         self.description = description
 
 
+class ContentSignal:
+    def __init__(self, rule: str, description: str):
+        self.rule = rule
+        self.description = description
+
+
 def action(code: SafeActionCode) -> dict[str, str]:
     return {"code": code.value, "text": SAFE_ACTION_TEXTS[code]}
 
@@ -311,6 +317,21 @@ class SLMExplainerTests(unittest.TestCase):
         self.assertEqual(
             ["security.all_checks_pass"],
             [item.evidence_id for item in legitimate],
+        )
+
+    def test_payment_redirection_omits_generic_financial_reason(self):
+        evidence = build_analyzer_evidence(
+            {"FINANCIERO": ["pago"], "URGENCIA": ["hoy"]},
+            [],
+            is_phishing=True,
+            content_signals=[ContentSignal(
+                "payment_redirection_no_verification",
+                "El mensaje pide pagar a una cuenta nueva y desalienta verificarlo.",
+            )],
+        )
+        self.assertEqual(
+            ["content.payment_redirection_no_verification", "slot.urgencia"],
+            [item.evidence_id for item in evidence],
         )
 
     def test_render_keeps_current_client_field_as_plain_string(self):
