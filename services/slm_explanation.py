@@ -499,12 +499,15 @@ def build_analyzer_evidence(
     """Convert verified analyzer signals into bounded, stable explanation evidence."""
 
     evidence: list[ExplanationEvidence] = []
+    content_rules = {signal.rule for signal in content_signals or ()}
     for signal in content_signals or ():
         evidence.append(ExplanationEvidence(
             evidence_id=f"content.{signal.rule}", text=signal.description,
             source=EvidenceSource.OBSERVED_SIGNAL,
         ))
     for slot_name, text in _SLOT_EVIDENCE_TEXTS.items():
+        if slot_name == "FINANCIERO" and "payment_redirection_no_verification" in content_rules:
+            continue  # La señal específica ya explica el riesgo financiero.
         if is_phishing and slots.get(slot_name):
             evidence.append(
                 ExplanationEvidence(
