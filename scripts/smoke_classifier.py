@@ -7,6 +7,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from schemas import EmailPayloadSchema
 from services.analyzer import _classify_payload
+from scripts.security_smoke import verify_security_rules
 
 
 CASES = (
@@ -44,6 +45,8 @@ def main() -> None:
         if raw is None or (raw >= 0.5) != expected:
             raise SystemExit(f"Classifier orientation failed for {name}: raw_score={raw}")
         print(f"{name}: raw_score={raw:.4f}")
+
+    verify_security_rules(_classify_payload)
 
 
 if __name__ == "__main__":

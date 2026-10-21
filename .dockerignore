@@ -15,3 +15,6 @@ model/*.safetensors
 test_*.py
 *_test.py
 README.md
+
+# Keep local ML environments out of the deployment image.
+.venv*/

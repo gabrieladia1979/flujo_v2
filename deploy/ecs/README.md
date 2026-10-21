@@ -22,3 +22,18 @@ The workflow currently uses AWS region `us-east-1`, ECR repository
 stability and checks that the public API loaded its classifier. The local
 classifier smoke check catches the inverted class probability seen in the old
 container image. It does not replace a live end-to-end analysis check.
+
+## Security-rule release (21 October 2026)
+
+This branch includes the bilingual content rules from `audit`, gift-card and
+payment diversion checks, and offline comparison of displayed URLs with HTML
+link destinations. The existing image smoke step now also executes 36 fixed
+contrastive rule cases and checks final attack verdicts before publishing to
+ECR or updating ECS. These are development regressions, not independent
+accuracy measurements. See `docs/SECURITY_RULES_IMPROVEMENTS.md` for remaining
+false negatives and model limitations.
+
+The model pickle, SLM download configuration, task roles and API endpoint are
+unchanged. The rules ship in the application image; there is no new model
+upload or model retraining in this release. Pushing this branch triggers the
+existing deployment workflow. A local commit alone does not update AWS.
