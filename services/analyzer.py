@@ -342,7 +342,7 @@ def _classify_payload(payload: EmailPayloadSchema) -> dict:
                 is_phishing = risk_score >= UMBRAL_CRITICO
 
     from services.content_rules import detect_content_signals
-    content_signals = detect_content_signals(contenido_raw)
+    content_signals = detect_content_signals(contenido_raw, asunto)
     if content_signals:
         # Policy floor, not an additional calibrated model probability. Apply
         # after header discounts: authenticated senders can still request secrets.
@@ -354,7 +354,7 @@ def _classify_payload(payload: EmailPayloadSchema) -> dict:
         intent = "comunicacion_operativa"
     elif any(s.rule in ('credential_disclosure_request', 'mfa_push_coercion', 'device_code_coercion') for s in content_signals):
         intent = "solicitar_credenciales"
-    elif any(s.rule == 'payment_redirection_no_verification' for s in content_signals):
+    elif any(s.rule in ('payment_redirection_no_verification', 'gift_card_code_request') for s in content_signals):
         intent = "desviar_pago"
     elif any(s.rule == 'unverified_app_consent_coercion' for s in content_signals):
         intent = "suplantacion_o_malware"
