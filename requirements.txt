@@ -12,8 +12,9 @@ slowapi             # Para Rate Limiting (Prevención DDoS)
 sqlalchemy
 
 # --- Machine Learning ---
-scikit-learn
-xgboost
+# Versiones de inferencia verificadas para el clasificador serializado.
+scikit-learn==1.9.0
+xgboost==2.0.3
 spacy
 numpy
 shap                # Para Explicabilidad (XAI)
