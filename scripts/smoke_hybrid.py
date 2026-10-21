@@ -8,6 +8,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from schemas import EmailPayloadSchema
 from services.hybrid_classifier import _load
+from scripts.security_smoke import verify_security_rules
 
 
 CASES = (
@@ -55,6 +56,12 @@ def main() -> None:
         if result.is_phishing != expected:
             raise SystemExit(f"Hybrid verdict failed for {name}: is_phishing={result.is_phishing}")
         print(f"{name}: raw_score={raw:.4f}, is_phishing={result.is_phishing}")
+
+    def classify(payload):
+        result = classifier.analyze(payload, quick=True)
+        return {'is_phishing': result.is_phishing, 'risk_score': result.risk_score}
+
+    verify_security_rules(classify)
 
 
 if __name__ == "__main__":

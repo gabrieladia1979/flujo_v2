@@ -207,11 +207,11 @@ class HybridClassifier:
         intent = 'phishing_sin_intencion_determinada' if phishing else 'comunicacion_operativa'
         if critical:
             intent = 'suplantacion_o_malware'
-        elif any(s.rule == 'credential_disclosure_request' for s in signals):
+        elif any(s.rule in ('credential_disclosure_request', 'device_code_coercion') for s in signals):
             intent = 'solicitar_credenciales'
-        elif any(s.rule == 'payment_redirection_no_verification' for s in signals):
+        elif any(s.rule in ('payment_redirection_no_verification', 'gift_card_code_request') for s in signals):
             intent = 'desviar_pago'
-        elif any(s.rule == 'mfa_push_fatigue' for s in signals):
+        elif any(s.rule in ('mfa_push_fatigue', 'mfa_push_coercion') for s in signals):
             intent = 'robo_de_sesion'
         elif any(s.rule == 'qr_phishing' for s in signals):
             intent = 'solicitar_credenciales'

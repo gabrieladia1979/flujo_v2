@@ -18,3 +18,7 @@ artifacts/hybrid/
 test_*.py
 *_test.py
 README.md
+
+# Temporary model mount used only by the workflow smoke gate.
+.hybrid-model/
+.venv*/

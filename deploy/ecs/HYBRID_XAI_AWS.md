@@ -96,3 +96,23 @@ especially account notices, newsletters, internal summaries and credential
 requests. Measure false positives, false negatives, startup time, p95 quick
 verdict latency, full XAI latency, and memory. The saved candidate report
 notes possible data leakage and uncalibrated probabilities.
+
+## Security-rule release (21 October 2026)
+
+This branch includes the shared bilingual rules from audit, credential and
+MFA reformulations, gift-card/payment diversion checks, and offline URL-label
+versus HTML destination comparison. The image smoke gate runs the three
+original model cases plus 36 contrastive rule cases; malicious cases also
+exercise the final quick verdict. Benign rule cases do not override known
+model false positives. See `docs/SECURITY_RULES_IMPROVEMENTS.md` for results
+and remaining limitations. No classifier weights or model ZIP changed.
+
+The temporary `.hybrid-model/` download used by GitHub Actions is excluded
+from the Docker context. The running task still obtains the pinned, verified
+artifact from S3. Local environments are also excluded from the image.
+
+This remains a separate Hybrid pilot. Required repository variables, S3
+version/hash and pilot ECS infrastructure must be configured as described
+above. This task template currently uses deterministic fallback explanations:
+Qwen weights/runtime are not provisioned by this workflow. Pushing the branch
+triggers its deployment; local commits do not update AWS.

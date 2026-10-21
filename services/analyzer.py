@@ -264,7 +264,7 @@ def _classify_payload(payload: EmailPayloadSchema) -> dict:
                 is_phishing = risk_score >= UMBRAL_CRITICO
 
     from services.content_rules import detect_content_signals
-    content_signals = detect_content_signals(contenido_raw)
+    content_signals = detect_content_signals(contenido_raw, asunto)
     if content_signals:
         # Policy floor, not an additional calibrated model probability. Apply
         # after header discounts: authenticated senders can still request secrets.

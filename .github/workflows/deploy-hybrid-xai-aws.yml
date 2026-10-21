@@ -75,7 +75,7 @@ jobs:
           docker build --tag "$IMAGE" .
           echo "uri=$IMAGE" >> "$GITHUB_OUTPUT"
 
-      - name: Verify Hybrid classifier in built image
+      - name: Verify Hybrid classifier and security rules in built image
         env:
           IMAGE: ${{ steps.image.outputs.uri }}
         run: |

@@ -1,0 +1,12 @@
+{
+  "sha256": "2596ea96ed17b1d0c630d6111070e4b191776cdfd3204cb19b80f8a1b424be9d",
+  "count": 36,
+  "families": 18,
+  "review_status": "pending_human_review",
+  "holdout_status": "development_only",
+  "training_status": "not_used_for_training",
+  "notes": [
+    "Synthetic examples used to design rule regressions. Not evidence of independent accuracy.",
+    "Keep both members of each family in one partition if included in a future training corpus."
+  ]
+}

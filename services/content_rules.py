@@ -1,4 +1,4 @@
-"""Conservative Spanish content rules complementing the unchanged ML model.
+"""Conservative bilingual content rules complementing the unchanged ML model.
 
 These are observable combinations, not calibrated probabilities or proof of
 fraud. Quoted examples and negated requests are excluded locally, never by
@@ -19,7 +19,7 @@ class _VisibleText(HTMLParser):
         self.ignored = []
 
     def handle_starttag(self, tag, attrs):
-        if tag in {'script', 'style'}:
+        if tag in {'blockquote', 'script', 'style'}:
             self.ignored.append(tag)
         elif not self.ignored and tag in {'p', 'div', 'br', 'li'}:
             self.parts.append('\n')
@@ -40,50 +40,132 @@ def _clauses(text):
     parser.feed(text)
     visible = ''.join(parser.parts)
     visible = re.sub(r'(?m)^\s*>[^\n]*', '', visible)
-    # Remove quoted text ONLY if preceded by educational/reporting cues
-    visible = re.sub(r'(?i)\b(?:ejemplo|frase|dice|decía|decia|dicen|solicitud|mensaje sospechoso)\s*(?::\s*)?(?:"[^"\n]*"|“[^”\n]*”|«[^»\n]*»)', '', visible)
-    # A domain dot must not split an instruction from the requested secret.
+    visible = re.sub(r'(?i)\b(?:ejemplo|frase|dice|decia|decía|dicen|mensaje sospechoso|example|quote)\s*(?::\s*)?(?:"[^"\n]*"|“[^”\n]*”|«[^»\n]*»)', '', visible)
     visible = re.sub(r'(?i)\b(?:https?://|www\.)[^\s<>"\']+', ' sitio ', visible)
     normalized = ''.join(c for c in unicodedata.normalize('NFKD', visible.lower())
                          if not unicodedata.combining(c))
+    normalized = re.sub(r"\bdon['’]t\b", 'do not', normalized)
     return [re.sub(r'\s+', ' ', s).strip() for s in re.split(r'[.!?;\n]+', normalized) if s.strip()]
 
 
-_SEND = re.compile(r'\b(?:responda|responde|respondeme|respondanos|envie|envia|enviame|envienos|mande|manda|mandame|comparta|comparti|compartime|facilite|facilita|ingrese|ingresa|ingresando|escriba|escribe|escriban|actualice|actualiza|actualizando|confirme|confirma|confirmar)\b')
-_SECRET = re.compile(r'\b(?:contrasenas?|passwords?|claves? (?:fiscal(?:es)?|bancarias?|de acceso)|tokens?|cvv|pin|codigos? (?:sms|mfa|2fa|de (?:seguridad|verificacion|autenticacion)))\b')
-_PAY = re.compile(r'\b(?:transfiera|transferi|transfieran|pague|paga|paguen|deposite|deposita|realice (?:el pago|la transferencia))\b')
-_NEW_ACCOUNT = re.compile(r'\b(?:(?:nueva|otra) cuenta|cuenta (?:nueva|actualizada)|nuevo (?:cbu|alias)|(?:cbu|alias) (?:nuevo|actualizado))\b')
-_NO_VERIFY = re.compile(r'\b(?:no (?:llame|llames|llamen|contacte|contactes|contacten|verifique|verifiques|consulte|consultes)|sin (?:llamar|contactar|verificar|consultar))\b')
-_VERIFY_TARGET = re.compile(r'\b(?:proveedor|banco|titular|beneficiario|telefono|telefonicamente)\b')
-_INDIRECT_REQUEST = re.compile(r'\b(?:sin|no|nunca|jamas|instrucciones|consejos|informacion|enlaces?|recordatorio|aviso|ejemplo|politica|sobre|acerca|cambiar|restablecer|recuperar|olvidaste|olvido|necesitas|dudas|problemas|estado)\b')
-_PRIOR_VERIFICATION = re.compile(r'\b(?:despues de|tras|previa|solo si|una vez)\b.{0,70}\b(?:verificar|verificacion|confirmar|confirmado|validar|validado)\b')
+_SEND = re.compile(
+    r'\b(?:responda|responde|respondeme|respondanos|envie|envia|enviame|envienos|mande|manda|mandame|'
+    r'comparta|comparti|compartime|facilite|facilita|ingrese|ingresa|ingresando|actualice|actualiza|actualizando|'
+    r'confirme|confirma|confirmar|escriba|escribe|escriban|envianos|mandes|mandarnos|'
+    r'reply|replying|send|sending|provide|providing|share|sharing|enter|entering|input|inputting|submit|submitting|verify|verifying|confirm|confirming|updating)\b'
+)
 
-# --- MFA Push Fatigue patterns ---
-_MFA_APPROVE = re.compile(r'\b(?:apruebe|aprueba|acepte|acepta|autorice|autoriza|authorize|approve|accept)\b')
-_MFA_CONTEXT = re.compile(r'\b(?:notificacion|solicitud de (?:acceso|inicio)|sign.?in|authenticator|segundo factor|mfa|2fa|sesion|login)\b')
-_MFA_COERCION = re.compile(r'\b(?:suspendida|bloqueada|desactivar[ae]?|cancelar[ae]?|perdida de acceso|quedara? (?:sin acceso|suspendid[ao]))\b')
+_SECRET = re.compile(
+    r'\b(?:contrasenas?|passwords?|claves? (?:fiscal(?:es)?|bancarias?|de acceso)|tokens?|cvv|pin|'
+    r'codigos? (?:sms|mfa|2fa|de (?:seguridad|verificacion|autenticacion|un solo uso))|'
+    r'credentials?|(?:one[ -]time (?:authentication )?codes?|mfa codes?|2fa codes?)|authentication codes?|verification codes?|security codes?|recovery codes?|(?:six|6)[ -]digit|otp)\b'
+)
 
-# --- QR Code Phishing (Quishing) patterns ---
-_QR_SCAN = re.compile(r'\b(?:escanee|escanea|escane[ae] (?:el|este|la)|scan|abra (?:la camara|su camara)|codigo qr|qr code)\b')
+_PAY = re.compile(
+    r'\b(?:transfiera|transferi|transfieran|transferir|transferilo|pague|paga|paguen|deposite|deposita|realice (?:el pago|la transferencia)|'
+    r'transfer|wire|pay|deposit|remit|make (?:the )?payment)\b'
+)
+
+_NEW_ACCOUNT = re.compile(
+    r'\b(?:(?:nueva|otra) cuenta|cuenta (?:nueva|actualizada)|nuevo (?:cbu|alias)|(?:cbu|alias) (?:nuevo|actualizado)|'
+    r'(?:new|updated|different)(?: [a-z]+)? (?:bank account|account)|(?:bank account|account) (?:new|updated))\b'
+)
+
+_NO_VERIFY = re.compile(
+    r'\b(?:no (?:llame|llames|llamen|contacte|contactes|contacten|verifique|verifiques|consulte|consultes|siga)|'
+    r'sin (?:llamar|contactar|verificar|consultar|seguir)|'
+    r'(?:do not|dont|never) (?:call|contact|verify|check|reach out|follow)|without (?:calling|contacting|verifying|following))\b'
+)
+
+_VERIFY_TARGET = re.compile(
+    r'\b(?:proveedor|banco|titular|beneficiario|contacto|contactos|telefono|telefonicamente|interna|procedimiento|'
+    r'supplier|vendor|bank|beneficiary|payee|phone|telephone|help desk|support|contact|verify|internal|procedure|records)\b'
+)
+
+_INDIRECT_REQUEST = re.compile(
+    r'\b(?:si|sin|no|nunca|jamas|instrucciones|consejos|informacion|enlaces?|recordatorio|aviso|ejemplo|politica|sobre|acerca|'
+    r'cambiar|restablecer|recuperar|olvidaste|olvido|necesitas|dudas|problemas|estado|'
+    r'if|without|never|instructions|tips|advice|information|links?|reminder|notice|example|policy|about|'
+    r'change|reset|recover|forgot|need|questions|issues|status|protect|guidelines|guidance|guideline)\b'
+)
+
+_PRIOR_VERIFICATION = re.compile(
+    r'\b(?:despues de|tras|previa|solo si|una vez|before|prior to|after|only if|once)\b.{0,70}'
+    r'\b(?:verificar|verificacion|confirmar|confirmado|validar|validado|verify|verification|confirm|confirmed|validate|calling)\b'
+)
+
+# Amenazas 2026: MFA Push fatigue & Coerción de Notificaciones
+_MFA_APPROVE = re.compile(
+    r'\b(?:approve|apruebe|aprueba|aproba|aprobe|acepta|acepte|autorice|autoriza)\b.{0,50}'
+    r'\b(?:notification|prompt|request|notificacion|solicitud|acceso|sign-in|login)\b'
+)
+_MFA_CONTEXT = re.compile(
+    r'\b(?:sign-in|login|inicio de sesion|autenticacion|mfa|push|acceso|dispositivo|telefono|phone)\b'
+)
+_MFA_COERCE = re.compile(
+    r'\b(?:even if you did not|even if you have not|aunque no|sin haber|do not contact|no contacte|no llame|dont contact|do not reject|no la rechace|quedara suspendida|will be suspended|on your behalf|en su nombre)\b'
+)
+
+# Amenazas 2026: Consent Phishing / Abuso de Permisos de Aplicaciones no verificadas
+_APP_PERM = re.compile(
+    r'\b(?:acepta|acepte|aceptar|concede|conceder|autoriza|autorizar|approve|grant|authorize|accept)\b.{0,40}'
+    r'\b(?:permisos|acceso|access|permissions)\b'
+)
+_UNVERIFIED_APP = re.compile(
+    r'\b(?:ignora|ignore|ignorar|bypassear)\b.{0,60}'
+    r'\b(?:no verificado|unverified|advertencia|warning)\b'
+)
+
+# Amenazas 2026: Device Code Login Coercion (microsoft.com/devicelogin abuse)
+_DEVICE_CODE = re.compile(
+    r'\b(?:devicelogin|codigo de dispositivo|device code)\b'
+)
+_DEVICE_COERCE = re.compile(
+    r'\b(?:autorice|autoriza|authorize)\b.{0,40}\b(?:equipo|device|cuenta|account)\b.{0,50}\b(?:aunque|even if)\b'
+)
+
+# Amenazas 2026: Fraude de tarifas de entrega / paquetería
+_DELIVERY_CONTEXT = re.compile(
+    r'\b(?:delivery|paquete|envio|shipping|package|parcel|postal|fedx|ups|dhl|correo|andreani)\b'
+)
+_DELIVERY_FEE = re.compile(
+    r'\b(?:redelivery fee|delivery fee|customs fee|fee|tarifa|tasa|costo de (?:re)?envio)\b'
+)
+_DELIVERY_ACTION = re.compile(
+    r'\b(?:pay|pague|paga|pagar|abonar|abone|abona)\b'
+)
+
+
+
+_GIFT_BUY = re.compile(r'\b(?:compra|compre|compren|comprar|buy|purchase)\b')
+_GIFT = re.compile(r'\b(?:tarjetas? de regalo|gift cards?|giftcards?)\b')
+_GIFT_CODES = re.compile(r'\b(?:envia|envie|enviame|manda|mande|mandame|mandes|send|email|share)\b.{0,100}\b(?:codigos?|redemption codes?|codes?)\b')
+_GIFT_SECRECY = re.compile(r'\b(?:secreto|reservad[oa]|confidencial|entre nosotros|no lo consultes|no consultes|sin consultar|no llames|no puedo atender|cannot take calls|keep this between us|confidential|secret|do not (?:call|consult|tell)|dont (?:call|tell))\b')
+
+_MFA_ACCEPT = re.compile(r'\b(?:approve|apruebe|aprueba|aproba|acepte|acepta|autorice|autoriza)\b')
+_MFA_THREAT = re.compile(r'\b(?:suspendida|bloqueada|desactivar[ae]?|cancelar[ae]?|perdida de acceso|quedara? (?:sin acceso|suspendid[ao]))\b')
+_QR_SCAN = re.compile(r'\b(?:escanee|escanea|scan|abra (?:la camara|su camara))\b')
+_QR_CONTEXT = re.compile(r'\b(?:qr|codigo qr|qr code)\b')
 _QR_ACTION = re.compile(r'\b(?:ingrese|ingresa|acceda|valide|configure|reconfigure|vincule|vincular|registre)\b')
 _QR_THREAT = re.compile(r'\b(?:expir[oa]|caduc[oa]|venci[oa]|suspendid[ao]|bloqueada?|desactivad[ao]|perder[ae]? acceso)\b')
-
+_VERIFY_CHANGE = re.compile(r'\b(?:confirm|confirmar|confirmacion|verificar|verify|verificacion)\b')
 
 def _affirmative_match(pattern, clause):
     for match in pattern.finditer(clause):
         prefix = clause[:match.start()]
         # Limit negation/context to this request; a later sentence remains inspected.
-        if re.search(r'\b(?:no|nunca|jamas|evite|evita)\b(?:\W+\w+){0,4}\W*$', prefix):
+        if re.search(r'\b(?:no|nunca|jamas|evite|evita|never|do not|dont|avoid)\b(?:\W+\w+){0,4}\W*$', prefix):
             continue
-        if re.search(r'\b(?:ejemplo|frase|dice|decia|dicen|solicitud|mensaje sospechoso)\s*:\s*$', prefix):
+        if re.search(r'\b(?:ejemplo|frase|dice|decia|dicen|solicitud|mensaje sospechoso|example|quote|warning)\s*:\s*$', prefix):
             continue
         yield match
 
 
 def detect_content_signals(body: str, subject: str = '') -> list[ContentSignal]:
-    full_text = f'{subject}\n{body}' if subject else body
-    clauses = _clauses(full_text)
+    clauses = _clauses(f'{subject}\n{body}' if subject else body)
     signals = []
+
+    # 1. Petición directa de credenciales / contraseñas / códigos (Español e Inglés)
     for clause in clauses:
         requested = False
         for request in _affirmative_match(_SEND, clause):
@@ -97,36 +179,83 @@ def detect_content_signals(body: str, subject: str = '') -> list[ContentSignal]:
                 'El mensaje pide enviar o compartir contraseñas, claves o códigos de autenticación.'))
             break
 
+    # 2. Desvío de pagos a cuenta nueva sin verificación (Español e Inglés)
     for index, clause in enumerate(clauses):
         if not any(_affirmative_match(_PAY, clause)) or not _NEW_ACCOUNT.search(clause):
             continue
         if _PRIOR_VERIFICATION.search(clause):
             continue
         nearby = clauses[max(0, index - 1):index + 2]
-        if any(_NO_VERIFY.search(s) and _VERIFY_TARGET.search(s) for s in nearby):
+        if any(_NO_VERIFY.search(s) and (_VERIFY_TARGET.search(s) or _VERIFY_CHANGE.search(s)) for s in nearby):
             signals.append(ContentSignal(rule='payment_redirection_no_verification', description=
                 'El mensaje pide pagar a una cuenta nueva y desalienta verificarlo con el proveedor, banco o titular.'))
             break
 
-    # --- MFA Push Fatigue Detection ---
-    if not signals:
-        for clause in clauses:
-            if _MFA_APPROVE.search(clause) and _MFA_CONTEXT.search(clause):
-                nearby_text = ' '.join(clauses)
-                if _MFA_COERCION.search(nearby_text):
-                    signals.append(ContentSignal(rule='mfa_push_fatigue', description=
-                        'El mensaje pide aprobar una solicitud de acceso no iniciada por el usuario y amenaza con suspensión.'))
-                    break
+    # 3. Coerción de aprobación MFA Push
+    for index, clause in enumerate(clauses):
+        nearby = clauses[max(0, index - 1):index + 2]
+        if any(any(_affirmative_match(_MFA_APPROVE, s)) for s in nearby) and any(_MFA_CONTEXT.search(s) for s in nearby) and any(_MFA_COERCE.search(s) for s in nearby):
+            signals.append(ContentSignal(rule='mfa_push_coercion', description=
+                'El mensaje solicita aprobar una notificación de inicio de sesión o MFA pese a no haber iniciado el acceso, o desalienta verificarla.'))
+            break
 
-    # --- QR Code Phishing (Quishing) Detection ---
-    if not signals:
-        for clause in clauses:
-            if _QR_SCAN.search(clause):
-                nearby_text = ' '.join(clauses)
-                if (_QR_ACTION.search(nearby_text) and _QR_THREAT.search(nearby_text)):
-                    signals.append(ContentSignal(rule='qr_phishing', description=
-                        'El mensaje solicita escanear un código QR para evitar la suspensión o bloqueo de la cuenta.'))
-                    break
+    # 4. Abuso de permisos / OAuth Consent Phishing
+    for index, clause in enumerate(clauses):
+        nearby = clauses[max(0, index - 1):index + 2]
+        if any(any(_affirmative_match(_APP_PERM, s)) for s in nearby) and any(any(_affirmative_match(_UNVERIFIED_APP, s)) for s in nearby):
+            signals.append(ContentSignal(rule='unverified_app_consent_coercion', description=
+                'El mensaje solicita autorizar permisos excesivos de aplicación ignorando advertencias de editor no verificado.'))
+            break
+
+    # 5. Coerción de código de dispositivo (Device Code Phishing)
+    for index, clause in enumerate(clauses):
+        nearby = clauses[max(0, index - 1):index + 2]
+        if any(_DEVICE_CODE.search(s) for s in nearby) and any(any(_affirmative_match(_DEVICE_COERCE, s)) for s in nearby):
+            signals.append(ContentSignal(rule='device_code_coercion', description=
+                'El mensaje solicita autorizar un dispositivo desconocido mediante un código de inicio de sesión.'))
+            break
+
+    # 6. Fraude de tarifas de entrega / paquetería
+    for index, clause in enumerate(clauses):
+        nearby = clauses[max(0, index - 1):index + 2]
+        if any(_DELIVERY_CONTEXT.search(s) for s in nearby) and any(_DELIVERY_FEE.search(s) for s in nearby) and any(any(_affirmative_match(_DELIVERY_ACTION, s)) for s in nearby):
+            signals.append(ContentSignal(rule='delivery_fee_fraud', description=
+                'El mensaje solicita el pago de tarifas de entrega o reenvío de paquetes no solicitados.'))
+            break
+
+
+    # Preserve Hybrid's existing coercive MFA and text-described QR coverage.
+    for index, clause in enumerate(clauses):
+        nearby = ' '.join(clauses[max(0, index - 1):index + 2])
+        if (any(_affirmative_match(_MFA_ACCEPT, clause))
+                and _MFA_CONTEXT.search(clause)
+                and _MFA_THREAT.search(nearby)):
+            if not any(s.rule == 'mfa_push_coercion' for s in signals):
+                signals.append(ContentSignal(rule='mfa_push_fatigue', description=
+                    'El mensaje pide aprobar una solicitud de acceso bajo amenaza de suspensión.'))
+            break
+    for index, clause in enumerate(clauses):
+        nearby = ' '.join(clauses[max(0, index - 1):index + 2])
+        if (any(_affirmative_match(_QR_SCAN, clause))
+                and _QR_CONTEXT.search(nearby)
+                and _QR_ACTION.search(nearby)
+                and _QR_THREAT.search(nearby)):
+            signals.append(ContentSignal(rule='qr_phishing', description=
+                'El mensaje solicita escanear un código QR e ingresar datos bajo amenaza de pérdida de acceso.'))
+            break
+
+    # Gift cards require a purchase, disclosure of redemption codes, and secrecy
+    # or refusal of verification. A normal purchase notice is insufficient.
+    for index, clause in enumerate(clauses):
+        if not any(_affirmative_match(_GIFT_BUY, clause)) or not _GIFT.search(clause):
+            continue
+        nearby = ' '.join(clauses[max(0, index - 1):index + 3])
+        if any(_affirmative_match(_GIFT_CODES, nearby)) and _GIFT_SECRECY.search(nearby):
+            signals.append(ContentSignal(rule='gift_card_code_request', description=
+                'El mensaje pide comprar tarjetas de regalo, enviar sus códigos y mantener secreto o evitar verificar la compra.'))
+            break
+
+    from services.link_rules import detect_link_signals
+    signals.extend(detect_link_signals(body))
 
     return signals
-
