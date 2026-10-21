@@ -40,7 +40,7 @@
       "secrets": [
         {
           "name": "API_KEY",
-          "valueFrom": "arn:aws:secretsmanager:us-east-1:668281913895:secret:phisharg/api-key-wyFU3E"
+          "valueFrom": "arn:aws:secretsmanager:us-east-1:668281913895:secret:phisharg/api-key-wyFU3E:API_KEY::"
         }
       ],
       "logConfiguration": {
