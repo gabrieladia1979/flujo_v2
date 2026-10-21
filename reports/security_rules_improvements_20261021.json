@@ -1,0 +1,1958 @@
+{
+  "date": "2026-10-21",
+  "scope": "Local development regression; known synthetic examples, not independent validation. Model weights and thresholds unchanged.",
+  "batches": {
+    "round1": {
+      "audit": {
+        "before": {
+          "count": 14,
+          "correct": 11,
+          "false_positive": 0,
+          "false_negative": 3
+        },
+        "after": {
+          "count": 14,
+          "correct": 13,
+          "false_positive": 0,
+          "false_negative": 1
+        }
+      },
+      "hybrid": {
+        "before": {
+          "count": 14,
+          "correct": 9,
+          "false_positive": 2,
+          "false_negative": 3
+        },
+        "after": {
+          "count": 14,
+          "correct": 12,
+          "false_positive": 2,
+          "false_negative": 0
+        }
+      }
+    },
+    "round2": {
+      "audit": {
+        "before": {
+          "count": 24,
+          "correct": 18,
+          "false_positive": 0,
+          "false_negative": 6
+        },
+        "after": {
+          "count": 24,
+          "correct": 23,
+          "false_positive": 0,
+          "false_negative": 1
+        }
+      },
+      "hybrid": {
+        "before": {
+          "count": 24,
+          "correct": 19,
+          "false_positive": 1,
+          "false_negative": 4
+        },
+        "after": {
+          "count": 24,
+          "correct": 23,
+          "false_positive": 1,
+          "false_negative": 0
+        }
+      }
+    },
+    "combined": {
+      "audit": {
+        "before": {
+          "count": 38,
+          "correct": 29,
+          "false_positive": 0,
+          "false_negative": 9
+        },
+        "after": {
+          "count": 38,
+          "correct": 36,
+          "false_positive": 0,
+          "false_negative": 2
+        }
+      },
+      "hybrid": {
+        "before": {
+          "count": 38,
+          "correct": 28,
+          "false_positive": 3,
+          "false_negative": 7
+        },
+        "after": {
+          "count": 38,
+          "correct": 35,
+          "false_positive": 3,
+          "false_negative": 0
+        }
+      }
+    }
+  },
+  "cases": {
+    "audit": {
+      "before": [
+        {
+          "id": "english_attack",
+          "subject": "Account verification",
+          "body": "Your mailbox will be suspended. Sign in at https://account-check.example/verify to verify your account.",
+          "expected": true,
+          "raw": 0.06347631915949214,
+          "score": 0.06347631915949214,
+          "phishing": false,
+          "source": "model_only",
+          "seconds": 0.07926150000002963
+        },
+        {
+          "id": "english_notice",
+          "subject": "Account security",
+          "body": "We noticed a new sign-in. If this was you, no action is needed. Otherwise, open your usual account settings directly. Never share your password.",
+          "expected": false,
+          "raw": 0.012939057074133231,
+          "score": 0.012939057074133231,
+          "phishing": false,
+          "source": "model_only",
+          "seconds": 0.024476600000070903
+        },
+        {
+          "id": "mixed_attack",
+          "subject": "Validacion de cuenta",
+          "body": "Hola equipo, necesitamos completar el account verification antes del cierre. Reply with your password and MFA code to keep access.",
+          "expected": true,
+          "raw": 0.013497850328058947,
+          "score": 0.95,
+          "phishing": true,
+          "source": "content_security_rule",
+          "seconds": 0.0213627999999062
+        },
+        {
+          "id": "mixed_notice",
+          "subject": "Recordatorio de capacitacion",
+          "body": "Hola equipo, el security awareness training es el viernes. No necesitamos passwords ni verification codes. Consulten el calendario interno.",
+          "expected": false,
+          "raw": 0.019839332320384984,
+          "score": 0.019839332320384984,
+          "phishing": false,
+          "source": "model_only",
+          "seconds": 0.020593100000041886
+        },
+        {
+          "id": "payment_ambiguous",
+          "subject": "Datos del proveedor",
+          "body": "El proveedor modificó sus datos. Usá la cuenta adjunta para la transferencia de hoy.",
+          "expected": null,
+          "raw": 0.012895822429826675,
+          "score": 0.012895822429826675,
+          "phishing": false,
+          "source": "model_only",
+          "seconds": 0.01999090000003889
+        },
+        {
+          "id": "payment_attack",
+          "subject": "Pago pendiente",
+          "body": "Soy el proveedor. Transferí el pago de hoy a esta nueva cuenta. No llames para verificar el cambio; estoy en una reunión y tiene que salir ahora.",
+          "expected": true,
+          "raw": 0.013547498658894486,
+          "score": 0.013547498658894486,
+          "phishing": false,
+          "source": "model_only",
+          "seconds": 0.024026800000001458
+        },
+        {
+          "id": "payment_notice",
+          "subject": "Cambio de cuenta pendiente",
+          "body": "El proveedor solicitó cambiar su cuenta. No transfieras todavía. Validá el cambio llamando al contacto habitual antes de actualizar los datos.",
+          "expected": false,
+          "raw": 0.19547057783148786,
+          "score": 0.19547057783148786,
+          "phishing": false,
+          "source": "model_only",
+          "seconds": 0.020284799999899406
+        },
+        {
+          "id": "rephrase_a",
+          "subject": "Confirmacion de acceso",
+          "body": "Confirmá tu acceso respondiendo con tu contraseña y el código de verificación recibido.",
+          "expected": true,
+          "raw": 0.017882695183273623,
+          "score": 0.95,
+          "phishing": true,
+          "source": "content_security_rule",
+          "seconds": 0.01660279999987324
+        },
+        {
+          "id": "rephrase_b",
+          "subject": "Validacion de titular",
+          "body": "Necesitamos validar que seguís siendo el titular. Envianos tu clave de acceso y el código de un solo uso que llegó a tu teléfono.",
+          "expected": true,
+          "raw": 0.012723514357342536,
+          "score": 0.012723514357342536,
+          "phishing": false,
+          "source": "model_only",
+          "seconds": 0.020534199999929115
+        },
+        {
+          "id": "security_advice",
+          "subject": "Consejo de seguridad",
+          "body": "Nunca compartas tu contraseña. Si recibís un pedido, denuncialo.",
+          "expected": false,
+          "raw": 0.04142826390138843,
+          "score": 0.04142826390138843,
+          "phishing": false,
+          "source": "model_only",
+          "seconds": 0.016487699999970573
+        },
+        {
+          "id": "mfa_attack",
+          "subject": "Verificacion",
+          "body": "Respondé este correo con el código de verificación que acabás de recibir.",
+          "expected": true,
+          "raw": 0.01503813128774939,
+          "score": 0.95,
+          "phishing": true,
+          "source": "content_security_rule",
+          "seconds": 0.015940399999863075
+        },
+        {
+          "id": "mfa_notice",
+          "subject": "Tu codigo",
+          "body": "Tu código de verificación es 123456. No lo compartas con nadie.",
+          "expected": false,
+          "raw": 0.012747495135031095,
+          "score": 0.012747495135031095,
+          "phishing": false,
+          "source": "model_only",
+          "seconds": 0.015709000000015294
+        },
+        {
+          "id": "terms_notice",
+          "subject": "Actualizaciones de nuestros términos de uso",
+          "body": "Hola: vamos a actualizar el Contrato de servicios de Microsoft. Los cambios aportan mayor claridad a nuestros términos. Este aviso es informativo y no requiere que realices ninguna acción.",
+          "expected": false,
+          "raw": 0.013016793461071152,
+          "score": 0.013016793461071152,
+          "phishing": false,
+          "source": "model_only",
+          "seconds": 0.024081799999976283
+        },
+        {
+          "id": "meeting_notice",
+          "subject": "Resumen de reunión",
+          "body": "Hola equipo, la entrega sigue según lo planificado. La próxima revisión es el viernes a las 10. No es necesario responder.",
+          "expected": false,
+          "raw": 0.01281578947665285,
+          "score": 0.01281578947665285,
+          "phishing": false,
+          "source": "model_only",
+          "seconds": 0.019312899999931687
+        },
+        {
+          "id": "url_official",
+          "subject": "Consulta",
+          "body": "Podés consultar la información en https://www.microsoft.com/",
+          "expected": false,
+          "raw": 0.3940639663748928,
+          "score": 0.3940639663748928,
+          "phishing": false,
+          "source": "model_only",
+          "seconds": 0.014469700000063312
+        },
+        {
+          "id": "url_lookalike",
+          "subject": "Consulta",
+          "body": "Podés consultar la información en http://microsoft.validacion.example/login",
+          "expected": null,
+          "raw": 0.9866551617304107,
+          "score": 0.9866551617304107,
+          "phishing": true,
+          "source": "model_only",
+          "seconds": 0.021476099999972575
+        },
+        {
+          "id": "url_ip",
+          "subject": "Consulta",
+          "body": "Podés consultar la información en http://192.0.2.10/login",
+          "expected": null,
+          "raw": 0.9866551617304107,
+          "score": 0.9866551617304107,
+          "phishing": true,
+          "source": "model_only",
+          "seconds": 0.01661710000007588
+        },
+        {
+          "id": "url_html",
+          "subject": "Consulta",
+          "body": "Podés consultar la información en <a href=\"http://microsoft.validacion.example/login\">https://www.microsoft.com/</a>",
+          "expected": null,
+          "raw": 0.07085064950950837,
+          "score": 0.07085064950950837,
+          "phishing": false,
+          "source": "model_only",
+          "seconds": 0.021611500000062733
+        },
+        {
+          "id": "en_mailbox_bad",
+          "subject": "Mailbox storage limit",
+          "body": "Your mailbox has exceeded its storage quota. All incoming messages will be deleted today. Keep your account active by entering your email password at https://mailbox-restore.example/verify.",
+          "expected": true,
+          "raw": 0.036065275311946365,
+          "score": 0.95,
+          "phishing": true,
+          "source": "content_security_rule",
+          "seconds": 0.06489410000017415
+        },
+        {
+          "id": "en_mailbox_good",
+          "subject": "Mailbox storage report",
+          "body": "Your mailbox is using 70 percent of its storage. You can archive old messages from the settings menu in your usual email application. This report is informational; no reply is required.",
+          "expected": false,
+          "raw": 0.013106776405018505,
+          "score": 0.013106776405018505,
+          "phishing": false,
+          "source": "model_only",
+          "seconds": 0.02513890000000174
+        },
+        {
+          "id": "en_payroll_bad",
+          "subject": "Payroll verification required",
+          "body": "Your salary payment is on hold. Send your banking login and password by replying to this message so payroll can release the funds today.",
+          "expected": true,
+          "raw": 0.013958278292211357,
+          "score": 0.95,
+          "phishing": true,
+          "source": "content_security_rule",
+          "seconds": 0.02030770000010307
+        },
+        {
+          "id": "en_payroll_good",
+          "subject": "October payroll available",
+          "body": "Your October payslip is now available in the employee portal. Open the HR application using your saved bookmark. Payroll will never ask for your banking password.",
+          "expected": false,
+          "raw": 0.012920784284026432,
+          "score": 0.012920784284026432,
+          "phishing": false,
+          "source": "model_only",
+          "seconds": 0.0213383000000249
+        },
+        {
+          "id": "en_gift_bad",
+          "subject": "Confidential request from the CEO",
+          "body": "I am in a meeting and cannot take calls. Buy five gift cards now and email me photos of the redemption codes. Keep this between us; I will reimburse you later.",
+          "expected": true,
+          "raw": 0.012932288479021836,
+          "score": 0.012932288479021836,
+          "phishing": false,
+          "source": "model_only",
+          "seconds": 0.023919700000078592
+        },
+        {
+          "id": "en_gift_good",
+          "subject": "Staff recognition budget",
+          "body": "We approved the staff recognition budget at the meeting. Finance will purchase gift cards through the usual procurement process. No employee needs to buy anything or send redemption codes.",
+          "expected": false,
+          "raw": 0.013160212801398674,
+          "score": 0.013160212801398674,
+          "phishing": false,
+          "source": "model_only",
+          "seconds": 0.02091840000002776
+        },
+        {
+          "id": "en_invoice_bad",
+          "subject": "Supplier bank details changed",
+          "body": "Please pay the outstanding invoice to our new bank account today. Do not call our office to confirm; the phone system is down. Ignore the bank details on the original invoice.",
+          "expected": true,
+          "raw": 0.013888829952845794,
+          "score": 0.013888829952845794,
+          "phishing": false,
+          "source": "model_only",
+          "seconds": 0.02357920000008562
+        },
+        {
+          "id": "en_invoice_good",
+          "subject": "Supplier bank change review",
+          "body": "A supplier requested a bank account change. Payment is paused until procurement verifies it using the phone number already on file. Do not use contact details from the change request.",
+          "expected": false,
+          "raw": 0.012929207671585119,
+          "score": 0.012929207671585119,
+          "phishing": false,
+          "source": "model_only",
+          "seconds": 0.020902700000078767
+        },
+        {
+          "id": "en_cloud_bad",
+          "subject": "Shared confidential document",
+          "body": "A confidential document is waiting for you. To view it, reply with your Microsoft password and the six digit authentication code from your phone.",
+          "expected": true,
+          "raw": 0.01320977228363135,
+          "score": 0.95,
+          "phishing": true,
+          "source": "content_security_rule",
+          "seconds": 0.019406900000149108
+        },
+        {
+          "id": "en_cloud_good",
+          "subject": "Project document ready",
+          "body": "The project document is ready in the shared team folder. Open Teams as usual and select Files. We will review it during our scheduled meeting tomorrow.",
+          "expected": false,
+          "raw": 0.01294104972219029,
+          "score": 0.01294104972219029,
+          "phishing": false,
+          "source": "model_only",
+          "seconds": 0.02028440000003684
+        },
+        {
+          "id": "en_prize_bad",
+          "subject": "You have been selected",
+          "body": "Congratulations! You won a cash prize of 250000 dollars. To release the money, pay a processing fee today and send a copy of your identity document and bank details.",
+          "expected": true,
+          "raw": 0.013787707762197732,
+          "score": 0.013787707762197732,
+          "phishing": false,
+          "source": "model_only",
+          "seconds": 0.022463599999809958
+        },
+        {
+          "id": "en_prize_good",
+          "subject": "Prize draw results",
+          "body": "The annual staff prize draw has ended. The winners will be announced at the company meeting. Participation was free and nobody will be asked to pay a fee to receive a prize.",
+          "expected": false,
+          "raw": 0.013291286583730133,
+          "score": 0.013291286583730133,
+          "phishing": false,
+          "source": "model_only",
+          "seconds": 0.021011899999848538
+        },
+        {
+          "id": "es_arca_bad",
+          "subject": "Devolucion fiscal disponible",
+          "body": "ARCA tiene un reintegro pendiente a tu nombre. Para cobrarlo hoy, respondé con tu clave fiscal y los datos completos de tu tarjeta, incluido el código de seguridad.",
+          "expected": true,
+          "raw": 0.013001912999849818,
+          "score": 0.95,
+          "phishing": true,
+          "source": "content_security_rule",
+          "seconds": 0.022830999999996493
+        },
+        {
+          "id": "es_arca_good",
+          "subject": "Consulta de reintegro fiscal",
+          "body": "Podés consultar el estado del reintegro entrando por tu cuenta al sitio oficial de ARCA. No envíes claves fiscales ni datos de tarjetas por correo. Este mensaje es informativo.",
+          "expected": false,
+          "raw": 0.01293816592914565,
+          "score": 0.01293816592914565,
+          "phishing": false,
+          "source": "model_only",
+          "seconds": 0.02209590000006756
+        },
+        {
+          "id": "es_delivery_bad",
+          "subject": "Paquete retenido",
+          "body": "Tu paquete será devuelto hoy. Pagá el cargo de liberación en http://entrega-pendiente.example e ingresá el número de tarjeta, vencimiento y código de seguridad para recibirlo.",
+          "expected": true,
+          "raw": 0.9846008785806046,
+          "score": 0.9846008785806046,
+          "phishing": true,
+          "source": "model_only",
+          "seconds": 0.028266000000030544
+        },
+        {
+          "id": "es_delivery_good",
+          "subject": "Pedido en camino",
+          "body": "Tu pedido fue despachado y llegará mañana entre las 9 y las 18. El envío ya está abonado. Podés consultar el seguimiento desde la aplicación donde hiciste la compra.",
+          "expected": false,
+          "raw": 0.012795271522121732,
+          "score": 0.012795271522121732,
+          "phishing": false,
+          "source": "model_only",
+          "seconds": 0.02173339999990276
+        },
+        {
+          "id": "es_support_bad",
+          "subject": "Mantenimiento de acceso",
+          "body": "Somos del soporte técnico. Para migrar tu cuenta necesitamos que nos mandes la contraseña que usás para entrar y el número que te muestra la aplicación autenticadora.",
+          "expected": true,
+          "raw": 0.012938751850539665,
+          "score": 0.012938751850539665,
+          "phishing": false,
+          "source": "model_only",
+          "seconds": 0.020648800000117262
+        },
+        {
+          "id": "es_support_good",
+          "subject": "Mantenimiento programado",
+          "body": "El sábado realizaremos mantenimiento de 2 a 4 de la mañana. No tenés que hacer nada. Soporte nunca te pedirá la contraseña ni códigos de tu aplicación autenticadora.",
+          "expected": false,
+          "raw": 0.012968940285732644,
+          "score": 0.012968940285732644,
+          "phishing": false,
+          "source": "model_only",
+          "seconds": 0.020286099999793805
+        },
+        {
+          "id": "es_bec_bad",
+          "subject": "Compra reservada",
+          "body": "Estoy con un cliente y no puedo atender. Comprá tarjetas de regalo y mandame fotos con los códigos visibles. Lo necesito ahora y prefiero que no lo consultes con administración.",
+          "expected": true,
+          "raw": 0.013301237069994198,
+          "score": 0.013301237069994198,
+          "phishing": false,
+          "source": "model_only",
+          "seconds": 0.022652200000038647
+        },
+        {
+          "id": "es_bec_good",
+          "subject": "Compra aprobada",
+          "body": "Administración aprobó la compra de regalos de fin de año. El pedido lo hará Compras por el circuito habitual. No hace falta que adelantes dinero ni compres tarjetas por tu cuenta.",
+          "expected": false,
+          "raw": 0.012916455293282336,
+          "score": 0.012916455293282336,
+          "phishing": false,
+          "source": "model_only",
+          "seconds": 0.022510199999942415
+        },
+        {
+          "id": "es_session_bad",
+          "subject": "Acceso remoto",
+          "body": "Para evitar que se cierre tu sesión, aprobá todas las notificaciones de acceso que lleguen al celular, aunque no hayas iniciado sesión. Nuestro técnico está realizando la validación.",
+          "expected": true,
+          "raw": 0.013042060558967894,
+          "score": 0.013042060558967894,
+          "phishing": false,
+          "source": "model_only",
+          "seconds": 0.023642699999982142
+        },
+        {
+          "id": "es_session_good",
+          "subject": "Acceso no reconocido",
+          "body": "Si aparece una notificación de acceso que no iniciaste, rechazala. No apruebes solicitudes de terceros. Podés comunicarte con soporte por el canal interno habitual.",
+          "expected": false,
+          "raw": 0.16704734523182224,
+          "score": 0.16704734523182224,
+          "phishing": false,
+          "source": "model_only",
+          "seconds": 0.021168499999930646
+        },
+        {
+          "id": "mixed_bad",
+          "subject": "IT migration hoy",
+          "body": "Hola, estamos migrando las cuentas. Please send your current password and your one-time authentication code by replying to this email. Lo necesitamos antes de las 18.",
+          "expected": true,
+          "raw": 0.013880480757270774,
+          "score": 0.95,
+          "phishing": true,
+          "source": "content_security_rule",
+          "seconds": 0.02037689999997383
+        },
+        {
+          "id": "mixed_good",
+          "subject": "IT migration schedule",
+          "body": "Hola equipo, the migration is scheduled for Friday evening. No action is required. El lunes podrán entrar como siempre y consultar dudas por el canal interno de soporte.",
+          "expected": false,
+          "raw": 0.01286935458502586,
+          "score": 0.01286935458502586,
+          "phishing": false,
+          "source": "model_only",
+          "seconds": 0.021353699999963283
+        }
+      ],
+      "after": [
+        {
+          "id": "english_attack",
+          "subject": "Account verification",
+          "body": "Your mailbox will be suspended. Sign in at https://account-check.example/verify to verify your account.",
+          "expected": true,
+          "raw": 0.06347631915949214,
+          "score": 0.06347631915949214,
+          "phishing": false,
+          "source": "model_only",
+          "seconds": 0.07351530000005368
+        },
+        {
+          "id": "english_notice",
+          "subject": "Account security",
+          "body": "We noticed a new sign-in. If this was you, no action is needed. Otherwise, open your usual account settings directly. Never share your password.",
+          "expected": false,
+          "raw": 0.012939057074133231,
+          "score": 0.012939057074133231,
+          "phishing": false,
+          "source": "model_only",
+          "seconds": 0.033936499999981606
+        },
+        {
+          "id": "mixed_attack",
+          "subject": "Validacion de cuenta",
+          "body": "Hola equipo, necesitamos completar el account verification antes del cierre. Reply with your password and MFA code to keep access.",
+          "expected": true,
+          "raw": 0.013497850328058947,
+          "score": 0.95,
+          "phishing": true,
+          "source": "content_security_rule",
+          "seconds": 0.030390299999908166
+        },
+        {
+          "id": "mixed_notice",
+          "subject": "Recordatorio de capacitacion",
+          "body": "Hola equipo, el security awareness training es el viernes. No necesitamos passwords ni verification codes. Consulten el calendario interno.",
+          "expected": false,
+          "raw": 0.019839332320384984,
+          "score": 0.019839332320384984,
+          "phishing": false,
+          "source": "model_only",
+          "seconds": 0.02548609999985274
+        },
+        {
+          "id": "payment_ambiguous",
+          "subject": "Datos del proveedor",
+          "body": "El proveedor modificó sus datos. Usá la cuenta adjunta para la transferencia de hoy.",
+          "expected": null,
+          "raw": 0.012895822429826675,
+          "score": 0.012895822429826675,
+          "phishing": false,
+          "source": "model_only",
+          "seconds": 0.023746299999857
+        },
+        {
+          "id": "payment_attack",
+          "subject": "Pago pendiente",
+          "body": "Soy el proveedor. Transferí el pago de hoy a esta nueva cuenta. No llames para verificar el cambio; estoy en una reunión y tiene que salir ahora.",
+          "expected": true,
+          "raw": 0.013547498658894486,
+          "score": 0.95,
+          "phishing": true,
+          "source": "content_security_rule",
+          "seconds": 0.02535889999990104
+        },
+        {
+          "id": "payment_notice",
+          "subject": "Cambio de cuenta pendiente",
+          "body": "El proveedor solicitó cambiar su cuenta. No transfieras todavía. Validá el cambio llamando al contacto habitual antes de actualizar los datos.",
+          "expected": false,
+          "raw": 0.19547057783148786,
+          "score": 0.19547057783148786,
+          "phishing": false,
+          "source": "model_only",
+          "seconds": 0.02350639999986015
+        },
+        {
+          "id": "rephrase_a",
+          "subject": "Confirmacion de acceso",
+          "body": "Confirmá tu acceso respondiendo con tu contraseña y el código de verificación recibido.",
+          "expected": true,
+          "raw": 0.017882695183273623,
+          "score": 0.95,
+          "phishing": true,
+          "source": "content_security_rule",
+          "seconds": 0.023329800000283285
+        },
+        {
+          "id": "rephrase_b",
+          "subject": "Validacion de titular",
+          "body": "Necesitamos validar que seguís siendo el titular. Envianos tu clave de acceso y el código de un solo uso que llegó a tu teléfono.",
+          "expected": true,
+          "raw": 0.012723514357342536,
+          "score": 0.95,
+          "phishing": true,
+          "source": "content_security_rule",
+          "seconds": 0.030212200000278244
+        },
+        {
+          "id": "security_advice",
+          "subject": "Consejo de seguridad",
+          "body": "Nunca compartas tu contraseña. Si recibís un pedido, denuncialo.",
+          "expected": false,
+          "raw": 0.04142826390138843,
+          "score": 0.04142826390138843,
+          "phishing": false,
+          "source": "model_only",
+          "seconds": 0.026649299999917275
+        },
+        {
+          "id": "mfa_attack",
+          "subject": "Verificacion",
+          "body": "Respondé este correo con el código de verificación que acabás de recibir.",
+          "expected": true,
+          "raw": 0.01503813128774939,
+          "score": 0.95,
+          "phishing": true,
+          "source": "content_security_rule",
+          "seconds": 0.025729899999987538
+        },
+        {
+          "id": "mfa_notice",
+          "subject": "Tu codigo",
+          "body": "Tu código de verificación es 123456. No lo compartas con nadie.",
+          "expected": false,
+          "raw": 0.012747495135031095,
+          "score": 0.012747495135031095,
+          "phishing": false,
+          "source": "model_only",
+          "seconds": 0.019881900000200403
+        },
+        {
+          "id": "terms_notice",
+          "subject": "Actualizaciones de nuestros términos de uso",
+          "body": "Hola: vamos a actualizar el Contrato de servicios de Microsoft. Los cambios aportan mayor claridad a nuestros términos. Este aviso es informativo y no requiere que realices ninguna acción.",
+          "expected": false,
+          "raw": 0.013016793461071152,
+          "score": 0.013016793461071152,
+          "phishing": false,
+          "source": "model_only",
+          "seconds": 0.029741999999714608
+        },
+        {
+          "id": "meeting_notice",
+          "subject": "Resumen de reunión",
+          "body": "Hola equipo, la entrega sigue según lo planificado. La próxima revisión es el viernes a las 10. No es necesario responder.",
+          "expected": false,
+          "raw": 0.01281578947665285,
+          "score": 0.01281578947665285,
+          "phishing": false,
+          "source": "model_only",
+          "seconds": 0.02450090000002092
+        },
+        {
+          "id": "url_official",
+          "subject": "Consulta",
+          "body": "Podés consultar la información en https://www.microsoft.com/",
+          "expected": false,
+          "raw": 0.3940639663748928,
+          "score": 0.3940639663748928,
+          "phishing": false,
+          "source": "model_only",
+          "seconds": 0.018090600000050472
+        },
+        {
+          "id": "url_lookalike",
+          "subject": "Consulta",
+          "body": "Podés consultar la información en http://microsoft.validacion.example/login",
+          "expected": null,
+          "raw": 0.9866551617304107,
+          "score": 0.9866551617304107,
+          "phishing": true,
+          "source": "model_only",
+          "seconds": 0.02936120000003939
+        },
+        {
+          "id": "url_ip",
+          "subject": "Consulta",
+          "body": "Podés consultar la información en http://192.0.2.10/login",
+          "expected": null,
+          "raw": 0.9866551617304107,
+          "score": 0.9866551617304107,
+          "phishing": true,
+          "source": "model_only",
+          "seconds": 0.02609370000027411
+        },
+        {
+          "id": "url_html",
+          "subject": "Consulta",
+          "body": "Podés consultar la información en <a href=\"http://microsoft.validacion.example/login\">https://www.microsoft.com/</a>",
+          "expected": null,
+          "raw": 0.07085064950950837,
+          "score": 0.95,
+          "phishing": true,
+          "source": "content_security_rule",
+          "seconds": 0.03162540000039371
+        },
+        {
+          "id": "en_mailbox_bad",
+          "subject": "Mailbox storage limit",
+          "body": "Your mailbox has exceeded its storage quota. All incoming messages will be deleted today. Keep your account active by entering your email password at https://mailbox-restore.example/verify.",
+          "expected": true,
+          "raw": 0.036065275311946365,
+          "score": 0.95,
+          "phishing": true,
+          "source": "content_security_rule",
+          "seconds": 0.03231710000000021
+        },
+        {
+          "id": "en_mailbox_good",
+          "subject": "Mailbox storage report",
+          "body": "Your mailbox is using 70 percent of its storage. You can archive old messages from the settings menu in your usual email application. This report is informational; no reply is required.",
+          "expected": false,
+          "raw": 0.013106776405018505,
+          "score": 0.013106776405018505,
+          "phishing": false,
+          "source": "model_only",
+          "seconds": 0.02467819999992571
+        },
+        {
+          "id": "en_payroll_bad",
+          "subject": "Payroll verification required",
+          "body": "Your salary payment is on hold. Send your banking login and password by replying to this message so payroll can release the funds today.",
+          "expected": true,
+          "raw": 0.013958278292211357,
+          "score": 0.95,
+          "phishing": true,
+          "source": "content_security_rule",
+          "seconds": 0.02344360000006418
+        },
+        {
+          "id": "en_payroll_good",
+          "subject": "October payroll available",
+          "body": "Your October payslip is now available in the employee portal. Open the HR application using your saved bookmark. Payroll will never ask for your banking password.",
+          "expected": false,
+          "raw": 0.012920784284026432,
+          "score": 0.012920784284026432,
+          "phishing": false,
+          "source": "model_only",
+          "seconds": 0.02701389999992898
+        },
+        {
+          "id": "en_gift_bad",
+          "subject": "Confidential request from the CEO",
+          "body": "I am in a meeting and cannot take calls. Buy five gift cards now and email me photos of the redemption codes. Keep this between us; I will reimburse you later.",
+          "expected": true,
+          "raw": 0.012932288479021836,
+          "score": 0.95,
+          "phishing": true,
+          "source": "content_security_rule",
+          "seconds": 0.031887400000414345
+        },
+        {
+          "id": "en_gift_good",
+          "subject": "Staff recognition budget",
+          "body": "We approved the staff recognition budget at the meeting. Finance will purchase gift cards through the usual procurement process. No employee needs to buy anything or send redemption codes.",
+          "expected": false,
+          "raw": 0.013160212801398674,
+          "score": 0.013160212801398674,
+          "phishing": false,
+          "source": "model_only",
+          "seconds": 0.025082099999963248
+        },
+        {
+          "id": "en_invoice_bad",
+          "subject": "Supplier bank details changed",
+          "body": "Please pay the outstanding invoice to our new bank account today. Do not call our office to confirm; the phone system is down. Ignore the bank details on the original invoice.",
+          "expected": true,
+          "raw": 0.013888829952845794,
+          "score": 0.95,
+          "phishing": true,
+          "source": "content_security_rule",
+          "seconds": 0.030402000000322005
+        },
+        {
+          "id": "en_invoice_good",
+          "subject": "Supplier bank change review",
+          "body": "A supplier requested a bank account change. Payment is paused until procurement verifies it using the phone number already on file. Do not use contact details from the change request.",
+          "expected": false,
+          "raw": 0.012929207671585119,
+          "score": 0.012929207671585119,
+          "phishing": false,
+          "source": "model_only",
+          "seconds": 0.025149699999929
+        },
+        {
+          "id": "en_cloud_bad",
+          "subject": "Shared confidential document",
+          "body": "A confidential document is waiting for you. To view it, reply with your Microsoft password and the six digit authentication code from your phone.",
+          "expected": true,
+          "raw": 0.01320977228363135,
+          "score": 0.95,
+          "phishing": true,
+          "source": "content_security_rule",
+          "seconds": 0.02324959999987186
+        },
+        {
+          "id": "en_cloud_good",
+          "subject": "Project document ready",
+          "body": "The project document is ready in the shared team folder. Open Teams as usual and select Files. We will review it during our scheduled meeting tomorrow.",
+          "expected": false,
+          "raw": 0.01294104972219029,
+          "score": 0.01294104972219029,
+          "phishing": false,
+          "source": "model_only",
+          "seconds": 0.02605509999966671
+        },
+        {
+          "id": "en_prize_bad",
+          "subject": "You have been selected",
+          "body": "Congratulations! You won a cash prize of 250000 dollars. To release the money, pay a processing fee today and send a copy of your identity document and bank details.",
+          "expected": true,
+          "raw": 0.013787707762197732,
+          "score": 0.013787707762197732,
+          "phishing": false,
+          "source": "model_only",
+          "seconds": 0.030308400000194524
+        },
+        {
+          "id": "en_prize_good",
+          "subject": "Prize draw results",
+          "body": "The annual staff prize draw has ended. The winners will be announced at the company meeting. Participation was free and nobody will be asked to pay a fee to receive a prize.",
+          "expected": false,
+          "raw": 0.013291286583730133,
+          "score": 0.013291286583730133,
+          "phishing": false,
+          "source": "model_only",
+          "seconds": 0.03485780000028171
+        },
+        {
+          "id": "es_arca_bad",
+          "subject": "Devolucion fiscal disponible",
+          "body": "ARCA tiene un reintegro pendiente a tu nombre. Para cobrarlo hoy, respondé con tu clave fiscal y los datos completos de tu tarjeta, incluido el código de seguridad.",
+          "expected": true,
+          "raw": 0.013001912999849818,
+          "score": 0.95,
+          "phishing": true,
+          "source": "content_security_rule",
+          "seconds": 0.03533800000013798
+        },
+        {
+          "id": "es_arca_good",
+          "subject": "Consulta de reintegro fiscal",
+          "body": "Podés consultar el estado del reintegro entrando por tu cuenta al sitio oficial de ARCA. No envíes claves fiscales ni datos de tarjetas por correo. Este mensaje es informativo.",
+          "expected": false,
+          "raw": 0.01293816592914565,
+          "score": 0.01293816592914565,
+          "phishing": false,
+          "source": "model_only",
+          "seconds": 0.031297600000016246
+        },
+        {
+          "id": "es_delivery_bad",
+          "subject": "Paquete retenido",
+          "body": "Tu paquete será devuelto hoy. Pagá el cargo de liberación en http://entrega-pendiente.example e ingresá el número de tarjeta, vencimiento y código de seguridad para recibirlo.",
+          "expected": true,
+          "raw": 0.9846008785806046,
+          "score": 0.9846008785806046,
+          "phishing": true,
+          "source": "content_security_rule",
+          "seconds": 0.03315059999977166
+        },
+        {
+          "id": "es_delivery_good",
+          "subject": "Pedido en camino",
+          "body": "Tu pedido fue despachado y llegará mañana entre las 9 y las 18. El envío ya está abonado. Podés consultar el seguimiento desde la aplicación donde hiciste la compra.",
+          "expected": false,
+          "raw": 0.012795271522121732,
+          "score": 0.012795271522121732,
+          "phishing": false,
+          "source": "model_only",
+          "seconds": 0.025302900000042428
+        },
+        {
+          "id": "es_support_bad",
+          "subject": "Mantenimiento de acceso",
+          "body": "Somos del soporte técnico. Para migrar tu cuenta necesitamos que nos mandes la contraseña que usás para entrar y el número que te muestra la aplicación autenticadora.",
+          "expected": true,
+          "raw": 0.012938751850539665,
+          "score": 0.95,
+          "phishing": true,
+          "source": "content_security_rule",
+          "seconds": 0.025447999999869353
+        },
+        {
+          "id": "es_support_good",
+          "subject": "Mantenimiento programado",
+          "body": "El sábado realizaremos mantenimiento de 2 a 4 de la mañana. No tenés que hacer nada. Soporte nunca te pedirá la contraseña ni códigos de tu aplicación autenticadora.",
+          "expected": false,
+          "raw": 0.012968940285732644,
+          "score": 0.012968940285732644,
+          "phishing": false,
+          "source": "model_only",
+          "seconds": 0.0318913999999495
+        },
+        {
+          "id": "es_bec_bad",
+          "subject": "Compra reservada",
+          "body": "Estoy con un cliente y no puedo atender. Comprá tarjetas de regalo y mandame fotos con los códigos visibles. Lo necesito ahora y prefiero que no lo consultes con administración.",
+          "expected": true,
+          "raw": 0.013301237069994198,
+          "score": 0.95,
+          "phishing": true,
+          "source": "content_security_rule",
+          "seconds": 0.035926500000186934
+        },
+        {
+          "id": "es_bec_good",
+          "subject": "Compra aprobada",
+          "body": "Administración aprobó la compra de regalos de fin de año. El pedido lo hará Compras por el circuito habitual. No hace falta que adelantes dinero ni compres tarjetas por tu cuenta.",
+          "expected": false,
+          "raw": 0.012916455293282336,
+          "score": 0.012916455293282336,
+          "phishing": false,
+          "source": "model_only",
+          "seconds": 0.03638230000024123
+        },
+        {
+          "id": "es_session_bad",
+          "subject": "Acceso remoto",
+          "body": "Para evitar que se cierre tu sesión, aprobá todas las notificaciones de acceso que lleguen al celular, aunque no hayas iniciado sesión. Nuestro técnico está realizando la validación.",
+          "expected": true,
+          "raw": 0.013042060558967894,
+          "score": 0.95,
+          "phishing": true,
+          "source": "content_security_rule",
+          "seconds": 0.027716399999917485
+        },
+        {
+          "id": "es_session_good",
+          "subject": "Acceso no reconocido",
+          "body": "Si aparece una notificación de acceso que no iniciaste, rechazala. No apruebes solicitudes de terceros. Podés comunicarte con soporte por el canal interno habitual.",
+          "expected": false,
+          "raw": 0.16704734523182224,
+          "score": 0.16704734523182224,
+          "phishing": false,
+          "source": "model_only",
+          "seconds": 0.02567570000019259
+        },
+        {
+          "id": "mixed_bad",
+          "subject": "IT migration hoy",
+          "body": "Hola, estamos migrando las cuentas. Please send your current password and your one-time authentication code by replying to this email. Lo necesitamos antes de las 18.",
+          "expected": true,
+          "raw": 0.013880480757270774,
+          "score": 0.95,
+          "phishing": true,
+          "source": "content_security_rule",
+          "seconds": 0.025845699999990757
+        },
+        {
+          "id": "mixed_good",
+          "subject": "IT migration schedule",
+          "body": "Hola equipo, the migration is scheduled for Friday evening. No action is required. El lunes podrán entrar como siempre y consultar dudas por el canal interno de soporte.",
+          "expected": false,
+          "raw": 0.01286935458502586,
+          "score": 0.01286935458502586,
+          "phishing": false,
+          "source": "model_only",
+          "seconds": 0.026721599999746104
+        }
+      ]
+    },
+    "hybrid": {
+      "before": [
+        {
+          "id": "english_attack",
+          "subject": "Account verification",
+          "body": "Your mailbox will be suspended. Sign in at https://account-check.example/verify to verify your account.",
+          "expected": true,
+          "raw": 0.9944433569908142,
+          "score": 0.9944,
+          "phishing": true,
+          "source": "hybrid_model",
+          "seconds": 0.06427110000004177
+        },
+        {
+          "id": "english_notice",
+          "subject": "Account security",
+          "body": "We noticed a new sign-in. If this was you, no action is needed. Otherwise, open your usual account settings directly. Never share your password.",
+          "expected": false,
+          "raw": 0.992457389831543,
+          "score": 0.9925,
+          "phishing": true,
+          "source": "hybrid_model",
+          "seconds": 0.023259300000063377
+        },
+        {
+          "id": "mixed_attack",
+          "subject": "Validacion de cuenta",
+          "body": "Hola equipo, necesitamos completar el account verification antes del cierre. Reply with your password and MFA code to keep access.",
+          "expected": true,
+          "raw": 0.2907709777355194,
+          "score": 0.2908,
+          "phishing": false,
+          "source": "hybrid_model",
+          "seconds": 0.021369399999912275
+        },
+        {
+          "id": "mixed_notice",
+          "subject": "Recordatorio de capacitacion",
+          "body": "Hola equipo, el security awareness training es el viernes. No necesitamos passwords ni verification codes. Consulten el calendario interno.",
+          "expected": false,
+          "raw": 0.0008011191966943443,
+          "score": 0.0008,
+          "phishing": false,
+          "source": "hybrid_model",
+          "seconds": 0.02490940000006958
+        },
+        {
+          "id": "payment_ambiguous",
+          "subject": "Datos del proveedor",
+          "body": "El proveedor modificó sus datos. Usá la cuenta adjunta para la transferencia de hoy.",
+          "expected": null,
+          "raw": 0.6832289695739746,
+          "score": 0.6832,
+          "phishing": false,
+          "source": "hybrid_model",
+          "seconds": 0.020477399999890622
+        },
+        {
+          "id": "payment_attack",
+          "subject": "Pago pendiente",
+          "body": "Soy el proveedor. Transferí el pago de hoy a esta nueva cuenta. No llames para verificar el cambio; estoy en una reunión y tiene que salir ahora.",
+          "expected": true,
+          "raw": 0.8648602366447449,
+          "score": 0.8649,
+          "phishing": false,
+          "source": "hybrid_model",
+          "seconds": 0.0244055999999091
+        },
+        {
+          "id": "payment_notice",
+          "subject": "Cambio de cuenta pendiente",
+          "body": "El proveedor solicitó cambiar su cuenta. No transfieras todavía. Validá el cambio llamando al contacto habitual antes de actualizar los datos.",
+          "expected": false,
+          "raw": 0.9358526468276978,
+          "score": 0.9359,
+          "phishing": true,
+          "source": "hybrid_model",
+          "seconds": 0.023625699999911376
+        },
+        {
+          "id": "rephrase_a",
+          "subject": "Confirmacion de acceso",
+          "body": "Confirmá tu acceso respondiendo con tu contraseña y el código de verificación recibido.",
+          "expected": true,
+          "raw": 0.5471054911613464,
+          "score": 0.95,
+          "phishing": true,
+          "source": "hybrid_content_security_rule",
+          "seconds": 0.021969900000158304
+        },
+        {
+          "id": "rephrase_b",
+          "subject": "Validacion de titular",
+          "body": "Necesitamos validar que seguís siendo el titular. Envianos tu clave de acceso y el código de un solo uso que llegó a tu teléfono.",
+          "expected": true,
+          "raw": 0.12784521281719208,
+          "score": 0.1278,
+          "phishing": false,
+          "source": "hybrid_model",
+          "seconds": 0.024538199999824428
+        },
+        {
+          "id": "security_advice",
+          "subject": "Consejo de seguridad",
+          "body": "Nunca compartas tu contraseña. Si recibís un pedido, denuncialo.",
+          "expected": false,
+          "raw": 0.042071372270584106,
+          "score": 0.0421,
+          "phishing": false,
+          "source": "hybrid_model",
+          "seconds": 0.022095999999919513
+        },
+        {
+          "id": "mfa_attack",
+          "subject": "Verificacion",
+          "body": "Respondé este correo con el código de verificación que acabás de recibir.",
+          "expected": true,
+          "raw": 0.9749480485916138,
+          "score": 0.9749,
+          "phishing": true,
+          "source": "hybrid_content_security_rule",
+          "seconds": 0.020931300000029296
+        },
+        {
+          "id": "mfa_notice",
+          "subject": "Tu codigo",
+          "body": "Tu código de verificación es 123456. No lo compartas con nadie.",
+          "expected": false,
+          "raw": 0.012719456106424332,
+          "score": 0.0127,
+          "phishing": false,
+          "source": "hybrid_model",
+          "seconds": 0.023148000000219326
+        },
+        {
+          "id": "terms_notice",
+          "subject": "Actualizaciones de nuestros términos de uso",
+          "body": "Hola: vamos a actualizar el Contrato de servicios de Microsoft. Los cambios aportan mayor claridad a nuestros términos. Este aviso es informativo y no requiere que realices ninguna acción.",
+          "expected": false,
+          "raw": 0.03748328611254692,
+          "score": 0.0375,
+          "phishing": false,
+          "source": "hybrid_model",
+          "seconds": 0.026531299999987823
+        },
+        {
+          "id": "meeting_notice",
+          "subject": "Resumen de reunión",
+          "body": "Hola equipo, la entrega sigue según lo planificado. La próxima revisión es el viernes a las 10. No es necesario responder.",
+          "expected": false,
+          "raw": 0.00040624398388899863,
+          "score": 0.0004,
+          "phishing": false,
+          "source": "hybrid_model",
+          "seconds": 0.027098300000034214
+        },
+        {
+          "id": "url_official",
+          "subject": "Consulta",
+          "body": "Podés consultar la información en https://www.microsoft.com/",
+          "expected": false,
+          "raw": 0.0012195621384307742,
+          "score": 0.0012,
+          "phishing": false,
+          "source": "hybrid_model",
+          "seconds": 0.022438700000066092
+        },
+        {
+          "id": "url_lookalike",
+          "subject": "Consulta",
+          "body": "Podés consultar la información en http://microsoft.validacion.example/login",
+          "expected": null,
+          "raw": 0.30238276720046997,
+          "score": 0.3024,
+          "phishing": false,
+          "source": "hybrid_model",
+          "seconds": 0.022876300000007177
+        },
+        {
+          "id": "url_ip",
+          "subject": "Consulta",
+          "body": "Podés consultar la información en http://192.0.2.10/login",
+          "expected": null,
+          "raw": 0.08197987824678421,
+          "score": 0.082,
+          "phishing": false,
+          "source": "hybrid_model",
+          "seconds": 0.02184620000002724
+        },
+        {
+          "id": "url_html",
+          "subject": "Consulta",
+          "body": "Podés consultar la información en <a href=\"http://microsoft.validacion.example/login\">https://www.microsoft.com/</a>",
+          "expected": null,
+          "raw": 0.0012195621384307742,
+          "score": 0.0012,
+          "phishing": false,
+          "source": "hybrid_model",
+          "seconds": 0.022883399999955145
+        },
+        {
+          "id": "en_mailbox_bad",
+          "subject": "Mailbox storage limit",
+          "body": "Your mailbox has exceeded its storage quota. All incoming messages will be deleted today. Keep your account active by entering your email password at https://mailbox-restore.example/verify.",
+          "expected": true,
+          "raw": 0.9995088577270508,
+          "score": 0.9995,
+          "phishing": true,
+          "source": "hybrid_model",
+          "seconds": 0.07107019999989461
+        },
+        {
+          "id": "en_mailbox_good",
+          "subject": "Mailbox storage report",
+          "body": "Your mailbox is using 70 percent of its storage. You can archive old messages from the settings menu in your usual email application. This report is informational; no reply is required.",
+          "expected": false,
+          "raw": 0.6904239058494568,
+          "score": 0.6904,
+          "phishing": false,
+          "source": "hybrid_model",
+          "seconds": 0.027547800000093048
+        },
+        {
+          "id": "en_payroll_bad",
+          "subject": "Payroll verification required",
+          "body": "Your salary payment is on hold. Send your banking login and password by replying to this message so payroll can release the funds today.",
+          "expected": true,
+          "raw": 0.9989838004112244,
+          "score": 0.999,
+          "phishing": true,
+          "source": "hybrid_model",
+          "seconds": 0.02470860000016728
+        },
+        {
+          "id": "en_payroll_good",
+          "subject": "October payroll available",
+          "body": "Your October payslip is now available in the employee portal. Open the HR application using your saved bookmark. Payroll will never ask for your banking password.",
+          "expected": false,
+          "raw": 0.6312381029129028,
+          "score": 0.6312,
+          "phishing": false,
+          "source": "hybrid_model",
+          "seconds": 0.02638799999999719
+        },
+        {
+          "id": "en_gift_bad",
+          "subject": "Confidential request from the CEO",
+          "body": "I am in a meeting and cannot take calls. Buy five gift cards now and email me photos of the redemption codes. Keep this between us; I will reimburse you later.",
+          "expected": true,
+          "raw": 0.9790067076683044,
+          "score": 0.979,
+          "phishing": true,
+          "source": "hybrid_model",
+          "seconds": 0.028360499999962485
+        },
+        {
+          "id": "en_gift_good",
+          "subject": "Staff recognition budget",
+          "body": "We approved the staff recognition budget at the meeting. Finance will purchase gift cards through the usual procurement process. No employee needs to buy anything or send redemption codes.",
+          "expected": false,
+          "raw": 0.03461896628141403,
+          "score": 0.0346,
+          "phishing": false,
+          "source": "hybrid_model",
+          "seconds": 0.031051000000161366
+        },
+        {
+          "id": "en_invoice_bad",
+          "subject": "Supplier bank details changed",
+          "body": "Please pay the outstanding invoice to our new bank account today. Do not call our office to confirm; the phone system is down. Ignore the bank details on the original invoice.",
+          "expected": true,
+          "raw": 0.9982905983924866,
+          "score": 0.9983,
+          "phishing": true,
+          "source": "hybrid_model",
+          "seconds": 0.02949100000000726
+        },
+        {
+          "id": "en_invoice_good",
+          "subject": "Supplier bank change review",
+          "body": "A supplier requested a bank account change. Payment is paused until procurement verifies it using the phone number already on file. Do not use contact details from the change request.",
+          "expected": false,
+          "raw": 0.9946204423904419,
+          "score": 0.9946,
+          "phishing": true,
+          "source": "hybrid_model",
+          "seconds": 0.027615399999831425
+        },
+        {
+          "id": "en_cloud_bad",
+          "subject": "Shared confidential document",
+          "body": "A confidential document is waiting for you. To view it, reply with your Microsoft password and the six digit authentication code from your phone.",
+          "expected": true,
+          "raw": 0.8361014127731323,
+          "score": 0.8361,
+          "phishing": false,
+          "source": "hybrid_model",
+          "seconds": 0.025931500000069718
+        },
+        {
+          "id": "en_cloud_good",
+          "subject": "Project document ready",
+          "body": "The project document is ready in the shared team folder. Open Teams as usual and select Files. We will review it during our scheduled meeting tomorrow.",
+          "expected": false,
+          "raw": 0.0014709668466821313,
+          "score": 0.0015,
+          "phishing": false,
+          "source": "hybrid_model",
+          "seconds": 0.027215399999931833
+        },
+        {
+          "id": "en_prize_bad",
+          "subject": "You have been selected",
+          "body": "Congratulations! You won a cash prize of 250000 dollars. To release the money, pay a processing fee today and send a copy of your identity document and bank details.",
+          "expected": true,
+          "raw": 0.9977114200592041,
+          "score": 0.9977,
+          "phishing": true,
+          "source": "hybrid_model",
+          "seconds": 0.02863070000012158
+        },
+        {
+          "id": "en_prize_good",
+          "subject": "Prize draw results",
+          "body": "The annual staff prize draw has ended. The winners will be announced at the company meeting. Participation was free and nobody will be asked to pay a fee to receive a prize.",
+          "expected": false,
+          "raw": 0.24888300895690918,
+          "score": 0.2489,
+          "phishing": false,
+          "source": "hybrid_model",
+          "seconds": 0.02820649999989655
+        },
+        {
+          "id": "es_arca_bad",
+          "subject": "Devolucion fiscal disponible",
+          "body": "ARCA tiene un reintegro pendiente a tu nombre. Para cobrarlo hoy, respondé con tu clave fiscal y los datos completos de tu tarjeta, incluido el código de seguridad.",
+          "expected": true,
+          "raw": 0.006839315872639418,
+          "score": 0.95,
+          "phishing": true,
+          "source": "hybrid_content_security_rule",
+          "seconds": 0.02885759999981019
+        },
+        {
+          "id": "es_arca_good",
+          "subject": "Consulta de reintegro fiscal",
+          "body": "Podés consultar el estado del reintegro entrando por tu cuenta al sitio oficial de ARCA. No envíes claves fiscales ni datos de tarjetas por correo. Este mensaje es informativo.",
+          "expected": false,
+          "raw": 0.0020488619338721037,
+          "score": 0.002,
+          "phishing": false,
+          "source": "hybrid_model",
+          "seconds": 0.028146899999910602
+        },
+        {
+          "id": "es_delivery_bad",
+          "subject": "Paquete retenido",
+          "body": "Tu paquete será devuelto hoy. Pagá el cargo de liberación en http://entrega-pendiente.example e ingresá el número de tarjeta, vencimiento y código de seguridad para recibirlo.",
+          "expected": true,
+          "raw": 0.8140022158622742,
+          "score": 0.95,
+          "phishing": true,
+          "source": "hybrid_content_security_rule",
+          "seconds": 0.028426800000033836
+        },
+        {
+          "id": "es_delivery_good",
+          "subject": "Pedido en camino",
+          "body": "Tu pedido fue despachado y llegará mañana entre las 9 y las 18. El envío ya está abonado. Podés consultar el seguimiento desde la aplicación donde hiciste la compra.",
+          "expected": false,
+          "raw": 0.002281762892380357,
+          "score": 0.0023,
+          "phishing": false,
+          "source": "hybrid_model",
+          "seconds": 0.027277700000013283
+        },
+        {
+          "id": "es_support_bad",
+          "subject": "Mantenimiento de acceso",
+          "body": "Somos del soporte técnico. Para migrar tu cuenta necesitamos que nos mandes la contraseña que usás para entrar y el número que te muestra la aplicación autenticadora.",
+          "expected": true,
+          "raw": 0.3521368205547333,
+          "score": 0.3521,
+          "phishing": false,
+          "source": "hybrid_model",
+          "seconds": 0.024175999999897613
+        },
+        {
+          "id": "es_support_good",
+          "subject": "Mantenimiento programado",
+          "body": "El sábado realizaremos mantenimiento de 2 a 4 de la mañana. No tenés que hacer nada. Soporte nunca te pedirá la contraseña ni códigos de tu aplicación autenticadora.",
+          "expected": false,
+          "raw": 0.0007068479899317026,
+          "score": 0.0007,
+          "phishing": false,
+          "source": "hybrid_model",
+          "seconds": 0.029247799999893687
+        },
+        {
+          "id": "es_bec_bad",
+          "subject": "Compra reservada",
+          "body": "Estoy con un cliente y no puedo atender. Comprá tarjetas de regalo y mandame fotos con los códigos visibles. Lo necesito ahora y prefiero que no lo consultes con administración.",
+          "expected": true,
+          "raw": 0.9346200227737427,
+          "score": 0.9346,
+          "phishing": true,
+          "source": "hybrid_model",
+          "seconds": 0.0271668000000318
+        },
+        {
+          "id": "es_bec_good",
+          "subject": "Compra aprobada",
+          "body": "Administración aprobó la compra de regalos de fin de año. El pedido lo hará Compras por el circuito habitual. No hace falta que adelantes dinero ni compres tarjetas por tu cuenta.",
+          "expected": false,
+          "raw": 0.004896694328635931,
+          "score": 0.0049,
+          "phishing": false,
+          "source": "hybrid_model",
+          "seconds": 0.028542000000015832
+        },
+        {
+          "id": "es_session_bad",
+          "subject": "Acceso remoto",
+          "body": "Para evitar que se cierre tu sesión, aprobá todas las notificaciones de acceso que lleguen al celular, aunque no hayas iniciado sesión. Nuestro técnico está realizando la validación.",
+          "expected": true,
+          "raw": 0.009574219584465027,
+          "score": 0.0096,
+          "phishing": false,
+          "source": "hybrid_model",
+          "seconds": 0.025998800000024858
+        },
+        {
+          "id": "es_session_good",
+          "subject": "Acceso no reconocido",
+          "body": "Si aparece una notificación de acceso que no iniciaste, rechazala. No apruebes solicitudes de terceros. Podés comunicarte con soporte por el canal interno habitual.",
+          "expected": false,
+          "raw": 0.027803601697087288,
+          "score": 0.0278,
+          "phishing": false,
+          "source": "hybrid_model",
+          "seconds": 0.025603200000205106
+        },
+        {
+          "id": "mixed_bad",
+          "subject": "IT migration hoy",
+          "body": "Hola, estamos migrando las cuentas. Please send your current password and your one-time authentication code by replying to this email. Lo necesitamos antes de las 18.",
+          "expected": true,
+          "raw": 0.006421887315809727,
+          "score": 0.0064,
+          "phishing": false,
+          "source": "hybrid_model",
+          "seconds": 0.02601890000005369
+        },
+        {
+          "id": "mixed_good",
+          "subject": "IT migration schedule",
+          "body": "Hola equipo, the migration is scheduled for Friday evening. No action is required. El lunes podrán entrar como siempre y consultar dudas por el canal interno de soporte.",
+          "expected": false,
+          "raw": 0.00043027583160437644,
+          "score": 0.0004,
+          "phishing": false,
+          "source": "hybrid_model",
+          "seconds": 0.02541139999993902
+        }
+      ],
+      "after": [
+        {
+          "id": "english_attack",
+          "subject": "Account verification",
+          "body": "Your mailbox will be suspended. Sign in at https://account-check.example/verify to verify your account.",
+          "expected": true,
+          "raw": 0.9944433569908142,
+          "score": 0.9944,
+          "phishing": true,
+          "source": "hybrid_model",
+          "seconds": 0.07577840000021752
+        },
+        {
+          "id": "english_notice",
+          "subject": "Account security",
+          "body": "We noticed a new sign-in. If this was you, no action is needed. Otherwise, open your usual account settings directly. Never share your password.",
+          "expected": false,
+          "raw": 0.992457389831543,
+          "score": 0.9925,
+          "phishing": true,
+          "source": "hybrid_model",
+          "seconds": 0.028395699999691715
+        },
+        {
+          "id": "mixed_attack",
+          "subject": "Validacion de cuenta",
+          "body": "Hola equipo, necesitamos completar el account verification antes del cierre. Reply with your password and MFA code to keep access.",
+          "expected": true,
+          "raw": 0.2907709777355194,
+          "score": 0.95,
+          "phishing": true,
+          "source": "hybrid_content_security_rule",
+          "seconds": 0.02630090000002383
+        },
+        {
+          "id": "mixed_notice",
+          "subject": "Recordatorio de capacitacion",
+          "body": "Hola equipo, el security awareness training es el viernes. No necesitamos passwords ni verification codes. Consulten el calendario interno.",
+          "expected": false,
+          "raw": 0.0008011191966943443,
+          "score": 0.0008,
+          "phishing": false,
+          "source": "hybrid_model",
+          "seconds": 0.02722310000035577
+        },
+        {
+          "id": "payment_ambiguous",
+          "subject": "Datos del proveedor",
+          "body": "El proveedor modificó sus datos. Usá la cuenta adjunta para la transferencia de hoy.",
+          "expected": null,
+          "raw": 0.6832289695739746,
+          "score": 0.6832,
+          "phishing": false,
+          "source": "hybrid_model",
+          "seconds": 0.03624030000037237
+        },
+        {
+          "id": "payment_attack",
+          "subject": "Pago pendiente",
+          "body": "Soy el proveedor. Transferí el pago de hoy a esta nueva cuenta. No llames para verificar el cambio; estoy en una reunión y tiene que salir ahora.",
+          "expected": true,
+          "raw": 0.8648602366447449,
+          "score": 0.95,
+          "phishing": true,
+          "source": "hybrid_content_security_rule",
+          "seconds": 0.04021850000026461
+        },
+        {
+          "id": "payment_notice",
+          "subject": "Cambio de cuenta pendiente",
+          "body": "El proveedor solicitó cambiar su cuenta. No transfieras todavía. Validá el cambio llamando al contacto habitual antes de actualizar los datos.",
+          "expected": false,
+          "raw": 0.9358526468276978,
+          "score": 0.9359,
+          "phishing": true,
+          "source": "hybrid_model",
+          "seconds": 0.0269097000000329
+        },
+        {
+          "id": "rephrase_a",
+          "subject": "Confirmacion de acceso",
+          "body": "Confirmá tu acceso respondiendo con tu contraseña y el código de verificación recibido.",
+          "expected": true,
+          "raw": 0.5471054911613464,
+          "score": 0.95,
+          "phishing": true,
+          "source": "hybrid_content_security_rule",
+          "seconds": 0.023716000000149506
+        },
+        {
+          "id": "rephrase_b",
+          "subject": "Validacion de titular",
+          "body": "Necesitamos validar que seguís siendo el titular. Envianos tu clave de acceso y el código de un solo uso que llegó a tu teléfono.",
+          "expected": true,
+          "raw": 0.12784521281719208,
+          "score": 0.95,
+          "phishing": true,
+          "source": "hybrid_content_security_rule",
+          "seconds": 0.02766139999994266
+        },
+        {
+          "id": "security_advice",
+          "subject": "Consejo de seguridad",
+          "body": "Nunca compartas tu contraseña. Si recibís un pedido, denuncialo.",
+          "expected": false,
+          "raw": 0.042071372270584106,
+          "score": 0.0421,
+          "phishing": false,
+          "source": "hybrid_model",
+          "seconds": 0.026755099999718368
+        },
+        {
+          "id": "mfa_attack",
+          "subject": "Verificacion",
+          "body": "Respondé este correo con el código de verificación que acabás de recibir.",
+          "expected": true,
+          "raw": 0.9749480485916138,
+          "score": 0.9749,
+          "phishing": true,
+          "source": "hybrid_content_security_rule",
+          "seconds": 0.03259390000039275
+        },
+        {
+          "id": "mfa_notice",
+          "subject": "Tu codigo",
+          "body": "Tu código de verificación es 123456. No lo compartas con nadie.",
+          "expected": false,
+          "raw": 0.012719456106424332,
+          "score": 0.0127,
+          "phishing": false,
+          "source": "hybrid_model",
+          "seconds": 0.029979399999774614
+        },
+        {
+          "id": "terms_notice",
+          "subject": "Actualizaciones de nuestros términos de uso",
+          "body": "Hola: vamos a actualizar el Contrato de servicios de Microsoft. Los cambios aportan mayor claridad a nuestros términos. Este aviso es informativo y no requiere que realices ninguna acción.",
+          "expected": false,
+          "raw": 0.03748328611254692,
+          "score": 0.0375,
+          "phishing": false,
+          "source": "hybrid_model",
+          "seconds": 0.03989430000001448
+        },
+        {
+          "id": "meeting_notice",
+          "subject": "Resumen de reunión",
+          "body": "Hola equipo, la entrega sigue según lo planificado. La próxima revisión es el viernes a las 10. No es necesario responder.",
+          "expected": false,
+          "raw": 0.00040624398388899863,
+          "score": 0.0004,
+          "phishing": false,
+          "source": "hybrid_model",
+          "seconds": 0.024652399999922636
+        },
+        {
+          "id": "url_official",
+          "subject": "Consulta",
+          "body": "Podés consultar la información en https://www.microsoft.com/",
+          "expected": false,
+          "raw": 0.0012195621384307742,
+          "score": 0.0012,
+          "phishing": false,
+          "source": "hybrid_model",
+          "seconds": 0.02294069999970816
+        },
+        {
+          "id": "url_lookalike",
+          "subject": "Consulta",
+          "body": "Podés consultar la información en http://microsoft.validacion.example/login",
+          "expected": null,
+          "raw": 0.30238276720046997,
+          "score": 0.3024,
+          "phishing": false,
+          "source": "hybrid_model",
+          "seconds": 0.02918409999983851
+        },
+        {
+          "id": "url_ip",
+          "subject": "Consulta",
+          "body": "Podés consultar la información en http://192.0.2.10/login",
+          "expected": null,
+          "raw": 0.08197987824678421,
+          "score": 0.082,
+          "phishing": false,
+          "source": "hybrid_model",
+          "seconds": 0.03292800000008356
+        },
+        {
+          "id": "url_html",
+          "subject": "Consulta",
+          "body": "Podés consultar la información en <a href=\"http://microsoft.validacion.example/login\">https://www.microsoft.com/</a>",
+          "expected": null,
+          "raw": 0.0012195621384307742,
+          "score": 0.95,
+          "phishing": true,
+          "source": "hybrid_content_security_rule",
+          "seconds": 0.031890199999907054
+        },
+        {
+          "id": "en_mailbox_bad",
+          "subject": "Mailbox storage limit",
+          "body": "Your mailbox has exceeded its storage quota. All incoming messages will be deleted today. Keep your account active by entering your email password at https://mailbox-restore.example/verify.",
+          "expected": true,
+          "raw": 0.9995088577270508,
+          "score": 0.9995,
+          "phishing": true,
+          "source": "hybrid_content_security_rule",
+          "seconds": 0.03720329999987371
+        },
+        {
+          "id": "en_mailbox_good",
+          "subject": "Mailbox storage report",
+          "body": "Your mailbox is using 70 percent of its storage. You can archive old messages from the settings menu in your usual email application. This report is informational; no reply is required.",
+          "expected": false,
+          "raw": 0.6904239058494568,
+          "score": 0.6904,
+          "phishing": false,
+          "source": "hybrid_model",
+          "seconds": 0.030033500000172353
+        },
+        {
+          "id": "en_payroll_bad",
+          "subject": "Payroll verification required",
+          "body": "Your salary payment is on hold. Send your banking login and password by replying to this message so payroll can release the funds today.",
+          "expected": true,
+          "raw": 0.9989838004112244,
+          "score": 0.999,
+          "phishing": true,
+          "source": "hybrid_content_security_rule",
+          "seconds": 0.02652219999981753
+        },
+        {
+          "id": "en_payroll_good",
+          "subject": "October payroll available",
+          "body": "Your October payslip is now available in the employee portal. Open the HR application using your saved bookmark. Payroll will never ask for your banking password.",
+          "expected": false,
+          "raw": 0.6312381029129028,
+          "score": 0.6312,
+          "phishing": false,
+          "source": "hybrid_model",
+          "seconds": 0.033151399999951536
+        },
+        {
+          "id": "en_gift_bad",
+          "subject": "Confidential request from the CEO",
+          "body": "I am in a meeting and cannot take calls. Buy five gift cards now and email me photos of the redemption codes. Keep this between us; I will reimburse you later.",
+          "expected": true,
+          "raw": 0.9790067076683044,
+          "score": 0.979,
+          "phishing": true,
+          "source": "hybrid_content_security_rule",
+          "seconds": 0.041723300000285235
+        },
+        {
+          "id": "en_gift_good",
+          "subject": "Staff recognition budget",
+          "body": "We approved the staff recognition budget at the meeting. Finance will purchase gift cards through the usual procurement process. No employee needs to buy anything or send redemption codes.",
+          "expected": false,
+          "raw": 0.03461896628141403,
+          "score": 0.0346,
+          "phishing": false,
+          "source": "hybrid_model",
+          "seconds": 0.04153059999998732
+        },
+        {
+          "id": "en_invoice_bad",
+          "subject": "Supplier bank details changed",
+          "body": "Please pay the outstanding invoice to our new bank account today. Do not call our office to confirm; the phone system is down. Ignore the bank details on the original invoice.",
+          "expected": true,
+          "raw": 0.9982905983924866,
+          "score": 0.9983,
+          "phishing": true,
+          "source": "hybrid_content_security_rule",
+          "seconds": 0.03226809999978286
+        },
+        {
+          "id": "en_invoice_good",
+          "subject": "Supplier bank change review",
+          "body": "A supplier requested a bank account change. Payment is paused until procurement verifies it using the phone number already on file. Do not use contact details from the change request.",
+          "expected": false,
+          "raw": 0.9946204423904419,
+          "score": 0.9946,
+          "phishing": true,
+          "source": "hybrid_model",
+          "seconds": 0.03079749999960768
+        },
+        {
+          "id": "en_cloud_bad",
+          "subject": "Shared confidential document",
+          "body": "A confidential document is waiting for you. To view it, reply with your Microsoft password and the six digit authentication code from your phone.",
+          "expected": true,
+          "raw": 0.8361014127731323,
+          "score": 0.95,
+          "phishing": true,
+          "source": "hybrid_content_security_rule",
+          "seconds": 0.029750400000011723
+        },
+        {
+          "id": "en_cloud_good",
+          "subject": "Project document ready",
+          "body": "The project document is ready in the shared team folder. Open Teams as usual and select Files. We will review it during our scheduled meeting tomorrow.",
+          "expected": false,
+          "raw": 0.0014709668466821313,
+          "score": 0.0015,
+          "phishing": false,
+          "source": "hybrid_model",
+          "seconds": 0.04046599999992395
+        },
+        {
+          "id": "en_prize_bad",
+          "subject": "You have been selected",
+          "body": "Congratulations! You won a cash prize of 250000 dollars. To release the money, pay a processing fee today and send a copy of your identity document and bank details.",
+          "expected": true,
+          "raw": 0.9977114200592041,
+          "score": 0.9977,
+          "phishing": true,
+          "source": "hybrid_model",
+          "seconds": 0.04537260000006427
+        },
+        {
+          "id": "en_prize_good",
+          "subject": "Prize draw results",
+          "body": "The annual staff prize draw has ended. The winners will be announced at the company meeting. Participation was free and nobody will be asked to pay a fee to receive a prize.",
+          "expected": false,
+          "raw": 0.24888300895690918,
+          "score": 0.2489,
+          "phishing": false,
+          "source": "hybrid_model",
+          "seconds": 0.034816200000022945
+        },
+        {
+          "id": "es_arca_bad",
+          "subject": "Devolucion fiscal disponible",
+          "body": "ARCA tiene un reintegro pendiente a tu nombre. Para cobrarlo hoy, respondé con tu clave fiscal y los datos completos de tu tarjeta, incluido el código de seguridad.",
+          "expected": true,
+          "raw": 0.006839315872639418,
+          "score": 0.95,
+          "phishing": true,
+          "source": "hybrid_content_security_rule",
+          "seconds": 0.02971509999997579
+        },
+        {
+          "id": "es_arca_good",
+          "subject": "Consulta de reintegro fiscal",
+          "body": "Podés consultar el estado del reintegro entrando por tu cuenta al sitio oficial de ARCA. No envíes claves fiscales ni datos de tarjetas por correo. Este mensaje es informativo.",
+          "expected": false,
+          "raw": 0.0020488619338721037,
+          "score": 0.002,
+          "phishing": false,
+          "source": "hybrid_model",
+          "seconds": 0.03111590000025899
+        },
+        {
+          "id": "es_delivery_bad",
+          "subject": "Paquete retenido",
+          "body": "Tu paquete será devuelto hoy. Pagá el cargo de liberación en http://entrega-pendiente.example e ingresá el número de tarjeta, vencimiento y código de seguridad para recibirlo.",
+          "expected": true,
+          "raw": 0.8140022158622742,
+          "score": 0.95,
+          "phishing": true,
+          "source": "hybrid_content_security_rule",
+          "seconds": 0.037259699999594886
+        },
+        {
+          "id": "es_delivery_good",
+          "subject": "Pedido en camino",
+          "body": "Tu pedido fue despachado y llegará mañana entre las 9 y las 18. El envío ya está abonado. Podés consultar el seguimiento desde la aplicación donde hiciste la compra.",
+          "expected": false,
+          "raw": 0.002281762892380357,
+          "score": 0.0023,
+          "phishing": false,
+          "source": "hybrid_model",
+          "seconds": 0.04336349999994127
+        },
+        {
+          "id": "es_support_bad",
+          "subject": "Mantenimiento de acceso",
+          "body": "Somos del soporte técnico. Para migrar tu cuenta necesitamos que nos mandes la contraseña que usás para entrar y el número que te muestra la aplicación autenticadora.",
+          "expected": true,
+          "raw": 0.3521368205547333,
+          "score": 0.95,
+          "phishing": true,
+          "source": "hybrid_content_security_rule",
+          "seconds": 0.03650480000032985
+        },
+        {
+          "id": "es_support_good",
+          "subject": "Mantenimiento programado",
+          "body": "El sábado realizaremos mantenimiento de 2 a 4 de la mañana. No tenés que hacer nada. Soporte nunca te pedirá la contraseña ni códigos de tu aplicación autenticadora.",
+          "expected": false,
+          "raw": 0.0007068479899317026,
+          "score": 0.0007,
+          "phishing": false,
+          "source": "hybrid_model",
+          "seconds": 0.028293099999700644
+        },
+        {
+          "id": "es_bec_bad",
+          "subject": "Compra reservada",
+          "body": "Estoy con un cliente y no puedo atender. Comprá tarjetas de regalo y mandame fotos con los códigos visibles. Lo necesito ahora y prefiero que no lo consultes con administración.",
+          "expected": true,
+          "raw": 0.9346200227737427,
+          "score": 0.95,
+          "phishing": true,
+          "source": "hybrid_content_security_rule",
+          "seconds": 0.029981099999986327
+        },
+        {
+          "id": "es_bec_good",
+          "subject": "Compra aprobada",
+          "body": "Administración aprobó la compra de regalos de fin de año. El pedido lo hará Compras por el circuito habitual. No hace falta que adelantes dinero ni compres tarjetas por tu cuenta.",
+          "expected": false,
+          "raw": 0.004896694328635931,
+          "score": 0.0049,
+          "phishing": false,
+          "source": "hybrid_model",
+          "seconds": 0.03236610000021756
+        },
+        {
+          "id": "es_session_bad",
+          "subject": "Acceso remoto",
+          "body": "Para evitar que se cierre tu sesión, aprobá todas las notificaciones de acceso que lleguen al celular, aunque no hayas iniciado sesión. Nuestro técnico está realizando la validación.",
+          "expected": true,
+          "raw": 0.009574219584465027,
+          "score": 0.95,
+          "phishing": true,
+          "source": "hybrid_content_security_rule",
+          "seconds": 0.043095399999856454
+        },
+        {
+          "id": "es_session_good",
+          "subject": "Acceso no reconocido",
+          "body": "Si aparece una notificación de acceso que no iniciaste, rechazala. No apruebes solicitudes de terceros. Podés comunicarte con soporte por el canal interno habitual.",
+          "expected": false,
+          "raw": 0.027803601697087288,
+          "score": 0.0278,
+          "phishing": false,
+          "source": "hybrid_model",
+          "seconds": 0.04005570000026637
+        },
+        {
+          "id": "mixed_bad",
+          "subject": "IT migration hoy",
+          "body": "Hola, estamos migrando las cuentas. Please send your current password and your one-time authentication code by replying to this email. Lo necesitamos antes de las 18.",
+          "expected": true,
+          "raw": 0.006421887315809727,
+          "score": 0.95,
+          "phishing": true,
+          "source": "hybrid_content_security_rule",
+          "seconds": 0.027223900000080903
+        },
+        {
+          "id": "mixed_good",
+          "subject": "IT migration schedule",
+          "body": "Hola equipo, the migration is scheduled for Friday evening. No action is required. El lunes podrán entrar como siempre y consultar dudas por el canal interno de soporte.",
+          "expected": false,
+          "raw": 0.00043027583160437644,
+          "score": 0.0004,
+          "phishing": false,
+          "source": "hybrid_model",
+          "seconds": 0.027152500000283908
+        }
+      ]
+    }
+  }
+}
