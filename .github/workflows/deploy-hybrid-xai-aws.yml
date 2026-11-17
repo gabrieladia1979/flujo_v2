@@ -2,6 +2,11 @@ name: Deploy Hybrid XAI pilot
 
 on:
   workflow_dispatch:
+    inputs:
+      deploy_service:
+        description: Update the existing pilot ECS service
+        type: boolean
+        default: false
 
 permissions:
   contents: read
@@ -38,15 +43,20 @@ jobs:
           ROLE_ARN: ${{ vars.HYBRID_AWS_DEPLOY_ROLE_ARN }}
           HYBRID_ECS_CLUSTER: ${{ vars.HYBRID_ECS_CLUSTER }}
           HYBRID_ECS_SERVICE: ${{ vars.HYBRID_ECS_SERVICE }}
+          DEPLOY_SERVICE: ${{ inputs.deploy_service }}
         run: |
-          for name in ROLE_ARN HYBRID_ECS_CLUSTER HYBRID_ECS_SERVICE ECS_EXECUTION_ROLE_ARN HYBRID_TASK_ROLE_ARN API_KEY_SECRET_ARN TOKEN_KEY_SECRET_ARN HYBRID_MODEL_BUCKET HYBRID_MODEL_VERSION_ID HYBRID_MODEL_SHA256 SLM_MODEL_S3_BUCKET SLM_MODEL_S3_KEY SLM_MODEL_S3_VERSION_ID SLM_MODEL_SHA256; do
+          required=(ROLE_ARN HYBRID_MODEL_BUCKET HYBRID_MODEL_VERSION_ID HYBRID_MODEL_SHA256)
+          if [[ "$DEPLOY_SERVICE" == true ]]; then
+            required+=(HYBRID_ECS_CLUSTER HYBRID_ECS_SERVICE ECS_EXECUTION_ROLE_ARN HYBRID_TASK_ROLE_ARN API_KEY_SECRET_ARN TOKEN_KEY_SECRET_ARN SLM_MODEL_S3_BUCKET SLM_MODEL_S3_KEY SLM_MODEL_S3_VERSION_ID SLM_MODEL_SHA256)
+            [[ "$SLM_MODEL_SHA256" =~ ^[0-9a-fA-F]{64}$ ]] || { echo 'SLM_MODEL_SHA256 must be hex' >&2; exit 1; }
+          fi
+          for name in "${required[@]}"; do
             if [ -z "${!name}" ]; then
               echo "Missing GitHub Actions variable: $name" >&2
               exit 1
             fi
           done
           [[ "$HYBRID_MODEL_SHA256" =~ ^[0-9a-f]{64}$ ]] || { echo 'HYBRID_MODEL_SHA256 must be lowercase hex' >&2; exit 1; }
-          [[ "$SLM_MODEL_SHA256" =~ ^[0-9a-fA-F]{64}$ ]] || { echo 'SLM_MODEL_SHA256 must be hex' >&2; exit 1; }
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v6.3.0
@@ -74,7 +84,7 @@ jobs:
         env:
           REGISTRY: ${{ steps.login-ecr.outputs.registry }}
         run: |
-          IMAGE="$REGISTRY/$ECR_REPOSITORY:$GITHUB_SHA"
+          IMAGE="$REGISTRY/$ECR_REPOSITORY:$GITHUB_SHA-$GITHUB_RUN_ID-$GITHUB_RUN_ATTEMPT"
           docker build --tag "$IMAGE" .
           echo "uri=$IMAGE" >> "$GITHUB_OUTPUT"
 
@@ -93,9 +103,11 @@ jobs:
         run: docker push "$IMAGE"
 
       - name: Render task configuration
+        if: inputs.deploy_service
         run: python scripts/render_hybrid_task.py
 
       - name: Insert immutable image tag
+        if: inputs.deploy_service
         id: task-def
         uses: aws-actions/amazon-ecs-render-task-definition@v1
         with:
@@ -104,6 +116,7 @@ jobs:
           image: ${{ steps.image.outputs.uri }}
 
       - name: Deploy separate Hybrid ECS service
+        if: inputs.deploy_service
         uses: aws-actions/amazon-ecs-deploy-task-definition@v2
         with:
           task-definition: ${{ steps.task-def.outputs.task-definition }}
@@ -112,7 +125,7 @@ jobs:
           wait-for-service-stability: true
 
       - name: Verify public readiness when URL is configured
-        if: vars.HYBRID_PUBLIC_URL != ''
+        if: inputs.deploy_service && vars.HYBRID_PUBLIC_URL != ''
         env:
           HYBRID_PUBLIC_URL: ${{ vars.HYBRID_PUBLIC_URL }}
         run: |

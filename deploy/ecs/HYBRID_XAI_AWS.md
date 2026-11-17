@@ -4,6 +4,21 @@ Branch: `hybrid-xai-aws`. It deploys a **separate** ECS service and ECR
 repository, and serves `/api/v1/analyze/hybrid`. The existing
 `aws-fargate-deployment` service and `/api/v1/analyze` remain independent.
 
+## First image for a new AWS account
+
+Select the Hybrid AWS branch in **Run workflow**. Leave `deploy_service`
+unchecked on the first run. The workflow downloads the pinned Hybrid ZIP,
+builds and checks the container, and pushes an image to `phisharg-hybrid`.
+This mode requires `HYBRID_AWS_DEPLOY_ROLE_ARN`, `HYBRID_MODEL_BUCKET`,
+`HYBRID_MODEL_VERSION_ID` and `HYBRID_MODEL_SHA256`. The AWS role needs
+read access to the pinned ZIP and push access to the pilot ECR repository.
+The image tag includes the commit, run ID and attempt, so a new attempt
+can publish to an immutable ECR repository.
+
+Use that image to register the first pilot task definition and provision
+the service. Select `deploy_service` on subsequent runs after the
+service and its AWS configuration are ready.
+
 ## Model artifact (one-time setup)
 
 The 470 MB encoder is intentionally excluded from Git and the Docker image.
