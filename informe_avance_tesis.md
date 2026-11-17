@@ -2,10 +2,10 @@
 
 ## ¿Qué logramos en esta sesión?
 
-En esta sesión logramos completar el ciclo de "Small Language Model" para la capa de **Explicabilidad (XAI)** del proyecto PhishARG. Dejamos de depender de APIs externas (Gemini) y logramos entrenar y correr un modelo open-source directamente en el backend local.
+En esta sesión logramos completar el ciclo de "Small Language Model" para la capa de **Explicabilidad (XAI)** del proyecto PhishARG. Dejamos de depender de APIs externas privativas y logramos entrenar y correr un modelo open-source directamente en el backend local.
 
 ### 1. Dataset y Formato (ChatML)
-- Reemplazamos la idea de generar el dataset con Gemini (por límites de cuota) y usamos el dataset de 2000 ejemplos `slm_finetuning_dataset.jsonl` generado localmente.
+- Se utilizó el dataset de 2000 ejemplos `slm_finetuning_dataset.jsonl` curado localmente.
 - Creamos el script `convertidor_dataset.py` que toma esos 2000 correos y los formatea estrictamente bajo el estándar **ChatML**.
 - **Solución de Bugs:** El dataset original devolvía acciones inválidas como `"delete_email"`. El convertidor nuevo lee las señales crudas (XAI Rules), infiere la intención (ej: `premio_falso`, `robo_credenciales`) y selecciona dinámicamente las acciones correctas estipuladas en el contrato de la API (`slm_explanation.py`), como `"do_not_click"` o `"do_not_share_sensitive_information"`.
 
@@ -21,7 +21,7 @@ En esta sesión logramos completar el ciclo de "Small Language Model" para la ca
 - **Protección Git:** Añadimos `*.gguf` al `.gitignore` para evitar que se suba el modelo de 2GB a GitHub y rompa el repositorio.
 - Instalamos la librería precompilada `llama-cpp-python` compatible con Windows y CPU.
 - Probamos la arquitectura con `simular_ciclo_completo.py` y `test_slm_vivo.py`.
-- **Resultados:** El modelo de 3 Billones de parámetros ahora lee el output matemático del XGBoost y escupe JSONs impecables con 0 alucinaciones y de manera 100% offline y gratuita.
+- **Resultados:** El modelo de 3 mil millones de parámetros lee el veredicto y las señales de seguridad y genera respuestas JSON estructuradas con alta fidelidad y de manera 100% local y offline.
 
 ### ¿Cómo probarlo ahora mismo?
 Cualquier miembro del equipo puede ejecutar el flujo entero usando:

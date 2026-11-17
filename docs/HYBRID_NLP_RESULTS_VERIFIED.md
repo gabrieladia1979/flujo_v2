@@ -72,6 +72,6 @@ Para reproducir en el entorno híbrido:
 .venv-hybrid/Scripts/python.exe scripts/verify_hybrid_holdout.py --model artifacts/hybrid/multilingual-candidate-a100 --report reports/hybrid_multilingual_a100.json --dataset artifacts/hybrid/corpus/multilingual-v1.csv --output reports/hybrid_a100_windows_verified.json
 ```
 
-Se verificó mediante `git ls-remote` que el commit `e7edc9a` estaba en la rama remota `codex/hybrid-nlp`; `audit` apuntaba a `58d3954`, igual que la referencia local. Esta corrección se guarda en la rama local; no se realiza un push en esta revisión.
+Se verificó mediante `git ls-remote` que el commit `e7edc9a` estaba en la rama remota `hybrid-nlp`; `audit` apuntaba a `58d3954`, igual que la referencia local. Esta corrección se guarda en la rama local; no se realiza un push en esta revisión.
 
-El desarrollo continúa en `codex/hybrid-nlp`, con endpoint experimental `/api/v1/analyze/hybrid`.
+El desarrollo continúa en `hybrid-nlp`, con endpoint experimental `/api/v1/analyze/hybrid`.

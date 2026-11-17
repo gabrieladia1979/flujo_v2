@@ -49,7 +49,7 @@ $env:PHISHARG_SLM_MODEL_PATH = 'model/qwen2.5-3b-instruct-q4_k_m.gguf'
 .venv-hybrid/Scripts/python.exe -m uvicorn main:app --host 127.0.0.1 --port 8001
 ```
 
-- `POST /api/v1/analyze/hybrid`: ruta que consume el Add-in de `codex/hybrid-xai-addin`, con autenticación `X-API-Key`. Si no hay configuración o el artefacto no es válido, responde 503.
+- `POST /api/v1/analyze/hybrid`: ruta que consume el Add-in de Outlook, con autenticación `X-API-Key`. Si no hay configuración o el artefacto no es válido, responde 503.
 - `POST /api/v1/analyze`: ruta anterior conservada por compatibilidad.
 
 El loader verifica hashes, orden de features, dimensiones, clases y umbral. XGBoost se serializa en JSON nativo; el encoder se guarda por separado. Las features se extraen con la misma función en entrenamiento y servicio. Se ignoran anotaciones psicológicas/precomputadas del CSV que no podrían reproducirse con seguridad en Outlook.
@@ -97,7 +97,7 @@ También se contrastaron los signos con el cambio de probabilidad al eliminar ca
 
 La comprobación adicional usa veinte correos distintos, seleccionados con semilla 1337, cinco por etiqueta e idioma de fuente del test guardado, cuerpo de 120–1.000 caracteres y exclusión de los veinte casos anteriores. La configuración se fijó antes de la ejecución: ocho palabras/Ridge 0,01, 128 muestras y 32 combinaciones nuevas, semillas 42/43. Comando: `python -m scripts.probe_lime_locality --fresh --output reports/hybrid_lime_locality_fresh.json`. Es una muestra nueva para esta explicación, dentro del mismo corpus y modelo; no valida usuarios ni un despliegue.
 
-Resultado: **4/20** superaron ambos R² ≥ 0,7, tres legítimos y un phishing, todos de fuente con idioma declarado español. R² mediano de validación **0,516** y MAE mediano **0,000379**. No hubo R² indefinidos. El conteo reducido no permite concluir diferencias de fiabilidad entre idiomas. Se verificaron la exclusión de los veinte casos previos y los cuatro estratos de cinco casos. [Reporte sobre muestra nueva](../reports/hybrid_lime_locality_fresh.json). La mejora parcial no justifica cambiar el endpoint o entregar LIME al Add-in; el ensayo queda en `codex/hybrid-nlp` y la rama AWS se conserva.
+Resultado: **4/20** superaron ambos R² ≥ 0,7, tres legítimos y un phishing, todos de fuente con idioma declarado español. R² mediano de validación **0,516** y MAE mediano **0,000379**. No hubo R² indefinidos. El conteo reducido no permite concluir diferencias de fiabilidad entre idiomas. Se verificaron la exclusión de los veinte casos previos y los cuatro estratos de cinco casos. [Reporte sobre muestra nueva](../reports/hybrid_lime_locality_fresh.json). La mejora parcial no justifica cambiar el endpoint o entregar LIME al Add-in; el ensayo queda en `hybrid-nlp` y la rama AWS se conserva.
 
 ### Cobertura completa y escala logarítmica
 

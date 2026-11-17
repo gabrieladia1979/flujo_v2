@@ -1,6 +1,6 @@
 # Mejoras de reglas y enlaces — 21/10/2026
 
-Implementadas localmente en las ramas `audit` y `codex/hybrid-xai-aws`. No se ejecutó despliegue. Se preservaron los pesos, el umbral y la extracción de features de cada modelo. Los 42 scores brutos de cada sistema coinciden exactamente con los guardados antes del cambio.
+Implementadas localmente en las ramas `audit` y `hybrid-xai-aws`. No se ejecutó despliegue. Se preservaron los pesos, el umbral y la extracción de features de cada modelo. Los 42 scores brutos de cada sistema coinciden exactamente con los guardados antes del cambio.
 
 ## Cambios
 

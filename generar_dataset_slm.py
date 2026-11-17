@@ -6,7 +6,7 @@ from tqdm import tqdm
 import google.generativeai as genai
 from google.generativeai.types import GenerationConfig
 
-# Importamos las herramientas de tu compaÃ±ero de tesis directamente
+# Importación de utilidades del explicador de seguridad
 from services.slm_explanation import (
     SLMExplanationContext,
     ExplanationEvidence,
@@ -20,7 +20,7 @@ from services.slm_explanation import (
 API_KEY = os.environ.get("GEMINI_API_KEY", "TU_API_KEY_AQUI")
 genai.configure(api_key=API_KEY, transport='rest')
 
-MODEL_NAME = 'gemini-3.6-flash' 
+MODEL_NAME = os.environ.get("SLM_TEACHER_MODEL", "model-teacher") 
 model = genai.GenerativeModel(MODEL_NAME)
 
 INPUT_CSV = r"..\Clasificador_PFI\SpaPhish_Master_Final_v5.csv"

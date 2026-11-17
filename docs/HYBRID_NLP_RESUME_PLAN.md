@@ -5,7 +5,7 @@ Fecha: 2026-09-15. Pedido del usuario: dejar un plan para continuar sin perder c
 ## Estado confirmado
 
 - Repositorio: `C:/Users/gabri/OneDrive/Documentos/GitHub/flujo_v2`.
-- Rama: `codex/hybrid-nlp`. No reemplazar el modelo histórico ni la rama `audit`.
+- Rama: `hybrid-nlp`. No reemplazar el modelo histórico ni la rama `audit`.
 - Commits locales previos: `4f49564` corrige carga del intercepto XGBoost; `659a4d0` agrega auditoría y experimentos.
 - Recibido: `C:/Users/gabri/Downloads/flujo_experiment_reports_v2.zip` (313751 bytes). Contiene los seis reportes JSON y Markdown, no pesos de modelos.
 - Los 12 archivos se importaron a `reports/hybrid_experiments_v2_*.json` y `.md`. Se comprobaron los hashes de los datasets locales y las cantidades de scores de test.

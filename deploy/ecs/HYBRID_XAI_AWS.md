@@ -1,6 +1,6 @@
 # Hybrid XAI pilot on AWS
 
-Branch: `codex/hybrid-xai-aws`. It deploys a **separate** ECS service and ECR
+Branch: `hybrid-xai-aws`. It deploys a **separate** ECS service and ECR
 repository, and serves `/api/v1/analyze/hybrid`. The existing
 `aws-fargate-deployment` service and `/api/v1/analyze` remain independent.
 
@@ -82,7 +82,7 @@ pinned ZIP, builds the image, runs three classifier smoke cases inside the
 image, pushes a commit-SHA image to ECR, updates the **pilot** ECS service,
 waits for stability, and optionally checks its public readiness endpoint.
 
-The add-in branch `codex/hybrid-xai-addin` calls this pilot's Hybrid route.
+The Outlook add-in calls this pilot's Hybrid route.
 For its Vercel deployment, set `API_BASE_URL` to the pilot HTTPS URL and
 `PHISHARG_TOKEN_KEY` to the **same value** held by the ECS token secret.
 Its token endpoint also requires `PHISHARG_RATE_LIMIT_ID` in Vercel. Do not

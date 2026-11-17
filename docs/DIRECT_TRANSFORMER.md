@@ -1,6 +1,6 @@
 # Clasificador Transformer directo
 
-Rama experimental: `codex/direct-transformer`, creada desde `cbdbdf34d883bcccbf0d0c276516e6ecc04fabbb` de `codex/hybrid-nlp`. No cambia el endpoint `/api/v1/analyze` ni reemplaza el clasificador en uso.
+Rama experimental: `direct-transformer`, creada desde `cbdbdf34d883bcccbf0d0c276516e6ecc04fabbb` de `hybrid-nlp`. No cambia el endpoint `/api/v1/analyze` ni reemplaza el clasificador en uso.
 
 ## Pregunta del experimento
 

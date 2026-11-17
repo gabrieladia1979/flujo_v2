@@ -21,7 +21,7 @@ Esta guía explica paso a paso cómo entrenar el modelo **Híbrido Multilingüe 
 ```bash
 !git clone https://github.com/gabrieladia1979/flujo_v2.git
 %cd flujo_v2
-!git checkout codex/hybrid-nlp
+!git checkout hybrid-nlp
 ```
 
 ---

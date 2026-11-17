@@ -21,7 +21,7 @@ Las pérdidas medias finales registradas son CPU train=0,37319/validation=0,2409
 
 ### Estado confirmado
 
-- Rama local creada y pusheada a remoto: `codex/hybrid-nlp`, partiendo de `audit`.
+- Rama local creada y pusheada a remoto: `hybrid-nlp`, partiendo de `audit`.
 - Original `model/phisharg_xgboost.pkl` preservado.
 - Entrenamiento neuronal completado localmente. Las 11.054 muestras generaron un `finetuned_embeddings_xgboost.json` en `artifacts/hybrid/multilingual-candidate-v1`.
 - Desempeño del conjunto de test reservado:
