@@ -12,7 +12,7 @@
 - `deploy/` y `.github/workflows/`: despliegue y automatización.
 - `artifacts/` y `model/`: archivos locales de pesos, modelos y salidas. Los pesos grandes y `artifacts/slm/` están fuera de Git.
 
-Los scripts y el dataset SLM antiguos que siguen en la raíz se conservan por compatibilidad histórica: `qwen25_unsloth_finetuning.py`, `convertidor_dataset.py`, `generar_dataset_slm.py` y `dataset_slm_chatml.jsonl`. No se usan para el ajuste Hybrid nuevo. Las utilidades históricas `patch*.py` y `fix_regex.py` se agruparon en `scripts/legacy_patches/`. No ejecutarlas sin revisar sus efectos y adaptar sus rutas relativas. Las pruebas `test_*.py` permanecen en la raíz para mantener las rutas de `pytest` y los comandos documentados.
+Los scripts y el dataset SLM antiguos que siguen en la raíz se conservan por compatibilidad histórica: `qwen25_unsloth_finetuning.py`, `convertidor_dataset.py`, `generar_dataset_slm.py` y `dataset_slm_chatml.jsonl`. No se usan para el ajuste Hybrid nuevo. Las utilidades históricas `patch*.py`, `fix_regex.py` y la prueba manual `test_pkl_load.py` se agruparon en `scripts/legacy_patches/`. No ejecutarlas sin revisar sus efectos y adaptar sus rutas relativas. Las pruebas `test_*.py` permanecen en la raíz para mantener las rutas de `pytest` y los comandos documentados.
 
 Para regenerar la demostración local de Qwen desde la raíz:
 
