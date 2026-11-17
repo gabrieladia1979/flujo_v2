@@ -3,6 +3,7 @@
 
 # Python
 __pycache__/
+.pytest_cache/
 *.pyc
 *.pyo
 .venv/
@@ -10,6 +11,7 @@ venv/
 .venv-hybrid/
 .venv-a100-verify/
 artifacts/hybrid/
+artifacts/slm/
 artifacts/direct-transformer/
 .cache-hybrid/
 
