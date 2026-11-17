@@ -1,5 +1,7 @@
 # Estructura de flujo_v2
 
+Para una descripción exhaustiva de la arquitectura del backend, políticas de aislamiento y protocolos de prueba, consultar [GUIA_ORGANIZACION.md](GUIA_ORGANIZACION.md).
+
 - `main.py`, `schemas.py`, `database.py`: entrada de la API y contratos compartidos.
 - `services/`: clasificación, reglas de seguridad, explicaciones y acceso a modelos.
 - `scripts/`: entrenamiento, evaluación, empaquetado y pruebas operativas del clasificador Hybrid.
