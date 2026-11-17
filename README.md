@@ -1,38 +1,122 @@
-# Proyecto Flujo
+# PhishARG — Backend de Inferencia Híbrida y Explicabilidad (XAI)
 
-El adaptador experimental Qwen para la entrega del PFI se conserva junto a su registro de procedencia y evaluación. [Adaptador de entrega](model/entrega/README.md)
+**Proyecto Final de Integración (PFI) — Ingeniería en Informática — UADE**  
+**Servicio Central de Ciberdefensa (FastAPI / XGBoost / TreeSHAP / LIME / Qwen 2.5 3B SLM)**
 
-La estructura del repositorio, mapa de arquitectura y políticas de aislamiento están detallados en [docs/GUIA_ORGANIZACION.md](docs/GUIA_ORGANIZACION.md) y [docs/PROJECT_STRUCTURE.md](docs/PROJECT_STRUCTURE.md). Para la memoria integral de saneamiento y entrega del PFI, consultar [docs/RESUMEN_SANEAMIENTO_Y_ENTREGA.md](docs/RESUMEN_SANEAMIENTO_Y_ENTREGA.md). El ajuste experimental de Qwen está agrupado en [scripts/slm/](scripts/slm/) y documentado en [docs/QWEN_SFT_PILOT.md](docs/QWEN_SFT_PILOT.md).
+---
 
-El endpoint `POST /api/v1/analyze/hybrid` está implementado, conectado y operando con el modelo definitivo Hybrid XAI: ejecuta la clasificación (MiniLM + XGBoost), reglas heurísticas, SHAP, LIME (para perturbaciones locales de texto) y Qwen 2.5 3B Instruct para generar explicaciones didácticas de alertas en español en tiempo real. La respuesta de Qwen se valida frente a evidencias y acciones autorizadas mediante contrato Pydantic, y ante cualquier contingencia activa un respaldo determinista seguro. El Add-in de Outlook consume directamente esta ruta. Ver [entrenamiento, evaluación y configuración](docs/HYBRID_NLP.md).
+## 1. Descripción General
 
-Este repositorio contiene el código fuente del proyecto Flujo.
+Este repositorio contiene la arquitectura central del backend de **PhishARG**, responsable de la ingestión, análisis predictivo y generación de explicaciones didácticas en tiempo real ante amenazas de phishing y ataques de ingeniería social por correo electrónico.
 
-## Clasificador y respuesta del backend
+El servicio está implementado sobre **FastAPI** y combina un clasificador híbrido de aprendizaje automático (embeddings multilingües MiniLM + 16 variables técnicas de cabeceras estructuradas) con explicabilidad matemática dual (TreeSHAP y LIME) y un modelo de lenguaje acotado (*Small Language Model* — Qwen 2.5 3B) ejecutado localmente sin dependencia de servicios de inferencia externos.
 
-Se conserva la columna `0` del modelo. El endpoint `POST /api/v1/analyze` aplica también reglas de contenido para solicitudes de secretos y desvío de pagos acompañado de instrucciones de no verificar. Las señales se reflejan en `is_phishing`, `risk_score`, `reason` e `intent` y se entregan al explicador.
+---
 
-La respuesta incorpora tres campos: `raw_model_score` (score previo a reglas; nulo si el modelo no intervino), `decision_source` y `content_signals` (regla y descripción). El score final puede incluir un piso heurístico de 0.95; no debe interpretarse como probabilidad calibrada del modelo.
+## 2. Arquitectura del Pipeline de Ciberdefensa
 
-Ver [resultados, pruebas y límites](reports/classifier_content_improvements.md). Los cambios se ejecutan al iniciar o recargar este backend. El servicio remoto necesita actualizarse con este código para reflejarlos.
+El endpoint productivo `POST /api/v1/analyze/hybrid` articula una arquitectura de inspección multicapa:
 
-## Requisitos Previos
+```
+[ Solicitud HTTP: /api/v1/analyze/hybrid ]
+                    │
+                    ▼
+ ┌─────────────────────────────────────────────────────────┐
+ │ 1. Reglas Críticas & Heurísticas de Seguridad           │
+ │    - Autenticación: SPF, DKIM, DMARC, CompAuth, SCL, BCL│
+ │    - Contenido: Robo de credenciales, coerción MFA, QR  │
+ └─────────────────────────┬───────────────────────────────┘
+                           │
+                           ▼
+ ┌─────────────────────────────────────────────────────────┐
+ │ 2. Clasificador Predictivo Híbrido                      │
+ │    - Embeddings contextuales multilingües (MiniLM)      │
+ │    - 16 variables técnicas estructuradas de cabeceras   │
+ │    - Modelo XGBoost V4 calibrado con piso heurístico    │
+ └─────────────────────────┬───────────────────────────────┘
+                           │
+                           ▼
+ ┌─────────────────────────────────────────────────────────┐
+ │ 3. Explicabilidad Dual (XAI)                            │
+ │    - TreeSHAP: Atribuciones exactas por variable técnica│
+ │    - LIME: Perturbaciones locales en cuerpo del correo  │
+ └─────────────────────────┬───────────────────────────────┘
+                           │
+                           ▼
+ ┌─────────────────────────────────────────────────────────┐
+ │ 4. Generación Narrativa Segura (SLM Qwen 2.5 3B)        │
+ │    - Contrato Pydantic estricto (ExplanationResponse)   │
+ │    - Validación de no-alucinación contra evidencias     │
+ │    - Fallback determinista seguro (build_safe_fallback) │
+ └─────────────────────────────────────────────────────────┘
+```
 
-Asegurate de tener Python instalado y luego instala las dependencias:
+---
 
-```bash
+## 3. Requisitos del Sistema
+
+* **Python:** 3.10 o superior (recomendado 3.11).
+* **Gestor de entorno:** `venv` o `conda`.
+* **Hardware para inferencia SLM:** CPU multinúcleo con soporte AVX2 (o GPU CUDA / Apple Metal para aceleración por hardware).
+
+### Instalación de dependencias:
+```powershell
 pip install -r requirements.txt
 pip install -r requirements-hybrid.txt
 ```
 
-## Configuración local de Hybrid y Qwen
+---
 
-Los pesos de Hybrid y el GGUF de Qwen no se guardan en Git. Antes de iniciar el backend, ubicá el artefacto Hybrid V3 entrenado y el archivo `qwen2.5-3b-instruct-q4_k_m.gguf` en rutas accesibles al proceso. Se configuran por separado:
+## 4. Configuración y Puesta en Marcha Local
 
+Los pesos binarios pesados (`.pkl` y `.gguf`) no se almacenan en el repositorio de Git; se descargan de forma segura desde buckets privados de Amazon S3 con validación de hash SHA-256.
+
+Para ejecutar el servicio localmente:
 ```powershell
-$env:PHISHARG_HYBRID_MODEL_DIR = 'C:\ruta\al\artefacto\multilingual-candidate-v3-curated'
-$env:PHISHARG_SLM_MODEL_PATH = 'C:\ruta\al\qwen2.5-3b-instruct-q4_k_m.gguf'
+$env:PHISHARG_HYBRID_MODEL_DIR = "C:\ruta\al\artefacto\multilingual-candidate-v3-curated"
+$env:PHISHARG_SLM_MODEL_PATH = "C:\ruta\al\qwen2.5-3b-instruct-q4_k_m.gguf"
 python -m uvicorn main:app --host 127.0.0.1 --port 8001
 ```
 
-La API ejecuta el modelo Hybrid y el modelo Qwen 2.5 3B cuantizado en GGUF en `/api/v1/analyze/hybrid`. Cuenta además con un generador de respaldo determinista seguro (`build_safe_fallback`) que garantiza respuesta continua estructurada ante cualquier eventualidad o contingencia.
+---
+
+## 5. Infraestructura en la Nube (AWS)
+
+* **Contenedores en Amazon ECS (Fargate):** Imagen Docker productiva compilada y publicada en Amazon ECR (`sha256:6552a0725e83d17c204db6d1fc5c2173f8cd930b1274b00fff5b7a2df4fba5db`).
+* **Transporte Seguro:** Certificado ACM activo sobre Application Load Balancer (`https://api.phisharg.com`) con política exclusiva TLS 1.2 y TLS 1.3.
+
+---
+
+## 6. Protocolo de Pruebas y Validación
+
+La estabilidad funcional, los contratos de seguridad y la fidelidad de las explicaciones se validan mediante la suite de pruebas automatizadas:
+
+```powershell
+# Pruebas del pipeline híbrido de inferencia
+pytest test_hybrid_pipeline.py -q
+
+# Pruebas de seguridad de API, tokens y control de orígenes cruzados
+pytest test_api_security.py -q
+
+# Pruebas de reglas de contenido y patrones de ingeniería social
+pytest test_content_rules.py -q
+```
+
+---
+
+## 7. Ramas Oficiales del Repositorio
+
+| Rama | Propósito | Estado |
+| :--- | :--- | :---: |
+| **`entrega`** | Rama oficial de entrega académica, testing y auditoría de código | ✅ Sincronizada |
+| **`hybrid-xai-aws`** | Rama de despliegue en la nube orientada a AWS ECS Fargate | ✅ Sincronizada |
+| **`enable-hybrid-dispatch`** | Rama técnica para pruebas de despacho manual en AWS | ✅ Sincronizada |
+
+---
+
+## 8. Documentación Técnica de Referencia
+
+* [**Guía de Organización y Estructura**](docs/GUIA_ORGANIZACION.md): Mapa completo del repositorio y políticas de aislamiento de artefactos.
+* [**Memoria de Saneamiento y Entrega**](docs/RESUMEN_SANEAMIENTO_Y_ENTREGA.md): Registro integral de depuración de ramas de asistentes, saneamiento de notebooks y auditoría de idioma.
+* [**Entrenamiento y Evaluación Hybrid**](docs/HYBRID_NLP.md): Métricas experimentales, calibración y evaluación comparativa.
+* [**Registro del Adaptador Qwen**](model/entrega/README.md): Procedencia y auditoría del adaptador LoRA de evaluación.
