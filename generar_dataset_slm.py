@@ -29,13 +29,14 @@ CANTIDAD_A_GENERAR = 200
 DELAY_SEGUNDOS = 4.1
 
 # ==============================================================================
-# PROMPT DEL PROFESOR (TEACHER MODEL)
+# GENERACIÓN DE PARES DE ENTRENAMIENTO XAI
 # ==============================================================================
-def armar_prompt_profesor(subject, body):
+def armar_plantilla_entrenamiento(subject, body):
     return f"""
-Sos el "Profesor" entrenando a una IA de ciberseguridad. Tu tarea es generar el par perfecto de [Contexto Tecnico] -> [Explicacion Amigable] para un correo de phishing.
+Sistema de generación de pares de entrenamiento para explicabilidad de phishing.
+Tarea: estructurar par [Contexto Tecnico] -> [Explicacion de Seguridad] para el correo indicado.
 
-CORREO DE PHISHING ARGENTINO:
+CORREO DE PHISHING:
 Asunto: {subject}
 Cuerpo: {body}
 
@@ -92,7 +93,7 @@ def generar_dataset_slm():
         subject = str(row.get('subject', ''))[:300]
         body = str(row.get('body', ''))[:2000]
 
-        prompt = armar_prompt_profesor(subject, body)
+        prompt = armar_plantilla_entrenamiento(subject, body)
         
         exito = False
         try:
