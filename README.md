@@ -1,6 +1,6 @@
 # Proyecto Flujo
 
-La estructura del repositorio y la ubicación de cada componente están en [docs/PROJECT_STRUCTURE.md](docs/PROJECT_STRUCTURE.md). El ajuste experimental de Qwen está agrupado en [scripts/slm/](scripts/slm/) y documentado en [docs/QWEN_SFT_PILOT.md](docs/QWEN_SFT_PILOT.md).
+La estructura del repositorio, mapa de arquitectura y políticas de aislamiento están detallados en [docs/GUIA_ORGANIZACION.md](docs/GUIA_ORGANIZACION.md) y [docs/PROJECT_STRUCTURE.md](docs/PROJECT_STRUCTURE.md). El ajuste experimental de Qwen está agrupado en [scripts/slm/](scripts/slm/) y documentado en [docs/QWEN_SFT_PILOT.md](docs/QWEN_SFT_PILOT.md).
 
 El endpoint `POST /api/v1/analyze/hybrid` está implementado, conectado y operando con el modelo definitivo Hybrid XAI: ejecuta la clasificación (MiniLM + XGBoost), reglas heurísticas, SHAP, LIME (para perturbaciones locales de texto) y Qwen 2.5 3B Instruct para generar explicaciones didácticas de alertas en español en tiempo real. La respuesta de Qwen se valida frente a evidencias y acciones autorizadas mediante contrato Pydantic, y ante cualquier contingencia activa un respaldo determinista seguro. El Add-in de Outlook consume directamente esta ruta. Ver [entrenamiento, evaluación y configuración](docs/HYBRID_NLP.md).
 

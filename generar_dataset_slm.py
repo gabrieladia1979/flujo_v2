@@ -17,7 +17,7 @@ from services.slm_explanation import (
 # ==============================================================================
 # CONFIGURACION
 # ==============================================================================
-API_KEY = os.environ.get("GEMINI_API_KEY", "TU_API_KEY_AQUI")
+API_KEY = os.environ.get("TEACHER_API_KEY", os.environ.get("API_KEY", "TU_API_KEY_AQUI"))
 genai.configure(api_key=API_KEY, transport='rest')
 
 MODEL_NAME = os.environ.get("SLM_TEACHER_MODEL", "model-teacher") 
