@@ -1,0 +1,20 @@
+name: Deploy Hybrid XAI pilot
+
+on:
+  workflow_dispatch:
+    inputs:
+      deploy_service:
+        description: Update the existing pilot ECS service
+        type: boolean
+        default: false
+
+permissions: {}
+
+jobs:
+  select-pilot-branch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Show pilot branch
+        run: |
+          echo "::error::Select the hybrid-xai-aws branch in the Run workflow menu."
+          exit 1
