@@ -10,7 +10,7 @@ The 470 MB encoder is intentionally excluded from Git and the Docker image.
 The locally packaged inference-only ZIP is
 `artifacts/hybrid/upload/multilingual-candidate-v3-curated-inference.zip`.
 For the ZIP generated on this branch, SHA-256 is
-`8b63a186dd6ab8579bf266341cd9ae9f59b6fd2bd7562c880b16f9d4982f5f59`.
+`7319227028657087f33546423ad3d49d52d9d57842269bdce7c02ad17bf8daa6`.
 Confirm it with `Get-FileHash` before upload. To regenerate the ZIP:
 
 ```powershell
@@ -68,12 +68,16 @@ roles. Add these repository variables in GitHub Actions:
 | `HYBRID_MODEL_BUCKET` | Private S3 bucket |
 | `HYBRID_MODEL_VERSION_ID` | Version ID from exact ZIP upload |
 | `HYBRID_MODEL_SHA256` | Lowercase SHA-256 of exact ZIP |
+| `SLM_MODEL_S3_BUCKET` | Private bucket used by the existing audit Qwen task |
+| `SLM_MODEL_S3_KEY` | `qwen2.5-3b-instruct-q4_k_m.gguf` |
+| `SLM_MODEL_S3_VERSION_ID` | Version ID of the existing Qwen object |
+| `SLM_MODEL_SHA256` | SHA-256 of that GGUF version |
 | `HYBRID_ECS_CLUSTER` | ECS cluster name |
 | `HYBRID_ECS_SERVICE` | Separate pilot service name |
 | `HYBRID_PUBLIC_URL` | Optional HTTPS base URL for readiness check |
 
-Then run the `Deploy Hybrid XAI pilot` workflow manually. Later pushes to
-`codex/hybrid-xai-aws` deploy automatically. It downloads and verifies the
+Run the `Deploy Hybrid XAI pilot` workflow manually after uploading the model.
+Publishing this branch does not deploy ECS. The workflow downloads and verifies the
 pinned ZIP, builds the image, runs three classifier smoke cases inside the
 image, pushes a commit-SHA image to ECR, updates the **pilot** ECS service,
 waits for stability, and optionally checks its public readiness endpoint.
@@ -113,6 +117,11 @@ artifact from S3. Local environments are also excluded from the image.
 
 This remains a separate Hybrid pilot. Required repository variables, S3
 version/hash and pilot ECS infrastructure must be configured as described
-above. This task template currently uses deterministic fallback explanations:
-Qwen weights/runtime are not provisioned by this workflow. Pushing the branch
-triggers its deployment; local commits do not update AWS.
+above. This task now downloads and verifies the same versioned Qwen GGUF as
+audit and preloads it before readiness. `llama-cpp-python` executes Qwen on
+CPU; it is not a different language model. The audit task definition records
+version `tCL4aY4DPIHhTK_l5OL97o5VnWNsXiam` and SHA-256
+`c3ba6d838a8615e9048c9d37642c5009ed0195fd8783eb04384102ffecd75cc5`.
+Check these against the live bucket before deployment. Full phishing
+explanations invoke Qwen, with deterministic fallback on failure. Deployments
+start only when the GitHub Actions workflow is run manually.

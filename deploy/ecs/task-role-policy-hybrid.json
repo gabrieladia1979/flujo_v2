@@ -6,6 +6,12 @@
       "Effect": "Allow",
       "Action": ["s3:GetObject", "s3:GetObjectVersion"],
       "Resource": "arn:aws:s3:::phisharg-models-668281913895-us-east-1-an/hybrid/multilingual-candidate-v3-curated/v1/model.zip"
+    },
+    {
+      "Sid": "ReadOnlyVersionedQwenArtifact",
+      "Effect": "Allow",
+      "Action": ["s3:GetObject", "s3:GetObjectVersion"],
+      "Resource": "arn:aws:s3:::phisharg-models-668281913895-us-east-1-an/qwen2.5-3b-instruct-q4_k_m.gguf"
     }
   ]
 }

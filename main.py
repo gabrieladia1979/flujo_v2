@@ -159,6 +159,9 @@ def preload_hybrid_when_configured() -> None:
         if not directory:
             raise RuntimeError("PHISHARG_HYBRID_MODEL_DIR is required")
         _load(str(Path(directory).resolve()))
+    if os.getenv("PRELOAD_SLM", "").lower() in {"1", "true", "yes"}:
+        from services.slm_client import get_slm_instance
+        get_slm_instance()
 
 
 @app.get("/api/v1/health/ready")

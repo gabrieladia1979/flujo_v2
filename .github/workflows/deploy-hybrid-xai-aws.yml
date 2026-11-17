@@ -1,8 +1,6 @@
 name: Deploy Hybrid XAI pilot
 
 on:
-  push:
-    branches: [codex/hybrid-xai-aws]
   workflow_dispatch:
 
 permissions:
@@ -28,6 +26,10 @@ jobs:
       HYBRID_MODEL_BUCKET: ${{ vars.HYBRID_MODEL_BUCKET }}
       HYBRID_MODEL_VERSION_ID: ${{ vars.HYBRID_MODEL_VERSION_ID }}
       HYBRID_MODEL_SHA256: ${{ vars.HYBRID_MODEL_SHA256 }}
+      SLM_MODEL_S3_BUCKET: ${{ vars.SLM_MODEL_S3_BUCKET }}
+      SLM_MODEL_S3_KEY: ${{ vars.SLM_MODEL_S3_KEY }}
+      SLM_MODEL_S3_VERSION_ID: ${{ vars.SLM_MODEL_S3_VERSION_ID }}
+      SLM_MODEL_SHA256: ${{ vars.SLM_MODEL_SHA256 }}
     steps:
       - uses: actions/checkout@v4
 
@@ -37,13 +39,14 @@ jobs:
           HYBRID_ECS_CLUSTER: ${{ vars.HYBRID_ECS_CLUSTER }}
           HYBRID_ECS_SERVICE: ${{ vars.HYBRID_ECS_SERVICE }}
         run: |
-          for name in ROLE_ARN HYBRID_ECS_CLUSTER HYBRID_ECS_SERVICE ECS_EXECUTION_ROLE_ARN HYBRID_TASK_ROLE_ARN API_KEY_SECRET_ARN TOKEN_KEY_SECRET_ARN HYBRID_MODEL_BUCKET HYBRID_MODEL_VERSION_ID HYBRID_MODEL_SHA256; do
+          for name in ROLE_ARN HYBRID_ECS_CLUSTER HYBRID_ECS_SERVICE ECS_EXECUTION_ROLE_ARN HYBRID_TASK_ROLE_ARN API_KEY_SECRET_ARN TOKEN_KEY_SECRET_ARN HYBRID_MODEL_BUCKET HYBRID_MODEL_VERSION_ID HYBRID_MODEL_SHA256 SLM_MODEL_S3_BUCKET SLM_MODEL_S3_KEY SLM_MODEL_S3_VERSION_ID SLM_MODEL_SHA256; do
             if [ -z "${!name}" ]; then
               echo "Missing GitHub Actions variable: $name" >&2
               exit 1
             fi
           done
           [[ "$HYBRID_MODEL_SHA256" =~ ^[0-9a-f]{64}$ ]] || { echo 'HYBRID_MODEL_SHA256 must be lowercase hex' >&2; exit 1; }
+          [[ "$SLM_MODEL_SHA256" =~ ^[0-9a-fA-F]{64}$ ]] || { echo 'SLM_MODEL_SHA256 must be hex' >&2; exit 1; }
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v6.3.0

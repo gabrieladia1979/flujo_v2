@@ -4,7 +4,7 @@ ENV PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1
 WORKDIR /app
 
 RUN apt-get update \
-    && apt-get install --yes --no-install-recommends libgomp1 \
+    && apt-get install --yes --no-install-recommends libgomp1 build-essential cmake \
     && rm -rf /var/lib/apt/lists/* \
     && useradd --create-home --uid 10001 appuser \
     && mkdir -p /app/model /app/artifacts/hybrid \
@@ -13,7 +13,7 @@ RUN apt-get update \
 # Install CPU-only PyTorch before the other dependencies so ECS does not pull
 # CUDA runtime wheels into the image. The existing constraints accept it.
 COPY requirements.txt requirements-hybrid.txt ./
-RUN python -m pip install --no-cache-dir --index-url https://download.pytorch.org/whl/cpu 'torch>=2.2,<3' \
+RUN python -m pip install --no-cache-dir --index-url https://download.pytorch.org/whl/cpu 'torch==2.5.1' \
     && python -m pip install --no-cache-dir -r requirements.txt -r requirements-hybrid.txt \
     && python -m spacy download es_core_news_sm
 

@@ -26,6 +26,8 @@ def main() -> None:
     values["HYBRID_MODEL_S3_BUCKET"]["value"] = required("HYBRID_MODEL_BUCKET")
     values["HYBRID_MODEL_S3_VERSION_ID"]["value"] = required("HYBRID_MODEL_VERSION_ID")
     values["HYBRID_MODEL_SHA256"]["value"] = required("HYBRID_MODEL_SHA256")
+    for name in ("SLM_MODEL_S3_BUCKET", "SLM_MODEL_S3_KEY", "SLM_MODEL_S3_VERSION_ID", "SLM_MODEL_SHA256"):
+        values[name]["value"] = required(name)
     container["logConfiguration"]["options"]["awslogs-region"] = required("AWS_REGION")
     output = Path("hybrid-task-rendered.json")
     output.write_text(json.dumps(task, indent=2) + "\n", encoding="utf-8")

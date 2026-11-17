@@ -20,8 +20,14 @@
         {"name": "HYBRID_MODEL_S3_KEY", "value": "hybrid/multilingual-candidate-v3-curated/v1/model.zip"},
         {"name": "HYBRID_MODEL_S3_VERSION_ID", "value": "<S3_OBJECT_VERSION_ID>"},
         {"name": "HYBRID_MODEL_SHA256", "value": "<ZIP_SHA256>"},
-        {"name": "PRELOAD_SLM", "value": "false"},
-        {"name": "MODEL_BOOTSTRAP_ON_START", "value": "false"}
+        {"name": "PRELOAD_SLM", "value": "true"},
+        {"name": "MODEL_BOOTSTRAP_ON_START", "value": "true"},
+        {"name": "SLM_MODEL_S3_BUCKET", "value": "<SLM_BUCKET>"},
+        {"name": "SLM_MODEL_S3_KEY", "value": "<SLM_KEY>"},
+        {"name": "SLM_MODEL_S3_VERSION_ID", "value": "<SLM_VERSION_ID>"},
+        {"name": "SLM_MODEL_SHA256", "value": "<SLM_SHA256>"},
+        {"name": "SLM_MODEL_LOCAL_PATH", "value": "/app/model/qwen2.5-3b-instruct-q4_k_m.gguf"},
+        {"name": "PHISHARG_SLM_MODEL_PATH", "value": "/app/model/qwen2.5-3b-instruct-q4_k_m.gguf"}
       ],
       "secrets": [
         {"name": "API_KEY", "valueFrom": "arn:aws:secretsmanager:<REGION>:<ACCOUNT_ID>:secret:phisharg/api-key"}
