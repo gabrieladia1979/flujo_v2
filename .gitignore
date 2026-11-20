@@ -20,7 +20,8 @@ model_onnx/
 # Modelos Pesados
 model/*.gguf
 *.zip
-!/model/entrega/qwen-hybrid-lora-20261117-152453.zip
+/model/entrega/*
+!/model/entrega/README.md
 hybrid-task-rendered.json
 hybrid-model.zip
 .hybrid-model/
