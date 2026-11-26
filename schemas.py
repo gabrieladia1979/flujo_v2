@@ -1,4 +1,4 @@
-from typing import Optional, List, Any
+from typing import Optional, List, Any, Literal
 from pydantic import BaseModel, Field, model_validator
 
 
@@ -96,6 +96,16 @@ class ContentSignal(BaseModel):
     description: str
 
 
+class BankContext(BaseModel):
+    sender_bank: Optional[str] = None
+    sender_domain: str = ""
+    sender_status: Literal["missing", "unrecognized_domain", "known_domain_unverified",
+                           "known_domain_auth_failed", "known_domain_authenticated"]
+    mentioned_banks: List[str] = Field(default_factory=list)
+    lookalike_domains: List[str] = Field(default_factory=list)
+    observations: List[str] = Field(default_factory=list)
+
+
 class AnalysisResultSchema(BaseModel):
     is_phishing: bool
     risk_score: float
@@ -108,4 +118,5 @@ class AnalysisResultSchema(BaseModel):
     raw_model_score: Optional[float] = Field(default=None, ge=0.0, le=1.0)
     decision_source: Optional[str] = None
     content_signals: List[ContentSignal] = Field(default_factory=list)
+    bank_context: Optional[BankContext] = None
 

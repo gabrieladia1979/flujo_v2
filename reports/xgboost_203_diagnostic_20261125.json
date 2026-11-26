@@ -1,0 +1,923 @@
+{
+  "xgboost": "2.0.3",
+  "runs": {
+    "0": {
+      "rows": [
+        {
+          "id": "phisharg-eval-0001",
+          "expected_label": "legitimate",
+          "predicted_label": "legitimate",
+          "raw_score": 0.012792197136219652,
+          "final_score": 0.012792197136219652,
+          "decision_source": "model_only",
+          "security_adjustments": [],
+          "content_signals": [],
+          "elapsed_ms": 60.45480000102543,
+          "category": "internal_communication",
+          "correct": true
+        },
+        {
+          "id": "phisharg-eval-0002",
+          "expected_label": "phishing",
+          "predicted_label": "phishing",
+          "raw_score": 0.9867534384678361,
+          "final_score": 0.9867534384678361,
+          "decision_source": "content_security_rule",
+          "security_adjustments": [],
+          "content_signals": [
+            {
+              "rule": "credential_disclosure_request",
+              "description": "El mensaje pide enviar o compartir contrase\u00f1as, claves o c\u00f3digos de autenticaci\u00f3n."
+            }
+          ],
+          "elapsed_ms": 45.439299999998184,
+          "category": "tax_impersonation",
+          "correct": true
+        },
+        {
+          "id": "phisharg-eval-0003",
+          "expected_label": "phishing",
+          "predicted_label": "phishing",
+          "raw_score": 0.9827520458377079,
+          "final_score": 1.0,
+          "decision_source": "model_and_security_rules",
+          "security_adjustments": [
+            {
+              "rule": "spf_fail",
+              "delta": 0.15,
+              "description": "SPF fail: el remitente no est\u00e1 autorizado por el dominio"
+            },
+            {
+              "rule": "dkim_fail",
+              "delta": 0.1,
+              "description": "DKIM fail: la firma digital del correo es inv\u00e1lida"
+            },
+            {
+              "rule": "dmarc_fail",
+              "delta": 0.15,
+              "description": "DMARC fail: la pol\u00edtica de autenticaci\u00f3n del dominio no se cumpli\u00f3"
+            },
+            {
+              "rule": "return_path_mismatch",
+              "delta": 0.1,
+              "description": "Discrepancia entre From y Return-Path: posible spoofing"
+            }
+          ],
+          "content_signals": [],
+          "elapsed_ms": 30.60639999966952,
+          "category": "bank_impersonation",
+          "correct": true
+        },
+        {
+          "id": "phisharg-eval-0004",
+          "expected_label": "legitimate",
+          "predicted_label": "legitimate",
+          "raw_score": 0.012728087481089612,
+          "final_score": 0.0,
+          "decision_source": "model_and_security_rules",
+          "security_adjustments": [
+            {
+              "rule": "internal_auth",
+              "delta": -0.1,
+              "description": "Correo autenticado como interno de la organizaci\u00f3n"
+            },
+            {
+              "rule": "all_checks_pass",
+              "delta": -0.15,
+              "description": "Todas las verificaciones de autenticaci\u00f3n y spoofing pasaron correctamente"
+            }
+          ],
+          "content_signals": [],
+          "elapsed_ms": 23.94790000107605,
+          "category": "internal_communication",
+          "correct": true
+        },
+        {
+          "id": "phisharg-eval-0005",
+          "expected_label": "legitimate",
+          "predicted_label": "legitimate",
+          "raw_score": 0.012795628672022608,
+          "final_score": 0.012795628672022608,
+          "decision_source": "model_only",
+          "security_adjustments": [],
+          "content_signals": [],
+          "elapsed_ms": 24.155499999324093,
+          "category": "technical_email",
+          "correct": true
+        },
+        {
+          "id": "phisharg-eval-0006",
+          "expected_label": "legitimate",
+          "predicted_label": "legitimate",
+          "raw_score": 0.012797268330480727,
+          "final_score": 0.012797268330480727,
+          "decision_source": "model_and_security_rules",
+          "security_adjustments": [],
+          "content_signals": [],
+          "elapsed_ms": 17.450399998779176,
+          "category": "internal_communication",
+          "correct": true
+        },
+        {
+          "id": "phisharg-eval-0007",
+          "expected_label": "legitimate",
+          "predicted_label": "legitimate",
+          "raw_score": 0.012782022483608713,
+          "final_score": 0.0,
+          "decision_source": "model_and_security_rules",
+          "security_adjustments": [
+            {
+              "rule": "internal_auth",
+              "delta": -0.1,
+              "description": "Correo autenticado como interno de la organizaci\u00f3n"
+            },
+            {
+              "rule": "all_checks_pass",
+              "delta": -0.15,
+              "description": "Todas las verificaciones de autenticaci\u00f3n y spoofing pasaron correctamente"
+            }
+          ],
+          "content_signals": [],
+          "elapsed_ms": 31.120299998292467,
+          "category": "legitimate_invoice",
+          "correct": true
+        },
+        {
+          "id": "phisharg-eval-0008",
+          "expected_label": "legitimate",
+          "predicted_label": "legitimate",
+          "raw_score": 0.2354046182775455,
+          "final_score": 0.0,
+          "decision_source": "model_and_security_rules",
+          "security_adjustments": [
+            {
+              "rule": "internal_auth",
+              "delta": -0.1,
+              "description": "Correo autenticado como interno de la organizaci\u00f3n"
+            },
+            {
+              "rule": "all_checks_pass",
+              "delta": -0.15,
+              "description": "Todas las verificaciones de autenticaci\u00f3n y spoofing pasaron correctamente"
+            }
+          ],
+          "content_signals": [],
+          "elapsed_ms": 44.604599999729544,
+          "category": "internal_communication",
+          "correct": true
+        },
+        {
+          "id": "phisharg-eval-0009",
+          "expected_label": "legitimate",
+          "predicted_label": "legitimate",
+          "raw_score": 0.012907220193957236,
+          "final_score": 0.0,
+          "decision_source": "model_and_security_rules",
+          "security_adjustments": [
+            {
+              "rule": "all_checks_pass",
+              "delta": -0.15,
+              "description": "Todas las verificaciones de autenticaci\u00f3n y spoofing pasaron correctamente"
+            }
+          ],
+          "content_signals": [],
+          "elapsed_ms": 33.37100000135251,
+          "category": "technical_email",
+          "correct": true
+        },
+        {
+          "id": "phisharg-eval-0010",
+          "expected_label": "legitimate",
+          "predicted_label": "legitimate",
+          "raw_score": 0.06143818990176608,
+          "final_score": 0.0,
+          "decision_source": "model_and_security_rules",
+          "security_adjustments": [
+            {
+              "rule": "all_checks_pass",
+              "delta": -0.15,
+              "description": "Todas las verificaciones de autenticaci\u00f3n y spoofing pasaron correctamente"
+            }
+          ],
+          "content_signals": [],
+          "elapsed_ms": 28.028800003085053,
+          "category": "other_legitimate",
+          "correct": true
+        },
+        {
+          "id": "phisharg-eval-0011",
+          "expected_label": "phishing",
+          "predicted_label": "phishing",
+          "raw_score": 0.9868426510442903,
+          "final_score": 1.0,
+          "decision_source": "model_and_security_rules",
+          "security_adjustments": [
+            {
+              "rule": "spf_softfail",
+              "delta": 0.05,
+              "description": "SPF softfail: el dominio no proh\u00edbe expl\u00edcitamente este remitente (com\u00fan en reenv\u00edos)"
+            },
+            {
+              "rule": "dkim_fail",
+              "delta": 0.1,
+              "description": "DKIM fail: la firma digital del correo es inv\u00e1lida"
+            },
+            {
+              "rule": "dmarc_fail",
+              "delta": 0.15,
+              "description": "DMARC fail: la pol\u00edtica de autenticaci\u00f3n del dominio no se cumpli\u00f3"
+            },
+            {
+              "rule": "reply_to_mismatch",
+              "delta": 0.05,
+              "description": "Reply-To apunta a un dominio diferente al remitente"
+            }
+          ],
+          "content_signals": [],
+          "elapsed_ms": 49.81889999908162,
+          "category": "bank_impersonation",
+          "correct": true
+        },
+        {
+          "id": "phisharg-eval-0012",
+          "expected_label": "phishing",
+          "predicted_label": "phishing",
+          "raw_score": null,
+          "final_score": 1.0,
+          "decision_source": "critical_security_rule",
+          "security_adjustments": [],
+          "content_signals": [],
+          "elapsed_ms": 0.011299998732283711,
+          "category": "bank_impersonation",
+          "correct": true
+        },
+        {
+          "id": "phisharg-eval-0013",
+          "expected_label": "phishing",
+          "predicted_label": "phishing",
+          "raw_score": null,
+          "final_score": 1.0,
+          "decision_source": "critical_security_rule",
+          "security_adjustments": [],
+          "content_signals": [],
+          "elapsed_ms": 0.004099998477613553,
+          "category": "bank_impersonation",
+          "correct": true
+        },
+        {
+          "id": "phisharg-eval-0014",
+          "expected_label": "phishing",
+          "predicted_label": "phishing",
+          "raw_score": 0.012772150748256328,
+          "final_score": 0.95,
+          "decision_source": "content_security_rule",
+          "security_adjustments": [
+            {
+              "rule": "spf_softfail",
+              "delta": 0.05,
+              "description": "SPF softfail: el dominio no proh\u00edbe expl\u00edcitamente este remitente (com\u00fan en reenv\u00edos)"
+            },
+            {
+              "rule": "scl_medium",
+              "delta": 0.12,
+              "description": "SCL=8: Microsoft lo clasifica como spam probable"
+            }
+          ],
+          "content_signals": [
+            {
+              "rule": "credential_disclosure_request",
+              "description": "El mensaje pide enviar o compartir contrase\u00f1as, claves o c\u00f3digos de autenticaci\u00f3n."
+            }
+          ],
+          "elapsed_ms": 28.16270000039367,
+          "category": "credential_theft",
+          "correct": true
+        }
+      ],
+      "metrics": {
+        "final": {
+          "count": 14,
+          "confusion_matrix": {
+            "true_positive": 6,
+            "true_negative": 8,
+            "false_positive": 0,
+            "false_negative": 0
+          },
+          "precision_phishing": 1.0,
+          "recall_phishing": 1.0,
+          "f1_phishing": 1.0,
+          "pr_auc": 0.9999999999999999,
+          "roc_auc": 1.0,
+          "false_positive_rate": 0.0,
+          "false_negative_rate": 0.0,
+          "brier_score": 0.00022618642070228043
+        },
+        "raw_model": {
+          "count": 12,
+          "confusion_matrix": {
+            "true_positive": 3,
+            "true_negative": 8,
+            "false_positive": 0,
+            "false_negative": 1
+          },
+          "precision_phishing": 1.0,
+          "recall_phishing": 0.75,
+          "f1_phishing": 0.8571428571428571,
+          "pr_auc": 0.8409090909090909,
+          "roc_auc": 0.78125,
+          "false_positive_rate": 0.0,
+          "false_negative_rate": 0.25,
+          "brier_score": 0.08628650084250149
+        },
+        "by_category": {
+          "bank_impersonation": {
+            "count": 4,
+            "confusion_matrix": {
+              "true_positive": 4,
+              "true_negative": 0,
+              "false_positive": 0,
+              "false_negative": 0
+            },
+            "precision_phishing": 1.0,
+            "recall_phishing": 1.0,
+            "f1_phishing": 1.0,
+            "pr_auc": 1.0,
+            "roc_auc": null,
+            "false_positive_rate": null,
+            "false_negative_rate": 0.0,
+            "brier_score": 0.0
+          },
+          "credential_theft": {
+            "count": 1,
+            "confusion_matrix": {
+              "true_positive": 1,
+              "true_negative": 0,
+              "false_positive": 0,
+              "false_negative": 0
+            },
+            "precision_phishing": 1.0,
+            "recall_phishing": 1.0,
+            "f1_phishing": 1.0,
+            "pr_auc": 1.0,
+            "roc_auc": null,
+            "false_positive_rate": null,
+            "false_negative_rate": 0.0,
+            "brier_score": 0.0025000000000000044
+          },
+          "internal_communication": {
+            "count": 4,
+            "confusion_matrix": {
+              "true_positive": 0,
+              "true_negative": 4,
+              "false_positive": 0,
+              "false_negative": 0
+            },
+            "precision_phishing": null,
+            "recall_phishing": null,
+            "f1_phishing": null,
+            "pr_auc": null,
+            "roc_auc": null,
+            "false_positive_rate": 0.0,
+            "false_negative_rate": null,
+            "brier_score": 8.18525960735578e-05
+          },
+          "legitimate_invoice": {
+            "count": 1,
+            "confusion_matrix": {
+              "true_positive": 0,
+              "true_negative": 1,
+              "false_positive": 0,
+              "false_negative": 0
+            },
+            "precision_phishing": null,
+            "recall_phishing": null,
+            "f1_phishing": null,
+            "pr_auc": null,
+            "roc_auc": null,
+            "false_positive_rate": 0.0,
+            "false_negative_rate": null,
+            "brier_score": 0.0
+          },
+          "other_legitimate": {
+            "count": 1,
+            "confusion_matrix": {
+              "true_positive": 0,
+              "true_negative": 1,
+              "false_positive": 0,
+              "false_negative": 0
+            },
+            "precision_phishing": null,
+            "recall_phishing": null,
+            "f1_phishing": null,
+            "pr_auc": null,
+            "roc_auc": null,
+            "false_positive_rate": 0.0,
+            "false_negative_rate": null,
+            "brier_score": 0.0
+          },
+          "tax_impersonation": {
+            "count": 1,
+            "confusion_matrix": {
+              "true_positive": 1,
+              "true_negative": 0,
+              "false_positive": 0,
+              "false_negative": 0
+            },
+            "precision_phishing": 1.0,
+            "recall_phishing": 1.0,
+            "f1_phishing": 1.0,
+            "pr_auc": 1.0,
+            "roc_auc": null,
+            "false_positive_rate": null,
+            "false_negative_rate": 0.0,
+            "brier_score": 0.0001754713924254033
+          },
+          "technical_email": {
+            "count": 2,
+            "confusion_matrix": {
+              "true_positive": 0,
+              "true_negative": 2,
+              "false_positive": 0,
+              "false_negative": 0
+            },
+            "precision_phishing": null,
+            "recall_phishing": null,
+            "f1_phishing": null,
+            "pr_auc": null,
+            "roc_auc": null,
+            "false_positive_rate": 0.0,
+            "false_negative_rate": null,
+            "brier_score": 8.186405655614352e-05
+          }
+        },
+        "timing_ms": {
+          "average": 29.798285714215517,
+          "p95": 60.45480000102543
+        }
+      },
+      "warnings": [
+        "Raw-model metrics exclude 2 critical-rule cases.",
+        "Some category metrics are undefined because the category does not contain both classes."
+      ]
+    },
+    "1": {
+      "rows": [
+        {
+          "id": "phisharg-eval-0001",
+          "expected_label": "legitimate",
+          "predicted_label": "phishing",
+          "raw_score": 0.9872078028637803,
+          "final_score": 0.9872078028637803,
+          "decision_source": "model_only",
+          "security_adjustments": [],
+          "content_signals": [],
+          "elapsed_ms": 22.282300000370014,
+          "category": "internal_communication",
+          "correct": false
+        },
+        {
+          "id": "phisharg-eval-0002",
+          "expected_label": "phishing",
+          "predicted_label": "phishing",
+          "raw_score": 0.013246561532163866,
+          "final_score": 0.95,
+          "decision_source": "content_security_rule",
+          "security_adjustments": [],
+          "content_signals": [
+            {
+              "rule": "credential_disclosure_request",
+              "description": "El mensaje pide enviar o compartir contrase\u00f1as, claves o c\u00f3digos de autenticaci\u00f3n."
+            }
+          ],
+          "elapsed_ms": 39.97009999875445,
+          "category": "tax_impersonation",
+          "correct": true
+        },
+        {
+          "id": "phisharg-eval-0003",
+          "expected_label": "phishing",
+          "predicted_label": "legitimate",
+          "raw_score": 0.017247954162292106,
+          "final_score": 0.36724795416229206,
+          "decision_source": "model_and_security_rules",
+          "security_adjustments": [
+            {
+              "rule": "spf_fail",
+              "delta": 0.15,
+              "description": "SPF fail: el remitente no est\u00e1 autorizado por el dominio"
+            },
+            {
+              "rule": "dkim_fail",
+              "delta": 0.1,
+              "description": "DKIM fail: la firma digital del correo es inv\u00e1lida"
+            },
+            {
+              "rule": "dmarc_fail",
+              "delta": 0.15,
+              "description": "DMARC fail: la pol\u00edtica de autenticaci\u00f3n del dominio no se cumpli\u00f3"
+            },
+            {
+              "rule": "return_path_mismatch",
+              "delta": 0.1,
+              "description": "Discrepancia entre From y Return-Path: posible spoofing"
+            }
+          ],
+          "content_signals": [],
+          "elapsed_ms": 31.39579999697162,
+          "category": "bank_impersonation",
+          "correct": false
+        },
+        {
+          "id": "phisharg-eval-0004",
+          "expected_label": "legitimate",
+          "predicted_label": "legitimate",
+          "raw_score": 0.9872719125189104,
+          "final_score": 0.7372719125189104,
+          "decision_source": "model_and_security_rules",
+          "security_adjustments": [
+            {
+              "rule": "internal_auth",
+              "delta": -0.1,
+              "description": "Correo autenticado como interno de la organizaci\u00f3n"
+            },
+            {
+              "rule": "all_checks_pass",
+              "delta": -0.15,
+              "description": "Todas las verificaciones de autenticaci\u00f3n y spoofing pasaron correctamente"
+            }
+          ],
+          "content_signals": [],
+          "elapsed_ms": 22.91910000349162,
+          "category": "internal_communication",
+          "correct": true
+        },
+        {
+          "id": "phisharg-eval-0005",
+          "expected_label": "legitimate",
+          "predicted_label": "phishing",
+          "raw_score": 0.9872043713279774,
+          "final_score": 0.9872043713279774,
+          "decision_source": "model_only",
+          "security_adjustments": [],
+          "content_signals": [],
+          "elapsed_ms": 23.786400000972208,
+          "category": "technical_email",
+          "correct": false
+        },
+        {
+          "id": "phisharg-eval-0006",
+          "expected_label": "legitimate",
+          "predicted_label": "phishing",
+          "raw_score": 0.9872027316695193,
+          "final_score": 0.9872027316695193,
+          "decision_source": "model_and_security_rules",
+          "security_adjustments": [],
+          "content_signals": [],
+          "elapsed_ms": 20.196099998429418,
+          "category": "internal_communication",
+          "correct": false
+        },
+        {
+          "id": "phisharg-eval-0007",
+          "expected_label": "legitimate",
+          "predicted_label": "legitimate",
+          "raw_score": 0.9872179775163913,
+          "final_score": 0.7372179775163913,
+          "decision_source": "model_and_security_rules",
+          "security_adjustments": [
+            {
+              "rule": "internal_auth",
+              "delta": -0.1,
+              "description": "Correo autenticado como interno de la organizaci\u00f3n"
+            },
+            {
+              "rule": "all_checks_pass",
+              "delta": -0.15,
+              "description": "Todas las verificaciones de autenticaci\u00f3n y spoofing pasaron correctamente"
+            }
+          ],
+          "content_signals": [],
+          "elapsed_ms": 32.45909999895957,
+          "category": "legitimate_invoice",
+          "correct": true
+        },
+        {
+          "id": "phisharg-eval-0008",
+          "expected_label": "legitimate",
+          "predicted_label": "legitimate",
+          "raw_score": 0.7645953817224544,
+          "final_score": 0.5145953817224544,
+          "decision_source": "model_and_security_rules",
+          "security_adjustments": [
+            {
+              "rule": "internal_auth",
+              "delta": -0.1,
+              "description": "Correo autenticado como interno de la organizaci\u00f3n"
+            },
+            {
+              "rule": "all_checks_pass",
+              "delta": -0.15,
+              "description": "Todas las verificaciones de autenticaci\u00f3n y spoofing pasaron correctamente"
+            }
+          ],
+          "content_signals": [],
+          "elapsed_ms": 32.69199999704142,
+          "category": "internal_communication",
+          "correct": true
+        },
+        {
+          "id": "phisharg-eval-0009",
+          "expected_label": "legitimate",
+          "predicted_label": "phishing",
+          "raw_score": 0.9870927798060427,
+          "final_score": 0.8370927798060427,
+          "decision_source": "model_and_security_rules",
+          "security_adjustments": [
+            {
+              "rule": "all_checks_pass",
+              "delta": -0.15,
+              "description": "Todas las verificaciones de autenticaci\u00f3n y spoofing pasaron correctamente"
+            }
+          ],
+          "content_signals": [],
+          "elapsed_ms": 29.346499999519438,
+          "category": "technical_email",
+          "correct": false
+        },
+        {
+          "id": "phisharg-eval-0010",
+          "expected_label": "legitimate",
+          "predicted_label": "legitimate",
+          "raw_score": 0.9385618100982339,
+          "final_score": 0.7885618100982339,
+          "decision_source": "model_and_security_rules",
+          "security_adjustments": [
+            {
+              "rule": "all_checks_pass",
+              "delta": -0.15,
+              "description": "Todas las verificaciones de autenticaci\u00f3n y spoofing pasaron correctamente"
+            }
+          ],
+          "content_signals": [],
+          "elapsed_ms": 27.287400000204798,
+          "category": "other_legitimate",
+          "correct": true
+        },
+        {
+          "id": "phisharg-eval-0011",
+          "expected_label": "phishing",
+          "predicted_label": "legitimate",
+          "raw_score": 0.013157348955709837,
+          "final_score": 0.36315734895570984,
+          "decision_source": "model_and_security_rules",
+          "security_adjustments": [
+            {
+              "rule": "spf_softfail",
+              "delta": 0.05,
+              "description": "SPF softfail: el dominio no proh\u00edbe expl\u00edcitamente este remitente (com\u00fan en reenv\u00edos)"
+            },
+            {
+              "rule": "dkim_fail",
+              "delta": 0.1,
+              "description": "DKIM fail: la firma digital del correo es inv\u00e1lida"
+            },
+            {
+              "rule": "dmarc_fail",
+              "delta": 0.15,
+              "description": "DMARC fail: la pol\u00edtica de autenticaci\u00f3n del dominio no se cumpli\u00f3"
+            },
+            {
+              "rule": "reply_to_mismatch",
+              "delta": 0.05,
+              "description": "Reply-To apunta a un dominio diferente al remitente"
+            }
+          ],
+          "content_signals": [],
+          "elapsed_ms": 39.85760000068694,
+          "category": "bank_impersonation",
+          "correct": false
+        },
+        {
+          "id": "phisharg-eval-0012",
+          "expected_label": "phishing",
+          "predicted_label": "phishing",
+          "raw_score": null,
+          "final_score": 1.0,
+          "decision_source": "critical_security_rule",
+          "security_adjustments": [],
+          "content_signals": [],
+          "elapsed_ms": 0.010399999155197293,
+          "category": "bank_impersonation",
+          "correct": true
+        },
+        {
+          "id": "phisharg-eval-0013",
+          "expected_label": "phishing",
+          "predicted_label": "phishing",
+          "raw_score": null,
+          "final_score": 1.0,
+          "decision_source": "critical_security_rule",
+          "security_adjustments": [],
+          "content_signals": [],
+          "elapsed_ms": 0.0035000011848751456,
+          "category": "bank_impersonation",
+          "correct": true
+        },
+        {
+          "id": "phisharg-eval-0014",
+          "expected_label": "phishing",
+          "predicted_label": "phishing",
+          "raw_score": 0.9872278492517437,
+          "final_score": 1.0,
+          "decision_source": "content_security_rule",
+          "security_adjustments": [
+            {
+              "rule": "spf_softfail",
+              "delta": 0.05,
+              "description": "SPF softfail: el dominio no proh\u00edbe expl\u00edcitamente este remitente (com\u00fan en reenv\u00edos)"
+            },
+            {
+              "rule": "scl_medium",
+              "delta": 0.12,
+              "description": "SCL=8: Microsoft lo clasifica como spam probable"
+            }
+          ],
+          "content_signals": [
+            {
+              "rule": "credential_disclosure_request",
+              "description": "El mensaje pide enviar o compartir contrase\u00f1as, claves o c\u00f3digos de autenticaci\u00f3n."
+            }
+          ],
+          "elapsed_ms": 24.332099997991463,
+          "category": "credential_theft",
+          "correct": true
+        }
+      ],
+      "metrics": {
+        "final": {
+          "count": 14,
+          "confusion_matrix": {
+            "true_positive": 4,
+            "true_negative": 4,
+            "false_positive": 4,
+            "false_negative": 2
+          },
+          "precision_phishing": 0.5,
+          "recall_phishing": 0.6666666666666666,
+          "f1_phishing": 0.5714285714285715,
+          "pr_auc": 0.7307692307692307,
+          "roc_auc": 0.6041666666666666,
+          "false_positive_rate": 0.5,
+          "false_negative_rate": 0.3333333333333333,
+          "brier_score": 0.45761338146588754
+        },
+        "raw_model": {
+          "count": 12,
+          "confusion_matrix": {
+            "true_positive": 1,
+            "true_negative": 1,
+            "false_positive": 7,
+            "false_negative": 3
+          },
+          "precision_phishing": 0.125,
+          "recall_phishing": 0.25,
+          "f1_phishing": 0.16666666666666666,
+          "pr_auc": 0.3265151515151515,
+          "roc_auc": 0.21875,
+          "false_positive_rate": 0.875,
+          "false_negative_rate": 0.75,
+          "brier_score": 0.8521990097794014
+        },
+        "by_category": {
+          "bank_impersonation": {
+            "count": 4,
+            "confusion_matrix": {
+              "true_positive": 2,
+              "true_negative": 0,
+              "false_positive": 0,
+              "false_negative": 2
+            },
+            "precision_phishing": 1.0,
+            "recall_phishing": 0.5,
+            "f1_phishing": 0.6666666666666666,
+            "pr_auc": 1.0,
+            "roc_auc": null,
+            "false_positive_rate": null,
+            "false_negative_rate": 0.5,
+            "brier_score": 0.2014859284252311
+          },
+          "credential_theft": {
+            "count": 1,
+            "confusion_matrix": {
+              "true_positive": 1,
+              "true_negative": 0,
+              "false_positive": 0,
+              "false_negative": 0
+            },
+            "precision_phishing": 1.0,
+            "recall_phishing": 1.0,
+            "f1_phishing": 1.0,
+            "pr_auc": 1.0,
+            "roc_auc": null,
+            "false_positive_rate": null,
+            "false_negative_rate": 0.0,
+            "brier_score": 0.0
+          },
+          "internal_communication": {
+            "count": 4,
+            "confusion_matrix": {
+              "true_positive": 0,
+              "true_negative": 2,
+              "false_positive": 2,
+              "false_negative": 0
+            },
+            "precision_phishing": 0.0,
+            "recall_phishing": null,
+            "f1_phishing": null,
+            "pr_auc": null,
+            "roc_auc": null,
+            "false_positive_rate": 0.5,
+            "false_negative_rate": null,
+            "brier_score": 0.689381689832566
+          },
+          "legitimate_invoice": {
+            "count": 1,
+            "confusion_matrix": {
+              "true_positive": 0,
+              "true_negative": 1,
+              "false_positive": 0,
+              "false_negative": 0
+            },
+            "precision_phishing": null,
+            "recall_phishing": null,
+            "f1_phishing": null,
+            "pr_auc": null,
+            "roc_auc": null,
+            "false_positive_rate": 0.0,
+            "false_negative_rate": null,
+            "brier_score": 0.5434903463733584
+          },
+          "other_legitimate": {
+            "count": 1,
+            "confusion_matrix": {
+              "true_positive": 0,
+              "true_negative": 1,
+              "false_positive": 0,
+              "false_negative": 0
+            },
+            "precision_phishing": null,
+            "recall_phishing": null,
+            "f1_phishing": null,
+            "pr_auc": null,
+            "roc_auc": null,
+            "false_positive_rate": 0.0,
+            "false_negative_rate": null,
+            "brier_score": 0.6218297283454031
+          },
+          "tax_impersonation": {
+            "count": 1,
+            "confusion_matrix": {
+              "true_positive": 1,
+              "true_negative": 0,
+              "false_positive": 0,
+              "false_negative": 0
+            },
+            "precision_phishing": 1.0,
+            "recall_phishing": 1.0,
+            "f1_phishing": 1.0,
+            "pr_auc": 1.0,
+            "roc_auc": null,
+            "false_positive_rate": null,
+            "false_negative_rate": 0.0,
+            "brier_score": 0.0025000000000000044
+          },
+          "technical_email": {
+            "count": 2,
+            "confusion_matrix": {
+              "true_positive": 0,
+              "true_negative": 0,
+              "false_positive": 2,
+              "false_negative": 0
+            },
+            "precision_phishing": 0.0,
+            "recall_phishing": null,
+            "f1_phishing": null,
+            "pr_auc": null,
+            "roc_auc": null,
+            "false_positive_rate": 1.0,
+            "false_negative_rate": null,
+            "brier_score": 0.8376483963862376
+          }
+        },
+        "timing_ms": {
+          "average": 24.752742856695217,
+          "p95": 39.97009999875445
+        }
+      },
+      "warnings": [
+        "Raw-model metrics exclude 2 critical-rule cases.",
+        "Some category metrics are undefined because the category does not contain both classes."
+      ]
+    }
+  }
+}

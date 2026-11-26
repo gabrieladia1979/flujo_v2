@@ -1,0 +1,124 @@
+{
+  "method": "Text mentions only; may overlap banks and include repeated templates; numeric labels inherited, 1 means phishing in CSV. Not verified real-bank messages.",
+  "coverage": {
+    "..\\Clasificador_PFI\\SpaPhish_Master_Final_v4.csv": {
+      "BBVA": {
+        "0": 106,
+        "1": 86
+      },
+      "Galicia": {
+        "0": 110,
+        "1": 247
+      },
+      "Santander": {
+        "1": 85,
+        "0": 94
+      },
+      "Macro": {
+        "0": 105,
+        "1": 83
+      },
+      "Nacion": {
+        "0": 92,
+        "1": 82
+      },
+      "Provincia": {
+        "0": 98,
+        "1": 82
+      },
+      "Ciudad": {
+        "0": 92,
+        "1": 71
+      },
+      "ICBC": {
+        "0": 121,
+        "1": 58
+      },
+      "Credicoop": {},
+      "Supervielle": {},
+      "Patagonia": {},
+      "Comafi": {},
+      "Hipotecario": {}
+    },
+    "..\\Clasificador_PFI\\SpaPhish_Master_Final_v5.csv": {
+      "BBVA": {
+        "0": 71,
+        "1": 61
+      },
+      "Galicia": {
+        "0": 76,
+        "1": 140
+      },
+      "Santander": {
+        "1": 62,
+        "0": 56
+      },
+      "Macro": {
+        "0": 63,
+        "1": 54
+      },
+      "Nacion": {
+        "0": 53,
+        "1": 54
+      },
+      "Provincia": {
+        "0": 59,
+        "1": 51
+      },
+      "Ciudad": {
+        "0": 56,
+        "1": 46
+      },
+      "ICBC": {
+        "0": 69,
+        "1": 41
+      },
+      "Credicoop": {},
+      "Supervielle": {},
+      "Patagonia": {},
+      "Comafi": {},
+      "Hipotecario": {}
+    },
+    "C:\\Users\\Usuario\\Documents\\PhishARG - Datasets respaldo PFI\\01_Hybrid_XAI\\corpus_curado_11073.csv": {
+      "BBVA": {
+        "0": 71,
+        "1": 61
+      },
+      "Galicia": {
+        "0": 76,
+        "1": 140
+      },
+      "Santander": {
+        "1": 63,
+        "0": 56
+      },
+      "Macro": {
+        "0": 63,
+        "1": 54
+      },
+      "Nacion": {
+        "0": 53,
+        "1": 54
+      },
+      "Provincia": {
+        "0": 59,
+        "1": 51
+      },
+      "Ciudad": {
+        "0": 56,
+        "1": 46
+      },
+      "ICBC": {
+        "0": 69,
+        "1": 42
+      },
+      "Credicoop": {},
+      "Supervielle": {},
+      "Patagonia": {
+        "1": 1
+      },
+      "Comafi": {},
+      "Hipotecario": {}
+    }
+  }
+}

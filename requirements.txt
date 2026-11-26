@@ -12,12 +12,14 @@ slowapi             # Para Rate Limiting (Prevención DDoS)
 sqlalchemy
 
 # --- Machine Learning ---
-scikit-learn
-xgboost
-spacy
-numpy
+scikit-learn==1.9.1
+# El pickle histórico cambia sus predicciones con 3.2.0; ver auditoría 2026-11-25.
+xgboost==2.0.3
+spacy==3.8.18
+numpy==2.4.6
 shap                # Para Explicabilidad (XAI)
 
 # --- Utilidades ---
 python-dotenv       # Variables de entorno desde .env
 httpx               # Necesario para FastAPI TestClient
+boto3>=1.35,<2      # Tokens del add-in: registro compartido anti-replay en producción

@@ -49,7 +49,7 @@ def _clauses(text):
 
 
 _SEND = re.compile(
-    r'\b(?:responda|responde|respondeme|respondanos|envie|envia|enviame|envienos|mande|manda|mandame|'
+    r'\b(?:responda|responde|respondeme|respondanos|envie|envia|enviame|envieme|envienos|envienme|mande|manda|mandame|mandeme|'
     r'comparta|comparti|compartime|facilite|facilita|ingrese|ingresa|ingresando|actualice|actualiza|actualizando|'
     r'confirme|confirma|confirmar|escriba|escribe|escriban|envianos|mandes|mandarnos|'
     r'reply|replying|send|sending|provide|providing|share|sharing|enter|entering|input|inputting|submit|submitting|verify|verifying|confirm|confirming|updating)\b'
@@ -161,6 +161,31 @@ def _affirmative_match(pattern, clause):
         yield match
 
 
+_DOCUMENT_CONTEXT = re.compile(r'\b(?:documentos?|firma|firmar|documents?|signing|signature)\b')
+_PROVIDED_DOCUMENT_CODE = re.compile(
+    r'^(?:ingrese|ingresa|enter|input)\s+(?:(?:el|este|the|this)\s+)?'
+    r'(?:codigo de (?:seguridad|acceso)|(?:security|access) code)\s*:\s*'
+    r'([a-z0-9-]{8,64})(?![\w-])'
+)
+
+
+def _uses_supplied_document_code(clause, request):
+    """Entering an explicit document code is not disclosing a personal secret.
+
+    Match only this input request; never exempt a service name or entire email.
+    Requests to send codes, enter a personal OTP or enter additional secrets
+    remain subject to the normal disclosure rule.
+    """
+    tail = clause[request.start():]
+    provided = _PROVIDED_DOCUMENT_CODE.match(tail)
+    if not provided or not _DOCUMENT_CONTEXT.search(clause[max(0, request.start() - 180):request.end() + 140]):
+        return False
+    code = provided.group(1)
+    if not (re.search(r'[a-z]', code) and re.search(r'\d', code)):
+        return False
+    return not _SECRET.search(tail[provided.end():provided.end() + 140])
+
+
 def detect_content_signals(body: str, subject: str = '') -> list[ContentSignal]:
     clauses = _clauses(f'{subject}\n{body}' if subject else body)
     signals = []
@@ -169,6 +194,8 @@ def detect_content_signals(body: str, subject: str = '') -> list[ContentSignal]:
     for clause in clauses:
         requested = False
         for request in _affirmative_match(_SEND, clause):
+            if _uses_supplied_document_code(clause, request):
+                continue
             window = clause[max(0, request.start() - 50):request.end() + 140]
             secret = _SECRET.search(window)
             if secret and not _INDIRECT_REQUEST.search(window[:secret.start()]):

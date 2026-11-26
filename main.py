@@ -1,15 +1,27 @@
 import os
-import os
-from fastapi import FastAPI, Depends, HTTPException, Security
+import secrets
+from fastapi import FastAPI, Depends, Header, HTTPException, Query, Request, Security
 from fastapi.security.api_key import APIKeyHeader
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
 from dotenv import load_dotenv
 
 # Cargar variables de entorno desde .env ANTES de importar módulos internos
 load_dotenv()
 
+PRODUCTION = (os.getenv("PHISHARG_ENV", "").lower() == "production"
+              or bool(os.getenv("AWS_EXECUTION_ENV")) or bool(os.getenv("ECS_CONTAINER_METADATA_URI_V4")))
+if PRODUCTION:
+    if len(os.getenv("API_KEY", "")) < 32 or os.getenv("API_KEY") == "PHISHARG_DEV_KEY_123":
+        raise RuntimeError("API_KEY debe ser una clave de al menos 32 caracteres en producción")
+    if len(os.getenv("PHISHARG_TOKEN_KEY", "")) < 32:
+        raise RuntimeError("PHISHARG_TOKEN_KEY debe tener al menos 32 caracteres en producción")
+    if not os.getenv("PHISHARG_REPLAY_TABLE", "").strip():
+        raise RuntimeError("PHISHARG_REPLAY_TABLE es obligatoria en producción")
+
 from schemas import EmailPayloadSchema, AnalysisResultSchema
-from services.analyzer import analyze_email
+from services.analyzer import analyze_email, ClassifierUnavailableError, ClassifierInputTooLongError
+from services.browser_auth import verify_browser_auth
 
 # ============================================================
 # Configuración de Seguridad
@@ -27,12 +39,19 @@ async def get_api_key(api_key_header: str = Security(api_key_header)):
             status_code=401, 
             detail="Se requiere API Key en el header X-API-Key"
         )
-    if api_key_header != API_KEY:
+    if not secrets.compare_digest(api_key_header, API_KEY):
         raise HTTPException(
             status_code=401, 
             detail="API Key inválida"
         )
     return api_key_header
+
+
+async def get_analysis_auth(request: Request, authorization: str | None = Header(default=None),
+                            api_key: str | None = Security(api_key_header)):
+    if authorization:
+        return await verify_browser_auth(request, authorization)
+    return await get_api_key(api_key)
 
 # ============================================================
 # Configuración de la Aplicación FastAPI
@@ -44,13 +63,36 @@ app = FastAPI(
 )
 
 # Configurar CORS
+cors_origins = [value.strip().rstrip("/") for value in os.getenv("PHISHARG_CORS_ORIGINS",
+    "https://add-in-pfi-hybrid.vercel.app,https://add-in-pfi.vercel.app,https://localhost:3000").split(",") if value.strip()]
+if PRODUCTION and "*" in cors_origins:
+    raise RuntimeError("PHISHARG_CORS_ORIGINS no admite comodines en producción")
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=cors_origins,
     allow_credentials=False,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_methods=["POST", "GET"],
+    allow_headers=["Content-Type", "X-API-Key", "Authorization"],
 )
+
+MAX_ANALYSIS_REQUEST_BYTES = 1_100_000
+
+
+@app.middleware("http")
+async def limit_analysis_size(request: Request, call_next):
+    if request.method == "POST" and request.url.path == "/api/v1/analyze":
+        try:
+            if int(request.headers.get("content-length", "0")) > MAX_ANALYSIS_REQUEST_BYTES:
+                return JSONResponse({"detail": "Correo demasiado grande"}, status_code=413)
+        except ValueError:
+            return JSONResponse({"detail": "Content-Length inválido"}, status_code=400)
+        body = bytearray()
+        async for chunk in request.stream():
+            if len(body) + len(chunk) > MAX_ANALYSIS_REQUEST_BYTES:
+                return JSONResponse({"detail": "Correo demasiado grande"}, status_code=413)
+            body.extend(chunk)
+        request._body = bytes(body)
+    return await call_next(request)
 
 # ============================================================
 # Endpoints
@@ -66,17 +108,19 @@ def health_check():
     Endpoint de salud público para monitoreo y despliegue cloud (Render, Railway, Kubernetes).
     No requiere autenticación.
     """
-    from services.analyzer import calibrated_model, tfidf
+    from services.analyzer import calibrated_model, tfidf, nlp, matcher_global, LOADED_MODEL_PATH
     from services.slm_client import MODEL_PATH
 
+    loaded = all(component is not None for component in (calibrated_model, tfidf, nlp, matcher_global))
     return {
-        "status": "ok",
+        "status": "ok" if loaded else "degraded",
         "service": "PhishARG Backend Light",
         "version": "2.0.0",
         "classifier": {
-            "loaded": calibrated_model is not None and tfidf is not None,
+            "loaded": loaded,
             "model_type": "phisharg_xgboost",
-            "features_expected": 6022,
+            "features_expected": int(getattr(calibrated_model, "n_features_in_", 6022)),
+            "artifact_group": LOADED_MODEL_PATH.parent.name if LOADED_MODEL_PATH else None,
         },
         "slm_service": {
             "model_path": MODEL_PATH,
@@ -88,7 +132,8 @@ def health_check():
 @app.post("/api/v1/analyze", response_model=AnalysisResultSchema)
 def analyze_email_endpoint(
     payload: EmailPayloadSchema, 
-    api_key: str = Depends(get_api_key)
+    quick: bool = Query(default=False),
+    api_key = Depends(get_analysis_auth)
 ):
     """
     Analiza un correo electrónico y devuelve la probabilidad de que sea phishing.
@@ -97,10 +142,14 @@ def analyze_email_endpoint(
     try:
         # Pydantic ya validó todo el payload y sus tipos de datos.
         # Solo necesitamos pasarlo a nuestra función de negocio.
-        resultado = analyze_email(payload)
+        resultado = analyze_email(payload, quick=True) if quick else analyze_email(payload)
         return resultado
+    except ClassifierUnavailableError as e:
+        raise HTTPException(status_code=503, detail=str(e)) from e
+    except ClassifierInputTooLongError as e:
+        raise HTTPException(status_code=413, detail=str(e)) from e
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Error en el análisis: {str(e)}")
+        raise HTTPException(status_code=500, detail="No se pudo completar el análisis.") from e
 
 # (Opcional) Bloque para correr localmente sin uvicorn CLI
 if __name__ == "__main__":

@@ -1,0 +1,81 @@
+[
+  {
+    "case": "bbva_summary",
+    "synthetic": true,
+    "http_status": 200,
+    "is_phishing": false,
+    "risk_score": 0.0,
+    "intent": "comunicacion_operativa",
+    "decision_source": "model_and_security_rules",
+    "bank_context": {
+      "sender_bank": "BBVA",
+      "sender_domain": "bbva.com.ar",
+      "sender_status": "known_domain_authenticated",
+      "mentioned_banks": [
+        "BBVA"
+      ],
+      "lookalike_domains": [],
+      "observations": [
+        "El dominio del remitente corresponde a BBVA y las cabeceras informan autenticación alineada. Esto no garantiza que el contenido sea seguro."
+      ]
+    },
+    "content_signals": []
+  },
+  {
+    "case": "bbva_impersonation",
+    "synthetic": true,
+    "http_status": 200,
+    "is_phishing": true,
+    "risk_score": 0.95,
+    "intent": "suplantacion_bancaria",
+    "decision_source": "content_security_rule",
+    "bank_context": {
+      "sender_bank": null,
+      "sender_domain": "bbva-validacion.invalid",
+      "sender_status": "unrecognized_domain",
+      "mentioned_banks": [
+        "BBVA"
+      ],
+      "lookalike_domains": [
+        "bbva-validacion.invalid"
+      ],
+      "observations": [
+        "El mensaje menciona BBVA; el dominio del remitente no está reconocido como bancario en el registro local.",
+        "Hay dominios que incluyen el nombre de un banco fuera de los dominios registrados; requieren verificación independiente."
+      ]
+    },
+    "content_signals": [
+      {
+        "rule": "bank_brand_impersonation",
+        "description": "El mensaje se presenta como BBVA, pide validar o ingresar a una cuenta y usa un dominio que imita al banco fuera de sus dominios registrados."
+      }
+    ]
+  },
+  {
+    "case": "bbva_authenticated_secret_request",
+    "synthetic": true,
+    "http_status": 200,
+    "is_phishing": true,
+    "risk_score": 0.95,
+    "intent": "solicitar_credenciales",
+    "decision_source": "content_security_rule",
+    "bank_context": {
+      "sender_bank": "BBVA",
+      "sender_domain": "bbva.com.ar",
+      "sender_status": "known_domain_authenticated",
+      "mentioned_banks": [
+        "BBVA"
+      ],
+      "lookalike_domains": [],
+      "observations": [
+        "El dominio del remitente corresponde a BBVA y las cabeceras informan autenticación alineada. Esto no garantiza que el contenido sea seguro."
+      ]
+    },
+    "content_signals": [
+      {
+        "rule": "credential_disclosure_request",
+        "description": "El mensaje pide enviar o compartir contraseñas, claves o códigos de autenticación."
+      }
+    ]
+  }
+]

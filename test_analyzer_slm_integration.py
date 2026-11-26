@@ -48,7 +48,7 @@ class _Doc:
 class _NLP:
     def __init__(self):
         self.vocab = _Vocab()
-        self.max_length = 0
+        self.max_length = 50000
 
     def __call__(self, text):
         return _Doc()
@@ -267,6 +267,7 @@ class AnalyzerSLMIntegrationTests(unittest.TestCase):
                 "raw_model_score",
                 "decision_source",
                 "content_signals",
+                "bank_context",
             },
             set(result.model_dump()),
         )
