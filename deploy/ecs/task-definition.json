@@ -1,7 +1,9 @@
 {
   "family": "phisharg-api",
   "networkMode": "awsvpc",
-  "requiresCompatibilities": ["FARGATE"],
+  "requiresCompatibilities": [
+    "FARGATE"
+  ],
   "cpu": "2048",
   "memory": "8192",
   "executionRoleArn": "arn:aws:iam::668281913895:role/ecsTaskExecutionRole",
@@ -11,10 +13,21 @@
       "name": "phisharg-api",
       "image": "668281913895.dkr.ecr.us-east-1.amazonaws.com/phisharg-api:aws-demo-v1",
       "essential": true,
-      "portMappings": [{ "containerPort": 8080, "protocol": "tcp" }],
+      "portMappings": [
+        {
+          "containerPort": 8080,
+          "protocol": "tcp"
+        }
+      ],
       "environment": [
-        { "name": "MODEL_BOOTSTRAP_ON_START", "value": "true" },
-        { "name": "PRELOAD_SLM", "value": "true" },
+        {
+          "name": "MODEL_BOOTSTRAP_ON_START",
+          "value": "true"
+        },
+        {
+          "name": "PRELOAD_SLM",
+          "value": "true"
+        },
         {
           "name": "SLM_MODEL_S3_BUCKET",
           "value": "phisharg-models-668281913895-us-east-1-an"
@@ -35,12 +48,59 @@
           "name": "SLM_MODEL_LOCAL_PATH",
           "value": "/app/model/qwen2.5-3b-instruct-q4_k_m.gguf"
         },
-        { "name": "SLM_THREADS", "value": "2" }
+        {
+          "name": "SLM_THREADS",
+          "value": "2"
+        },
+        {
+          "name": "PHISHARG_ENV",
+          "value": "production"
+        },
+        {
+          "name": "PHISHARG_REPLAY_TABLE",
+          "value": "<PHISHARG_REPLAY_TABLE>"
+        },
+        {
+          "name": "PHISHARG_CORS_ORIGINS",
+          "value": "https://add-in-pfi-hybrid.vercel.app"
+        },
+        {
+          "name": "CLASSIFIER_BOOTSTRAP_ON_START",
+          "value": "true"
+        },
+        {
+          "name": "PFI_CLASSIFIER_MODEL_PATH",
+          "value": "/app/artifacts/audit-candidate-v2/phisharg_xgboost.pkl"
+        },
+        {
+          "name": "CLASSIFIER_MODEL_S3_BUCKET",
+          "value": "<CLASSIFIER_MODEL_S3_BUCKET>"
+        },
+        {
+          "name": "CLASSIFIER_MODEL_S3_KEY",
+          "value": "xgboost/audit-candidate-v2/20261126/model.zip"
+        },
+        {
+          "name": "CLASSIFIER_MODEL_S3_VERSION_ID",
+          "value": "<CLASSIFIER_MODEL_S3_VERSION_ID>"
+        },
+        {
+          "name": "CLASSIFIER_BUNDLE_SHA256",
+          "value": "0a0f9c94cda222cf18a50ae57eb2275caf468ec27c404ff7855cc8a2869c0ff6"
+        },
+        {
+          "name": "CLASSIFIER_MODEL_SHA256",
+          "value": "d176ffcbede82073a83e39139da8ee00665adeb4a6a60508c6cd51561a191728"
+        }
       ],
       "secrets": [
         {
           "name": "API_KEY",
-          "valueFrom": "arn:aws:secretsmanager:us-east-1:668281913895:secret:phisharg/api-key-wyFU3E:API_KEY::"
+          "valueFrom": "<API_KEY_SECRET_ARN>"
+        },
+        {
+          "name": "PHISHARG_TOKEN_KEY",
+          "valueFrom": "<TOKEN_KEY_SECRET_ARN>"
         }
       ],
       "logConfiguration": {

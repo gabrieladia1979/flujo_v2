@@ -1,0 +1,845 @@
+{
+  "normalization": "casefold and whitespace; subject plus body; no semantic deduplication",
+  "warnings": [
+    "Historical sources and labels do not establish contemporary real-mail accuracy.",
+    "Verbatim labels from different sources may have different meanings.",
+    "Only exact normalized overlap is measured; paraphrases and campaign leakage can remain."
+  ],
+  "datasets": [
+    {
+      "path": "C:\\Users\\Usuario\\Documents\\GitHub\\Clasificador_PFI\\SpaPhish_Extendido_Argentina.csv",
+      "rows": 5395,
+      "columns": [
+        "subject",
+        "body",
+        "Label",
+        "authority",
+        "distraction",
+        "commitment_integrity_reciprocation",
+        "social_proof",
+        "liking_similarity_deception",
+        "url_count",
+        "attachments_count",
+        "hops_count"
+      ],
+      "labels_verbatim": {
+        "1": 2731,
+        "0": 2664
+      },
+      "sources": {
+        "missing": 5395
+      },
+      "partitions": {
+        "missing": 5395
+      },
+      "malformed_rows": 0,
+      "empty_messages": 0,
+      "over_50000_characters": 0,
+      "missing_campaign_id": 5395,
+      "unique_messages": 3136,
+      "duplicate_message_rows": 2259,
+      "conflicting_message_groups": 0,
+      "conflicting_message_rows": 0,
+      "duplicate_body_rows": 3647,
+      "conflicting_body_groups": 0,
+      "conflicting_body_examples": [],
+      "message_groups_across_partitions": 0,
+      "body_groups_across_partitions": 0,
+      "declared_groups_across_partitions": 0
+    },
+    {
+      "path": "C:\\Users\\Usuario\\Documents\\GitHub\\Clasificador_PFI\\SpaPhish_Master_Final_v2.csv",
+      "rows": 13401,
+      "columns": [
+        "subject",
+        "body",
+        "Label",
+        "authority",
+        "distraction",
+        "commitment_integrity_reciprocation",
+        "social_proof",
+        "liking_similarity_deception",
+        "url_count",
+        "attachments_count",
+        "hops_count"
+      ],
+      "labels_verbatim": {
+        "0": 8779,
+        "1": 4622
+      },
+      "sources": {
+        "missing": 13401
+      },
+      "partitions": {
+        "missing": 13401
+      },
+      "malformed_rows": 0,
+      "empty_messages": 0,
+      "over_50000_characters": 0,
+      "missing_campaign_id": 13401,
+      "unique_messages": 6251,
+      "duplicate_message_rows": 7150,
+      "conflicting_message_groups": 0,
+      "conflicting_message_rows": 0,
+      "duplicate_body_rows": 8634,
+      "conflicting_body_groups": 0,
+      "conflicting_body_examples": [],
+      "message_groups_across_partitions": 0,
+      "body_groups_across_partitions": 0,
+      "declared_groups_across_partitions": 0
+    },
+    {
+      "path": "C:\\Users\\Usuario\\Documents\\GitHub\\Clasificador_PFI\\SpaPhish_Master_Final_v3.csv",
+      "rows": 14401,
+      "columns": [
+        "subject",
+        "body",
+        "Label",
+        "authority",
+        "distraction",
+        "commitment_integrity_reciprocation",
+        "social_proof",
+        "liking_similarity_deception",
+        "url_count",
+        "attachments_count",
+        "hops_count"
+      ],
+      "labels_verbatim": {
+        "0": 8779,
+        "1": 5622
+      },
+      "sources": {
+        "missing": 14401
+      },
+      "partitions": {
+        "missing": 14401
+      },
+      "malformed_rows": 0,
+      "empty_messages": 0,
+      "over_50000_characters": 0,
+      "missing_campaign_id": 14401,
+      "unique_messages": 6883,
+      "duplicate_message_rows": 7518,
+      "conflicting_message_groups": 0,
+      "conflicting_message_rows": 0,
+      "duplicate_body_rows": 9169,
+      "conflicting_body_groups": 0,
+      "conflicting_body_examples": [],
+      "message_groups_across_partitions": 0,
+      "body_groups_across_partitions": 0,
+      "declared_groups_across_partitions": 0
+    },
+    {
+      "path": "C:\\Users\\Usuario\\Documents\\GitHub\\Clasificador_PFI\\SpaPhish_Master_Final_v4.csv",
+      "rows": 14781,
+      "columns": [
+        "subject",
+        "body",
+        "Label",
+        "authority",
+        "distraction",
+        "commitment_integrity_reciprocation",
+        "social_proof",
+        "liking_similarity_deception",
+        "url_count",
+        "attachments_count",
+        "hops_count",
+        "tiene_url",
+        "n_urls",
+        "url_usa_http",
+        "url_oficial",
+        "url_suplantada",
+        "url_tiene_ip"
+      ],
+      "labels_verbatim": {
+        "1": 5622,
+        "0": 9159
+      },
+      "sources": {
+        "missing": 14781
+      },
+      "partitions": {
+        "missing": 14781
+      },
+      "malformed_rows": 0,
+      "empty_messages": 0,
+      "over_50000_characters": 0,
+      "missing_campaign_id": 14781,
+      "unique_messages": 7093,
+      "duplicate_message_rows": 7688,
+      "conflicting_message_groups": 0,
+      "conflicting_message_rows": 0,
+      "duplicate_body_rows": 9032,
+      "conflicting_body_groups": 0,
+      "conflicting_body_examples": [],
+      "message_groups_across_partitions": 0,
+      "body_groups_across_partitions": 0,
+      "declared_groups_across_partitions": 0
+    },
+    {
+      "path": "C:\\Users\\Usuario\\Documents\\GitHub\\Clasificador_PFI\\SpaPhish_Master_Final_v5.csv",
+      "rows": 7095,
+      "columns": [
+        "subject",
+        "body",
+        "Label",
+        "authority",
+        "distraction",
+        "commitment_integrity_reciprocation",
+        "social_proof",
+        "liking_similarity_deception",
+        "url_count",
+        "attachments_count",
+        "hops_count",
+        "tiene_url",
+        "n_urls",
+        "url_usa_http",
+        "url_oficial",
+        "url_suplantada",
+        "url_tiene_ip"
+      ],
+      "labels_verbatim": {
+        "1": 4144,
+        "0": 2951
+      },
+      "sources": {
+        "missing": 7095
+      },
+      "partitions": {
+        "missing": 7095
+      },
+      "malformed_rows": 0,
+      "empty_messages": 0,
+      "over_50000_characters": 0,
+      "missing_campaign_id": 7095,
+      "unique_messages": 7094,
+      "duplicate_message_rows": 1,
+      "conflicting_message_groups": 0,
+      "conflicting_message_rows": 0,
+      "duplicate_body_rows": 1345,
+      "conflicting_body_groups": 0,
+      "conflicting_body_examples": [],
+      "message_groups_across_partitions": 0,
+      "body_groups_across_partitions": 0,
+      "declared_groups_across_partitions": 0
+    },
+    {
+      "path": "C:\\Users\\Usuario\\Documents\\GitHub\\Clasificador_PFI\\SpaPhish_Master_Final.csv",
+      "rows": 8401,
+      "columns": [
+        "subject",
+        "body",
+        "Label",
+        "authority",
+        "distraction",
+        "commitment_integrity_reciprocation",
+        "social_proof",
+        "liking_similarity_deception",
+        "url_count",
+        "attachments_count",
+        "hops_count"
+      ],
+      "labels_verbatim": {
+        "1": 4622,
+        "0": 3779
+      },
+      "sources": {
+        "missing": 8401
+      },
+      "partitions": {
+        "missing": 8401
+      },
+      "malformed_rows": 0,
+      "empty_messages": 0,
+      "over_50000_characters": 0,
+      "missing_campaign_id": 8401,
+      "unique_messages": 6140,
+      "duplicate_message_rows": 2261,
+      "conflicting_message_groups": 0,
+      "conflicting_message_rows": 0,
+      "duplicate_body_rows": 3649,
+      "conflicting_body_groups": 0,
+      "conflicting_body_examples": [],
+      "message_groups_across_partitions": 0,
+      "body_groups_across_partitions": 0,
+      "declared_groups_across_partitions": 0
+    },
+    {
+      "path": "C:\\Users\\Usuario\\Documents\\PhishARG - Datasets respaldo PFI\\01_Hybrid_XAI\\training.csv",
+      "rows": 11114,
+      "columns": [
+        "subject",
+        "body",
+        "Label",
+        "attachments_count",
+        "hops_count",
+        "source",
+        "language",
+        "campaign_id"
+      ],
+      "labels_verbatim": {
+        "1": 6154,
+        "0": 4960
+      },
+      "sources": {
+        "SpaPhish_Master_Final_v5.csv": 7091,
+        "Enron.csv": 999,
+        "Nazario.csv": 1000,
+        "Nigerian_Fraud.csv": 1000,
+        "SpamAssasin.csv": 1000,
+        "curated_contrastive_v3": 24
+      },
+      "partitions": {
+        "missing": 11114
+      },
+      "malformed_rows": 0,
+      "empty_messages": 0,
+      "over_50000_characters": 4,
+      "missing_campaign_id": 11090,
+      "unique_messages": 11103,
+      "duplicate_message_rows": 11,
+      "conflicting_message_groups": 0,
+      "conflicting_message_rows": 0,
+      "duplicate_body_rows": 1369,
+      "conflicting_body_groups": 0,
+      "conflicting_body_examples": [],
+      "message_groups_across_partitions": 0,
+      "body_groups_across_partitions": 0,
+      "declared_groups_across_partitions": 0
+    },
+    {
+      "path": "C:\\Users\\Usuario\\Documents\\PhishARG - Datasets respaldo PFI\\01_Hybrid_XAI\\corpus_curado_11073.csv",
+      "rows": 11073,
+      "columns": [
+        "row_id",
+        "particion",
+        "group_id",
+        "subject",
+        "body",
+        "Label",
+        "attachments_count",
+        "hops_count",
+        "source",
+        "language",
+        "campaign_id"
+      ],
+      "labels_verbatim": {
+        "1": 6132,
+        "0": 4941
+      },
+      "sources": {
+        "SpaPhish_Master_Final_v5.csv": 7064,
+        "Enron.csv": 997,
+        "Nazario.csv": 990,
+        "Nigerian_Fraud.csv": 998,
+        "SpamAssasin.csv": 1000,
+        "curated_contrastive_v3": 24
+      },
+      "partitions": {
+        "train": 7792,
+        "test": 1662,
+        "validation": 1619
+      },
+      "malformed_rows": 0,
+      "empty_messages": 0,
+      "over_50000_characters": 2,
+      "missing_campaign_id": 11049,
+      "unique_messages": 11073,
+      "duplicate_message_rows": 0,
+      "conflicting_message_groups": 0,
+      "conflicting_message_rows": 0,
+      "duplicate_body_rows": 1358,
+      "conflicting_body_groups": 0,
+      "conflicting_body_examples": [],
+      "message_groups_across_partitions": 0,
+      "body_groups_across_partitions": 0,
+      "declared_groups_across_partitions": 0
+    },
+    {
+      "path": "C:\\Users\\Usuario\\Documents\\GitHub\\Clasificador_PFI\\DataSet_Kaggle_Original.zip!CEAS_08.csv/CEAS_08.csv",
+      "rows": 39154,
+      "columns": [
+        "sender",
+        "receiver",
+        "date",
+        "subject",
+        "body",
+        "label",
+        "urls"
+      ],
+      "labels_verbatim": {
+        "1": 21842,
+        "0": 17312
+      },
+      "sources": {
+        "missing": 39154
+      },
+      "partitions": {
+        "missing": 39154
+      },
+      "malformed_rows": 0,
+      "empty_messages": 0,
+      "over_50000_characters": 32,
+      "missing_campaign_id": 39154,
+      "unique_messages": 38963,
+      "duplicate_message_rows": 191,
+      "conflicting_message_groups": 0,
+      "conflicting_message_rows": 0,
+      "duplicate_body_rows": 795,
+      "conflicting_body_groups": 0,
+      "conflicting_body_examples": [],
+      "message_groups_across_partitions": 0,
+      "body_groups_across_partitions": 0,
+      "declared_groups_across_partitions": 0
+    },
+    {
+      "path": "C:\\Users\\Usuario\\Documents\\GitHub\\Clasificador_PFI\\DataSet_Kaggle_Original.zip!Enron.csv/Enron.csv",
+      "rows": 29767,
+      "columns": [
+        "subject",
+        "body",
+        "label"
+      ],
+      "labels_verbatim": {
+        "0": 15791,
+        "1": 13976
+      },
+      "sources": {
+        "missing": 29767
+      },
+      "partitions": {
+        "missing": 29767
+      },
+      "malformed_rows": 0,
+      "empty_messages": 0,
+      "over_50000_characters": 41,
+      "missing_campaign_id": 29767,
+      "unique_messages": 29423,
+      "duplicate_message_rows": 344,
+      "conflicting_message_groups": 0,
+      "conflicting_message_rows": 0,
+      "duplicate_body_rows": 407,
+      "conflicting_body_groups": 0,
+      "conflicting_body_examples": [],
+      "message_groups_across_partitions": 0,
+      "body_groups_across_partitions": 0,
+      "declared_groups_across_partitions": 0
+    },
+    {
+      "path": "C:\\Users\\Usuario\\Documents\\GitHub\\Clasificador_PFI\\DataSet_Kaggle_Original.zip!Ling.csv/Ling.csv",
+      "rows": 2859,
+      "columns": [
+        "subject",
+        "body",
+        "label"
+      ],
+      "labels_verbatim": {
+        "0": 2401,
+        "1": 458
+      },
+      "sources": {
+        "missing": 2859
+      },
+      "partitions": {
+        "missing": 2859
+      },
+      "malformed_rows": 0,
+      "empty_messages": 0,
+      "over_50000_characters": 0,
+      "missing_campaign_id": 2859,
+      "unique_messages": 2859,
+      "duplicate_message_rows": 0,
+      "conflicting_message_groups": 0,
+      "conflicting_message_rows": 0,
+      "duplicate_body_rows": 0,
+      "conflicting_body_groups": 0,
+      "conflicting_body_examples": [],
+      "message_groups_across_partitions": 0,
+      "body_groups_across_partitions": 0,
+      "declared_groups_across_partitions": 0
+    },
+    {
+      "path": "C:\\Users\\Usuario\\Documents\\GitHub\\Clasificador_PFI\\DataSet_Kaggle_Original.zip!Nazario.csv/Nazario.csv",
+      "rows": 1565,
+      "columns": [
+        "sender",
+        "receiver",
+        "date",
+        "subject",
+        "body",
+        "urls",
+        "label"
+      ],
+      "labels_verbatim": {
+        "1": 1565
+      },
+      "sources": {
+        "missing": 1565
+      },
+      "partitions": {
+        "missing": 1565
+      },
+      "malformed_rows": 0,
+      "empty_messages": 0,
+      "over_50000_characters": 2,
+      "missing_campaign_id": 1565,
+      "unique_messages": 1552,
+      "duplicate_message_rows": 13,
+      "conflicting_message_groups": 0,
+      "conflicting_message_rows": 0,
+      "duplicate_body_rows": 37,
+      "conflicting_body_groups": 0,
+      "conflicting_body_examples": [],
+      "message_groups_across_partitions": 0,
+      "body_groups_across_partitions": 0,
+      "declared_groups_across_partitions": 0
+    },
+    {
+      "path": "C:\\Users\\Usuario\\Documents\\GitHub\\Clasificador_PFI\\DataSet_Kaggle_Original.zip!Nigerian_Fraud.csv/Nigerian_Fraud.csv",
+      "rows": 3332,
+      "columns": [
+        "sender",
+        "receiver",
+        "date",
+        "subject",
+        "body",
+        "urls",
+        "label"
+      ],
+      "labels_verbatim": {
+        "1": 3332
+      },
+      "sources": {
+        "missing": 3332
+      },
+      "partitions": {
+        "missing": 3332
+      },
+      "malformed_rows": 0,
+      "empty_messages": 0,
+      "over_50000_characters": 1,
+      "missing_campaign_id": 3332,
+      "unique_messages": 3291,
+      "duplicate_message_rows": 41,
+      "conflicting_message_groups": 0,
+      "conflicting_message_rows": 0,
+      "duplicate_body_rows": 61,
+      "conflicting_body_groups": 0,
+      "conflicting_body_examples": [],
+      "message_groups_across_partitions": 0,
+      "body_groups_across_partitions": 0,
+      "declared_groups_across_partitions": 0
+    },
+    {
+      "path": "C:\\Users\\Usuario\\Documents\\GitHub\\Clasificador_PFI\\DataSet_Kaggle_Original.zip!phishing_email.csv/phishing_email.csv",
+      "rows": 82486,
+      "columns": [
+        "text_combined",
+        "label"
+      ],
+      "labels_verbatim": {
+        "0": 39595,
+        "1": 42891
+      },
+      "sources": {
+        "missing": 82486
+      },
+      "partitions": {
+        "missing": 82486
+      },
+      "malformed_rows": 0,
+      "empty_messages": 1,
+      "over_50000_characters": 56,
+      "missing_campaign_id": 82486,
+      "unique_messages": 82077,
+      "duplicate_message_rows": 408,
+      "conflicting_message_groups": 0,
+      "conflicting_message_rows": 0,
+      "duplicate_body_rows": 408,
+      "conflicting_body_groups": 0,
+      "conflicting_body_examples": [],
+      "message_groups_across_partitions": 0,
+      "body_groups_across_partitions": 0,
+      "declared_groups_across_partitions": 0
+    },
+    {
+      "path": "C:\\Users\\Usuario\\Documents\\GitHub\\Clasificador_PFI\\DataSet_Kaggle_Original.zip!SpamAssasin.csv/SpamAssasin.csv",
+      "rows": 5809,
+      "columns": [
+        "sender",
+        "receiver",
+        "date",
+        "subject",
+        "body",
+        "label",
+        "urls"
+      ],
+      "labels_verbatim": {
+        "0": 4091,
+        "1": 1718
+      },
+      "sources": {
+        "missing": 5809
+      },
+      "partitions": {
+        "missing": 5809
+      },
+      "malformed_rows": 0,
+      "empty_messages": 0,
+      "over_50000_characters": 17,
+      "missing_campaign_id": 5809,
+      "unique_messages": 5802,
+      "duplicate_message_rows": 7,
+      "conflicting_message_groups": 0,
+      "conflicting_message_rows": 0,
+      "duplicate_body_rows": 23,
+      "conflicting_body_groups": 0,
+      "conflicting_body_examples": [],
+      "message_groups_across_partitions": 0,
+      "body_groups_across_partitions": 0,
+      "declared_groups_across_partitions": 0
+    }
+  ],
+  "overlaps": [
+    {
+      "left": "C:\\Users\\Usuario\\Documents\\GitHub\\Clasificador_PFI\\SpaPhish_Extendido_Argentina.csv",
+      "right": "C:\\Users\\Usuario\\Documents\\GitHub\\Clasificador_PFI\\SpaPhish_Master_Final_v2.csv",
+      "shared_normalized_messages": 3136,
+      "shared_messages_with_different_labels": 0
+    },
+    {
+      "left": "C:\\Users\\Usuario\\Documents\\GitHub\\Clasificador_PFI\\SpaPhish_Extendido_Argentina.csv",
+      "right": "C:\\Users\\Usuario\\Documents\\GitHub\\Clasificador_PFI\\SpaPhish_Master_Final_v3.csv",
+      "shared_normalized_messages": 3136,
+      "shared_messages_with_different_labels": 0
+    },
+    {
+      "left": "C:\\Users\\Usuario\\Documents\\GitHub\\Clasificador_PFI\\SpaPhish_Extendido_Argentina.csv",
+      "right": "C:\\Users\\Usuario\\Documents\\GitHub\\Clasificador_PFI\\SpaPhish_Master_Final_v4.csv",
+      "shared_normalized_messages": 2956,
+      "shared_messages_with_different_labels": 0
+    },
+    {
+      "left": "C:\\Users\\Usuario\\Documents\\GitHub\\Clasificador_PFI\\SpaPhish_Extendido_Argentina.csv",
+      "right": "C:\\Users\\Usuario\\Documents\\GitHub\\Clasificador_PFI\\SpaPhish_Master_Final_v5.csv",
+      "shared_normalized_messages": 2956,
+      "shared_messages_with_different_labels": 0
+    },
+    {
+      "left": "C:\\Users\\Usuario\\Documents\\GitHub\\Clasificador_PFI\\SpaPhish_Extendido_Argentina.csv",
+      "right": "C:\\Users\\Usuario\\Documents\\GitHub\\Clasificador_PFI\\SpaPhish_Master_Final.csv",
+      "shared_normalized_messages": 3136,
+      "shared_messages_with_different_labels": 0
+    },
+    {
+      "left": "C:\\Users\\Usuario\\Documents\\GitHub\\Clasificador_PFI\\SpaPhish_Extendido_Argentina.csv",
+      "right": "C:\\Users\\Usuario\\Documents\\PhishARG - Datasets respaldo PFI\\01_Hybrid_XAI\\training.csv",
+      "shared_normalized_messages": 2955,
+      "shared_messages_with_different_labels": 0
+    },
+    {
+      "left": "C:\\Users\\Usuario\\Documents\\GitHub\\Clasificador_PFI\\SpaPhish_Extendido_Argentina.csv",
+      "right": "C:\\Users\\Usuario\\Documents\\PhishARG - Datasets respaldo PFI\\01_Hybrid_XAI\\corpus_curado_11073.csv",
+      "shared_normalized_messages": 2944,
+      "shared_messages_with_different_labels": 0
+    },
+    {
+      "left": "C:\\Users\\Usuario\\Documents\\GitHub\\Clasificador_PFI\\SpaPhish_Master_Final_v2.csv",
+      "right": "C:\\Users\\Usuario\\Documents\\GitHub\\Clasificador_PFI\\SpaPhish_Master_Final_v3.csv",
+      "shared_normalized_messages": 6251,
+      "shared_messages_with_different_labels": 0
+    },
+    {
+      "left": "C:\\Users\\Usuario\\Documents\\GitHub\\Clasificador_PFI\\SpaPhish_Master_Final_v2.csv",
+      "right": "C:\\Users\\Usuario\\Documents\\GitHub\\Clasificador_PFI\\SpaPhish_Master_Final_v4.csv",
+      "shared_normalized_messages": 6063,
+      "shared_messages_with_different_labels": 0
+    },
+    {
+      "left": "C:\\Users\\Usuario\\Documents\\GitHub\\Clasificador_PFI\\SpaPhish_Master_Final_v2.csv",
+      "right": "C:\\Users\\Usuario\\Documents\\GitHub\\Clasificador_PFI\\SpaPhish_Master_Final_v5.csv",
+      "shared_normalized_messages": 6063,
+      "shared_messages_with_different_labels": 0
+    },
+    {
+      "left": "C:\\Users\\Usuario\\Documents\\GitHub\\Clasificador_PFI\\SpaPhish_Master_Final_v2.csv",
+      "right": "C:\\Users\\Usuario\\Documents\\GitHub\\Clasificador_PFI\\SpaPhish_Master_Final.csv",
+      "shared_normalized_messages": 6140,
+      "shared_messages_with_different_labels": 0
+    },
+    {
+      "left": "C:\\Users\\Usuario\\Documents\\GitHub\\Clasificador_PFI\\SpaPhish_Master_Final_v2.csv",
+      "right": "C:\\Users\\Usuario\\Documents\\PhishARG - Datasets respaldo PFI\\01_Hybrid_XAI\\training.csv",
+      "shared_normalized_messages": 6059,
+      "shared_messages_with_different_labels": 0
+    },
+    {
+      "left": "C:\\Users\\Usuario\\Documents\\GitHub\\Clasificador_PFI\\SpaPhish_Master_Final_v2.csv",
+      "right": "C:\\Users\\Usuario\\Documents\\PhishARG - Datasets respaldo PFI\\01_Hybrid_XAI\\corpus_curado_11073.csv",
+      "shared_normalized_messages": 6033,
+      "shared_messages_with_different_labels": 0
+    },
+    {
+      "left": "C:\\Users\\Usuario\\Documents\\GitHub\\Clasificador_PFI\\SpaPhish_Master_Final_v3.csv",
+      "right": "C:\\Users\\Usuario\\Documents\\GitHub\\Clasificador_PFI\\SpaPhish_Master_Final_v4.csv",
+      "shared_normalized_messages": 6063,
+      "shared_messages_with_different_labels": 0
+    },
+    {
+      "left": "C:\\Users\\Usuario\\Documents\\GitHub\\Clasificador_PFI\\SpaPhish_Master_Final_v3.csv",
+      "right": "C:\\Users\\Usuario\\Documents\\GitHub\\Clasificador_PFI\\SpaPhish_Master_Final_v5.csv",
+      "shared_normalized_messages": 6063,
+      "shared_messages_with_different_labels": 0
+    },
+    {
+      "left": "C:\\Users\\Usuario\\Documents\\GitHub\\Clasificador_PFI\\SpaPhish_Master_Final_v3.csv",
+      "right": "C:\\Users\\Usuario\\Documents\\GitHub\\Clasificador_PFI\\SpaPhish_Master_Final.csv",
+      "shared_normalized_messages": 6140,
+      "shared_messages_with_different_labels": 0
+    },
+    {
+      "left": "C:\\Users\\Usuario\\Documents\\GitHub\\Clasificador_PFI\\SpaPhish_Master_Final_v3.csv",
+      "right": "C:\\Users\\Usuario\\Documents\\PhishARG - Datasets respaldo PFI\\01_Hybrid_XAI\\training.csv",
+      "shared_normalized_messages": 6059,
+      "shared_messages_with_different_labels": 0
+    },
+    {
+      "left": "C:\\Users\\Usuario\\Documents\\GitHub\\Clasificador_PFI\\SpaPhish_Master_Final_v3.csv",
+      "right": "C:\\Users\\Usuario\\Documents\\PhishARG - Datasets respaldo PFI\\01_Hybrid_XAI\\corpus_curado_11073.csv",
+      "shared_normalized_messages": 6033,
+      "shared_messages_with_different_labels": 0
+    },
+    {
+      "left": "C:\\Users\\Usuario\\Documents\\GitHub\\Clasificador_PFI\\SpaPhish_Master_Final_v4.csv",
+      "right": "C:\\Users\\Usuario\\Documents\\GitHub\\Clasificador_PFI\\SpaPhish_Master_Final_v5.csv",
+      "shared_normalized_messages": 7093,
+      "shared_messages_with_different_labels": 0
+    },
+    {
+      "left": "C:\\Users\\Usuario\\Documents\\GitHub\\Clasificador_PFI\\SpaPhish_Master_Final_v4.csv",
+      "right": "C:\\Users\\Usuario\\Documents\\GitHub\\Clasificador_PFI\\SpaPhish_Master_Final.csv",
+      "shared_normalized_messages": 5952,
+      "shared_messages_with_different_labels": 0
+    },
+    {
+      "left": "C:\\Users\\Usuario\\Documents\\GitHub\\Clasificador_PFI\\SpaPhish_Master_Final_v4.csv",
+      "right": "C:\\Users\\Usuario\\Documents\\PhishARG - Datasets respaldo PFI\\01_Hybrid_XAI\\training.csv",
+      "shared_normalized_messages": 7089,
+      "shared_messages_with_different_labels": 0
+    },
+    {
+      "left": "C:\\Users\\Usuario\\Documents\\GitHub\\Clasificador_PFI\\SpaPhish_Master_Final_v4.csv",
+      "right": "C:\\Users\\Usuario\\Documents\\PhishARG - Datasets respaldo PFI\\01_Hybrid_XAI\\corpus_curado_11073.csv",
+      "shared_normalized_messages": 7063,
+      "shared_messages_with_different_labels": 0
+    },
+    {
+      "left": "C:\\Users\\Usuario\\Documents\\GitHub\\Clasificador_PFI\\SpaPhish_Master_Final_v5.csv",
+      "right": "C:\\Users\\Usuario\\Documents\\GitHub\\Clasificador_PFI\\SpaPhish_Master_Final.csv",
+      "shared_normalized_messages": 5952,
+      "shared_messages_with_different_labels": 0
+    },
+    {
+      "left": "C:\\Users\\Usuario\\Documents\\GitHub\\Clasificador_PFI\\SpaPhish_Master_Final_v5.csv",
+      "right": "C:\\Users\\Usuario\\Documents\\PhishARG - Datasets respaldo PFI\\01_Hybrid_XAI\\training.csv",
+      "shared_normalized_messages": 7090,
+      "shared_messages_with_different_labels": 0
+    },
+    {
+      "left": "C:\\Users\\Usuario\\Documents\\GitHub\\Clasificador_PFI\\SpaPhish_Master_Final_v5.csv",
+      "right": "C:\\Users\\Usuario\\Documents\\PhishARG - Datasets respaldo PFI\\01_Hybrid_XAI\\corpus_curado_11073.csv",
+      "shared_normalized_messages": 7064,
+      "shared_messages_with_different_labels": 0
+    },
+    {
+      "left": "C:\\Users\\Usuario\\Documents\\GitHub\\Clasificador_PFI\\SpaPhish_Master_Final.csv",
+      "right": "C:\\Users\\Usuario\\Documents\\PhishARG - Datasets respaldo PFI\\01_Hybrid_XAI\\training.csv",
+      "shared_normalized_messages": 5950,
+      "shared_messages_with_different_labels": 0
+    },
+    {
+      "left": "C:\\Users\\Usuario\\Documents\\GitHub\\Clasificador_PFI\\SpaPhish_Master_Final.csv",
+      "right": "C:\\Users\\Usuario\\Documents\\PhishARG - Datasets respaldo PFI\\01_Hybrid_XAI\\corpus_curado_11073.csv",
+      "shared_normalized_messages": 5924,
+      "shared_messages_with_different_labels": 0
+    },
+    {
+      "left": "C:\\Users\\Usuario\\Documents\\PhishARG - Datasets respaldo PFI\\01_Hybrid_XAI\\training.csv",
+      "right": "C:\\Users\\Usuario\\Documents\\PhishARG - Datasets respaldo PFI\\01_Hybrid_XAI\\corpus_curado_11073.csv",
+      "shared_normalized_messages": 11073,
+      "shared_messages_with_different_labels": 0
+    },
+    {
+      "left": "C:\\Users\\Usuario\\Documents\\PhishARG - Datasets respaldo PFI\\01_Hybrid_XAI\\training.csv",
+      "right": "C:\\Users\\Usuario\\Documents\\GitHub\\Clasificador_PFI\\DataSet_Kaggle_Original.zip!Enron.csv/Enron.csv",
+      "shared_normalized_messages": 997,
+      "shared_messages_with_different_labels": 0
+    },
+    {
+      "left": "C:\\Users\\Usuario\\Documents\\PhishARG - Datasets respaldo PFI\\01_Hybrid_XAI\\training.csv",
+      "right": "C:\\Users\\Usuario\\Documents\\GitHub\\Clasificador_PFI\\DataSet_Kaggle_Original.zip!Nazario.csv/Nazario.csv",
+      "shared_normalized_messages": 994,
+      "shared_messages_with_different_labels": 0
+    },
+    {
+      "left": "C:\\Users\\Usuario\\Documents\\PhishARG - Datasets respaldo PFI\\01_Hybrid_XAI\\training.csv",
+      "right": "C:\\Users\\Usuario\\Documents\\GitHub\\Clasificador_PFI\\DataSet_Kaggle_Original.zip!Nigerian_Fraud.csv/Nigerian_Fraud.csv",
+      "shared_normalized_messages": 998,
+      "shared_messages_with_different_labels": 0
+    },
+    {
+      "left": "C:\\Users\\Usuario\\Documents\\PhishARG - Datasets respaldo PFI\\01_Hybrid_XAI\\training.csv",
+      "right": "C:\\Users\\Usuario\\Documents\\GitHub\\Clasificador_PFI\\DataSet_Kaggle_Original.zip!phishing_email.csv/phishing_email.csv",
+      "shared_normalized_messages": 1,
+      "shared_messages_with_different_labels": 0
+    },
+    {
+      "left": "C:\\Users\\Usuario\\Documents\\PhishARG - Datasets respaldo PFI\\01_Hybrid_XAI\\training.csv",
+      "right": "C:\\Users\\Usuario\\Documents\\GitHub\\Clasificador_PFI\\DataSet_Kaggle_Original.zip!SpamAssasin.csv/SpamAssasin.csv",
+      "shared_normalized_messages": 1000,
+      "shared_messages_with_different_labels": 0
+    },
+    {
+      "left": "C:\\Users\\Usuario\\Documents\\PhishARG - Datasets respaldo PFI\\01_Hybrid_XAI\\corpus_curado_11073.csv",
+      "right": "C:\\Users\\Usuario\\Documents\\GitHub\\Clasificador_PFI\\DataSet_Kaggle_Original.zip!Enron.csv/Enron.csv",
+      "shared_normalized_messages": 997,
+      "shared_messages_with_different_labels": 0
+    },
+    {
+      "left": "C:\\Users\\Usuario\\Documents\\PhishARG - Datasets respaldo PFI\\01_Hybrid_XAI\\corpus_curado_11073.csv",
+      "right": "C:\\Users\\Usuario\\Documents\\GitHub\\Clasificador_PFI\\DataSet_Kaggle_Original.zip!Nazario.csv/Nazario.csv",
+      "shared_normalized_messages": 990,
+      "shared_messages_with_different_labels": 0
+    },
+    {
+      "left": "C:\\Users\\Usuario\\Documents\\PhishARG - Datasets respaldo PFI\\01_Hybrid_XAI\\corpus_curado_11073.csv",
+      "right": "C:\\Users\\Usuario\\Documents\\GitHub\\Clasificador_PFI\\DataSet_Kaggle_Original.zip!Nigerian_Fraud.csv/Nigerian_Fraud.csv",
+      "shared_normalized_messages": 998,
+      "shared_messages_with_different_labels": 0
+    },
+    {
+      "left": "C:\\Users\\Usuario\\Documents\\PhishARG - Datasets respaldo PFI\\01_Hybrid_XAI\\corpus_curado_11073.csv",
+      "right": "C:\\Users\\Usuario\\Documents\\GitHub\\Clasificador_PFI\\DataSet_Kaggle_Original.zip!phishing_email.csv/phishing_email.csv",
+      "shared_normalized_messages": 1,
+      "shared_messages_with_different_labels": 0
+    },
+    {
+      "left": "C:\\Users\\Usuario\\Documents\\PhishARG - Datasets respaldo PFI\\01_Hybrid_XAI\\corpus_curado_11073.csv",
+      "right": "C:\\Users\\Usuario\\Documents\\GitHub\\Clasificador_PFI\\DataSet_Kaggle_Original.zip!SpamAssasin.csv/SpamAssasin.csv",
+      "shared_normalized_messages": 1000,
+      "shared_messages_with_different_labels": 0
+    },
+    {
+      "left": "C:\\Users\\Usuario\\Documents\\GitHub\\Clasificador_PFI\\DataSet_Kaggle_Original.zip!Enron.csv/Enron.csv",
+      "right": "C:\\Users\\Usuario\\Documents\\GitHub\\Clasificador_PFI\\DataSet_Kaggle_Original.zip!phishing_email.csv/phishing_email.csv",
+      "shared_normalized_messages": 23,
+      "shared_messages_with_different_labels": 0
+    },
+    {
+      "left": "C:\\Users\\Usuario\\Documents\\GitHub\\Clasificador_PFI\\DataSet_Kaggle_Original.zip!Enron.csv/Enron.csv",
+      "right": "C:\\Users\\Usuario\\Documents\\GitHub\\Clasificador_PFI\\DataSet_Kaggle_Original.zip!SpamAssasin.csv/SpamAssasin.csv",
+      "shared_normalized_messages": 2,
+      "shared_messages_with_different_labels": 0
+    }
+  ]
+}

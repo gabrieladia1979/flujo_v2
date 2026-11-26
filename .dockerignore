@@ -7,7 +7,8 @@ __pycache__/
 .pytest_cache/
 .coverage
 reports/
-data/
+data/*
+!data/argentine_banks.json
 model/*.gguf
 model/*.bin
 model/*.safetensors
@@ -19,3 +20,6 @@ README.md
 
 # Keep local ML environments out of the deployment image.
 .venv*/
+
+artifacts/
+model/*.pkl

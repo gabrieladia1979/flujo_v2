@@ -1,0 +1,2652 @@
+{
+  "dataset_path": "C:\\Users\\Usuario\\Documents\\PhishARG - Datasets respaldo PFI\\01_Hybrid_XAI\\corpus_curado_11073.csv",
+  "dataset_sha256": "af0bd1250ebb8861675accbfd727d1770b259da6c2e6d8d330ee4054204ba57f",
+  "model_sha256": "fa7cf7c1fbe8d217a7199f824413305bfcb0e61cacb800451382925c0b5cf2a8",
+  "partition": "test",
+  "seed": 42,
+  "max_per_source_label": 40,
+  "selected": 246,
+  "scored": 246,
+  "errors": [],
+  "threshold": 0.8,
+  "production_probability_index": 0,
+  "runtime_versions": {
+    "numpy": "2.4.6",
+    "scikit-learn": "1.9.1",
+    "spacy": "3.8.18",
+    "xgboost": "2.0.3"
+  },
+  "metrics": {
+    "raw": {
+      "count": 246,
+      "confusion_matrix": {
+        "true_positive": 37,
+        "true_negative": 108,
+        "false_positive": 14,
+        "false_negative": 87
+      },
+      "precision_phishing": 0.7254901960784313,
+      "recall_phishing": 0.29838709677419356,
+      "f1_phishing": 0.4228571428571429,
+      "pr_auc": 0.6781835645729208,
+      "roc_auc": 0.6511105235325225,
+      "false_positive_rate": 0.11475409836065574,
+      "false_negative_rate": 0.7016129032258065,
+      "brier_score": 0.3644758642991138
+    },
+    "final": {
+      "count": 246,
+      "confusion_matrix": {
+        "true_positive": 40,
+        "true_negative": 108,
+        "false_positive": 14,
+        "false_negative": 84
+      },
+      "precision_phishing": 0.7407407407407407,
+      "recall_phishing": 0.3225806451612903,
+      "f1_phishing": 0.449438202247191,
+      "pr_auc": 0.6865905095916058,
+      "roc_auc": 0.6612903225806451,
+      "false_positive_rate": 0.11475409836065574,
+      "false_negative_rate": 0.6774193548387096,
+      "brier_score": 0.3526438374268067
+    },
+    "inverse_raw_diagnostic_only": {
+      "count": 246,
+      "confusion_matrix": {
+        "true_positive": 77,
+        "true_negative": 16,
+        "false_positive": 106,
+        "false_negative": 47
+      },
+      "precision_phishing": 0.4207650273224044,
+      "recall_phishing": 0.6209677419354839,
+      "f1_phishing": 0.501628664495114,
+      "pr_auc": 0.40763318389177533,
+      "roc_auc": 0.34888947646747753,
+      "false_positive_rate": 0.8688524590163934,
+      "false_negative_rate": 0.3790322580645161,
+      "brier_score": 0.5776530040213319
+    }
+  },
+  "by_source": {
+    "Enron.csv": {
+      "count": 40,
+      "confusion_matrix": {
+        "true_positive": 0,
+        "true_negative": 40,
+        "false_positive": 0,
+        "false_negative": 0
+      },
+      "precision_phishing": null,
+      "recall_phishing": null,
+      "f1_phishing": null,
+      "pr_auc": null,
+      "roc_auc": null,
+      "false_positive_rate": 0.0,
+      "false_negative_rate": null,
+      "brier_score": 0.00018705221190754004
+    },
+    "Nazario.csv": {
+      "count": 40,
+      "confusion_matrix": {
+        "true_positive": 2,
+        "true_negative": 0,
+        "false_positive": 0,
+        "false_negative": 38
+      },
+      "precision_phishing": 1.0,
+      "recall_phishing": 0.05,
+      "f1_phishing": 0.09523809523809523,
+      "pr_auc": 1.0000000000000004,
+      "roc_auc": null,
+      "false_positive_rate": null,
+      "false_negative_rate": 0.95,
+      "brier_score": 0.9194174035018005
+    },
+    "Nigerian_Fraud.csv": {
+      "count": 40,
+      "confusion_matrix": {
+        "true_positive": 8,
+        "true_negative": 0,
+        "false_positive": 0,
+        "false_negative": 32
+      },
+      "precision_phishing": 1.0,
+      "recall_phishing": 0.2,
+      "f1_phishing": 0.33333333333333337,
+      "pr_auc": 1.0000000000000004,
+      "roc_auc": null,
+      "false_positive_rate": null,
+      "false_negative_rate": 0.8,
+      "brier_score": 0.775651562707035
+    },
+    "SpaPhish_Master_Final_v5.csv": {
+      "count": 80,
+      "confusion_matrix": {
+        "true_positive": 28,
+        "true_negative": 39,
+        "false_positive": 1,
+        "false_negative": 12
+      },
+      "precision_phishing": 0.9655172413793104,
+      "recall_phishing": 0.7,
+      "f1_phishing": 0.8115942028985508,
+      "pr_auc": 0.983957019297302,
+      "roc_auc": 0.985625,
+      "false_positive_rate": 0.025,
+      "false_negative_rate": 0.3,
+      "brier_score": 0.056065295963566755
+    },
+    "SpamAssasin.csv": {
+      "count": 40,
+      "confusion_matrix": {
+        "true_positive": 0,
+        "true_negative": 27,
+        "false_positive": 13,
+        "false_negative": 0
+      },
+      "precision_phishing": 0.0,
+      "recall_phishing": null,
+      "f1_phishing": null,
+      "pr_auc": null,
+      "roc_auc": null,
+      "false_positive_rate": 0.325,
+      "false_negative_rate": null,
+      "brier_score": 0.31300416581081675
+    },
+    "curated_contrastive_v3": {
+      "count": 6,
+      "confusion_matrix": {
+        "true_positive": 2,
+        "true_negative": 2,
+        "false_positive": 0,
+        "false_negative": 2
+      },
+      "precision_phishing": 1.0,
+      "recall_phishing": 0.5,
+      "f1_phishing": 0.6666666666666666,
+      "pr_auc": 1.0,
+      "roc_auc": 1.0,
+      "false_positive_rate": 0.0,
+      "false_negative_rate": 0.5,
+      "brier_score": 0.3224588267744568
+    }
+  },
+  "rows": [
+    {
+      "id": "row-19",
+      "source": "SpaPhish_Master_Final_v5.csv",
+      "label": "phishing",
+      "raw_score": 0.9602625773351463,
+      "inverse_raw_score": 0.039737422664853694,
+      "final_score": 0.9602625773351463,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-32",
+      "source": "SpaPhish_Master_Final_v5.csv",
+      "label": "legitimate",
+      "raw_score": 0.013296048396799265,
+      "inverse_raw_score": 0.9867039516032008,
+      "final_score": 0.013296048396799265,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-58",
+      "source": "SpaPhish_Master_Final_v5.csv",
+      "label": "legitimate",
+      "raw_score": 0.012972794601035786,
+      "inverse_raw_score": 0.9870272053989642,
+      "final_score": 0.012972794601035786,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-241",
+      "source": "SpaPhish_Master_Final_v5.csv",
+      "label": "phishing",
+      "raw_score": 0.5958713684626309,
+      "inverse_raw_score": 0.4041286315373691,
+      "final_score": 0.5958713684626309,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-261",
+      "source": "SpaPhish_Master_Final_v5.csv",
+      "label": "legitimate",
+      "raw_score": 0.012727304333756517,
+      "inverse_raw_score": 0.9872726956662434,
+      "final_score": 0.012727304333756517,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-365",
+      "source": "SpaPhish_Master_Final_v5.csv",
+      "label": "legitimate",
+      "raw_score": 0.013084060553563093,
+      "inverse_raw_score": 0.9869159394464369,
+      "final_score": 0.013084060553563093,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-600",
+      "source": "SpaPhish_Master_Final_v5.csv",
+      "label": "legitimate",
+      "raw_score": 0.012880281839104779,
+      "inverse_raw_score": 0.9871197181608953,
+      "final_score": 0.012880281839104779,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-675",
+      "source": "SpaPhish_Master_Final_v5.csv",
+      "label": "phishing",
+      "raw_score": 0.8520965566680392,
+      "inverse_raw_score": 0.14790344333196082,
+      "final_score": 0.8520965566680392,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-750",
+      "source": "SpaPhish_Master_Final_v5.csv",
+      "label": "phishing",
+      "raw_score": 0.9869421363338533,
+      "inverse_raw_score": 0.013057863666146696,
+      "final_score": 0.9869421363338533,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-765",
+      "source": "SpaPhish_Master_Final_v5.csv",
+      "label": "legitimate",
+      "raw_score": 0.012925095083331006,
+      "inverse_raw_score": 0.9870749049166689,
+      "final_score": 0.012925095083331006,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-771",
+      "source": "SpaPhish_Master_Final_v5.csv",
+      "label": "legitimate",
+      "raw_score": 0.012948473105514502,
+      "inverse_raw_score": 0.9870515268944855,
+      "final_score": 0.012948473105514502,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-800",
+      "source": "SpaPhish_Master_Final_v5.csv",
+      "label": "legitimate",
+      "raw_score": 0.01958717795018816,
+      "inverse_raw_score": 0.9804128220498118,
+      "final_score": 0.01958717795018816,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-845",
+      "source": "SpaPhish_Master_Final_v5.csv",
+      "label": "phishing",
+      "raw_score": 0.9537011021170617,
+      "inverse_raw_score": 0.046298897882938284,
+      "final_score": 0.9537011021170617,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-904",
+      "source": "SpaPhish_Master_Final_v5.csv",
+      "label": "phishing",
+      "raw_score": 0.9869448082858882,
+      "inverse_raw_score": 0.013055191714111847,
+      "final_score": 0.9869448082858882,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-1080",
+      "source": "SpaPhish_Master_Final_v5.csv",
+      "label": "legitimate",
+      "raw_score": 0.012730962714616378,
+      "inverse_raw_score": 0.9872690372853836,
+      "final_score": 0.012730962714616378,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-1092",
+      "source": "SpaPhish_Master_Final_v5.csv",
+      "label": "legitimate",
+      "raw_score": 0.014614071416825136,
+      "inverse_raw_score": 0.9853859285831749,
+      "final_score": 0.014614071416825136,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-1099",
+      "source": "SpaPhish_Master_Final_v5.csv",
+      "label": "legitimate",
+      "raw_score": 0.3199774610679898,
+      "inverse_raw_score": 0.6800225389320103,
+      "final_score": 0.3199774610679898,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-1236",
+      "source": "SpaPhish_Master_Final_v5.csv",
+      "label": "phishing",
+      "raw_score": 0.4468212600555152,
+      "inverse_raw_score": 0.5531787399444847,
+      "final_score": 0.4468212600555152,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-1306",
+      "source": "SpaPhish_Master_Final_v5.csv",
+      "label": "phishing",
+      "raw_score": 0.7755832614796634,
+      "inverse_raw_score": 0.2244167385203366,
+      "final_score": 0.7755832614796634,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-1422",
+      "source": "SpaPhish_Master_Final_v5.csv",
+      "label": "phishing",
+      "raw_score": 0.9705883728146762,
+      "inverse_raw_score": 0.029411627185323752,
+      "final_score": 0.9705883728146762,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-1449",
+      "source": "SpaPhish_Master_Final_v5.csv",
+      "label": "phishing",
+      "raw_score": 0.9869447655770304,
+      "inverse_raw_score": 0.01305523442296963,
+      "final_score": 0.9869447655770304,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-1783",
+      "source": "SpaPhish_Master_Final_v5.csv",
+      "label": "phishing",
+      "raw_score": 0.6642845745905607,
+      "inverse_raw_score": 0.3357154254094393,
+      "final_score": 0.6642845745905607,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-1854",
+      "source": "SpaPhish_Master_Final_v5.csv",
+      "label": "phishing",
+      "raw_score": 0.9868697841680283,
+      "inverse_raw_score": 0.013130215831971714,
+      "final_score": 0.9868697841680283,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-1903",
+      "source": "SpaPhish_Master_Final_v5.csv",
+      "label": "legitimate",
+      "raw_score": 0.012735892573995322,
+      "inverse_raw_score": 0.9872641074260047,
+      "final_score": 0.012735892573995322,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-1922",
+      "source": "SpaPhish_Master_Final_v5.csv",
+      "label": "phishing",
+      "raw_score": 0.9869435764731411,
+      "inverse_raw_score": 0.013056423526858874,
+      "final_score": 0.9869435764731411,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-1960",
+      "source": "SpaPhish_Master_Final_v5.csv",
+      "label": "legitimate",
+      "raw_score": 0.013514158204911808,
+      "inverse_raw_score": 0.9864858417950881,
+      "final_score": 0.013514158204911808,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-2044",
+      "source": "SpaPhish_Master_Final_v5.csv",
+      "label": "legitimate",
+      "raw_score": 0.012893582356108269,
+      "inverse_raw_score": 0.9871064176438917,
+      "final_score": 0.012893582356108269,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-2143",
+      "source": "SpaPhish_Master_Final_v5.csv",
+      "label": "phishing",
+      "raw_score": 0.5927697055492201,
+      "inverse_raw_score": 0.40723029445077985,
+      "final_score": 0.5927697055492201,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-2289",
+      "source": "SpaPhish_Master_Final_v5.csv",
+      "label": "legitimate",
+      "raw_score": 0.013210182462377706,
+      "inverse_raw_score": 0.9867898175376223,
+      "final_score": 0.013210182462377706,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-2312",
+      "source": "SpaPhish_Master_Final_v5.csv",
+      "label": "phishing",
+      "raw_score": 0.9869448969665963,
+      "inverse_raw_score": 0.013055103033403737,
+      "final_score": 0.9869448969665963,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-2330",
+      "source": "SpaPhish_Master_Final_v5.csv",
+      "label": "phishing",
+      "raw_score": 0.9869426118864191,
+      "inverse_raw_score": 0.013057388113580926,
+      "final_score": 0.9869426118864191,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-2402",
+      "source": "SpaPhish_Master_Final_v5.csv",
+      "label": "phishing",
+      "raw_score": 0.028946420895111402,
+      "inverse_raw_score": 0.9710535791048887,
+      "final_score": 0.028946420895111402,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-2655",
+      "source": "SpaPhish_Master_Final_v5.csv",
+      "label": "phishing",
+      "raw_score": 0.9869448674504653,
+      "inverse_raw_score": 0.01305513254953472,
+      "final_score": 0.9869448674504653,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-2668",
+      "source": "SpaPhish_Master_Final_v5.csv",
+      "label": "phishing",
+      "raw_score": 0.9869448135897976,
+      "inverse_raw_score": 0.013055186410202424,
+      "final_score": 0.9869448135897976,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-2775",
+      "source": "SpaPhish_Master_Final_v5.csv",
+      "label": "legitimate",
+      "raw_score": 0.05846118845145254,
+      "inverse_raw_score": 0.9415388115485475,
+      "final_score": 0.05846118845145254,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-2933",
+      "source": "SpaPhish_Master_Final_v5.csv",
+      "label": "phishing",
+      "raw_score": 0.7939817510061374,
+      "inverse_raw_score": 0.20601824899386256,
+      "final_score": 0.7939817510061374,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-3150",
+      "source": "SpaPhish_Master_Final_v5.csv",
+      "label": "legitimate",
+      "raw_score": 0.013152064397113528,
+      "inverse_raw_score": 0.9868479356028865,
+      "final_score": 0.013152064397113528,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-3206",
+      "source": "SpaPhish_Master_Final_v5.csv",
+      "label": "legitimate",
+      "raw_score": 0.012756208557189286,
+      "inverse_raw_score": 0.9872437914428107,
+      "final_score": 0.012756208557189286,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-3458",
+      "source": "SpaPhish_Master_Final_v5.csv",
+      "label": "legitimate",
+      "raw_score": 0.01280028123724608,
+      "inverse_raw_score": 0.9871997187627539,
+      "final_score": 0.01280028123724608,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-3465",
+      "source": "SpaPhish_Master_Final_v5.csv",
+      "label": "phishing",
+      "raw_score": 0.8351612922330363,
+      "inverse_raw_score": 0.16483870776696374,
+      "final_score": 0.8351612922330363,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-3568",
+      "source": "SpaPhish_Master_Final_v5.csv",
+      "label": "phishing",
+      "raw_score": 0.969650751771898,
+      "inverse_raw_score": 0.030349248228102033,
+      "final_score": 0.969650751771898,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-3598",
+      "source": "SpaPhish_Master_Final_v5.csv",
+      "label": "phishing",
+      "raw_score": 0.986921198900361,
+      "inverse_raw_score": 0.013078801099638993,
+      "final_score": 0.986921198900361,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-3610",
+      "source": "SpaPhish_Master_Final_v5.csv",
+      "label": "legitimate",
+      "raw_score": 0.013165600551217738,
+      "inverse_raw_score": 0.9868343994487823,
+      "final_score": 0.013165600551217738,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-3748",
+      "source": "SpaPhish_Master_Final_v5.csv",
+      "label": "phishing",
+      "raw_score": 0.9741798964281634,
+      "inverse_raw_score": 0.025820103571836617,
+      "final_score": 0.9741798964281634,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-3773",
+      "source": "SpaPhish_Master_Final_v5.csv",
+      "label": "legitimate",
+      "raw_score": 0.012785502484612465,
+      "inverse_raw_score": 0.9872144975153876,
+      "final_score": 0.012785502484612465,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-3919",
+      "source": "SpaPhish_Master_Final_v5.csv",
+      "label": "legitimate",
+      "raw_score": 0.012962204622106177,
+      "inverse_raw_score": 0.9870377953778938,
+      "final_score": 0.012962204622106177,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-4122",
+      "source": "SpaPhish_Master_Final_v5.csv",
+      "label": "phishing",
+      "raw_score": 0.8884370960302601,
+      "inverse_raw_score": 0.11156290396973989,
+      "final_score": 0.8884370960302601,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-4192",
+      "source": "SpaPhish_Master_Final_v5.csv",
+      "label": "legitimate",
+      "raw_score": 0.012770955159370656,
+      "inverse_raw_score": 0.9872290448406293,
+      "final_score": 0.012770955159370656,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-4210",
+      "source": "SpaPhish_Master_Final_v5.csv",
+      "label": "legitimate",
+      "raw_score": 0.01595478299024805,
+      "inverse_raw_score": 0.984045217009752,
+      "final_score": 0.01595478299024805,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-4269",
+      "source": "SpaPhish_Master_Final_v5.csv",
+      "label": "legitimate",
+      "raw_score": 0.017953055902293513,
+      "inverse_raw_score": 0.9820469440977064,
+      "final_score": 0.017953055902293513,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-4315",
+      "source": "SpaPhish_Master_Final_v5.csv",
+      "label": "phishing",
+      "raw_score": 0.9595680187738089,
+      "inverse_raw_score": 0.04043198122619107,
+      "final_score": 0.9595680187738089,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-4400",
+      "source": "SpaPhish_Master_Final_v5.csv",
+      "label": "legitimate",
+      "raw_score": 0.013499385285256682,
+      "inverse_raw_score": 0.9865006147147433,
+      "final_score": 0.013499385285256682,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-4441",
+      "source": "SpaPhish_Master_Final_v5.csv",
+      "label": "legitimate",
+      "raw_score": 0.9061756789791411,
+      "inverse_raw_score": 0.09382432102085891,
+      "final_score": 0.9061756789791411,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-4633",
+      "source": "SpaPhish_Master_Final_v5.csv",
+      "label": "legitimate",
+      "raw_score": 0.012853512219725804,
+      "inverse_raw_score": 0.9871464877802743,
+      "final_score": 0.012853512219725804,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-4705",
+      "source": "SpaPhish_Master_Final_v5.csv",
+      "label": "phishing",
+      "raw_score": 0.9869447813564894,
+      "inverse_raw_score": 0.013055218643510558,
+      "final_score": 0.9869447813564894,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-4983",
+      "source": "SpaPhish_Master_Final_v5.csv",
+      "label": "phishing",
+      "raw_score": 0.9869448271925683,
+      "inverse_raw_score": 0.013055172807431736,
+      "final_score": 0.9869448271925683,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-5092",
+      "source": "SpaPhish_Master_Final_v5.csv",
+      "label": "legitimate",
+      "raw_score": 0.012745759388205047,
+      "inverse_raw_score": 0.987254240611795,
+      "final_score": 0.012745759388205047,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-5180",
+      "source": "SpaPhish_Master_Final_v5.csv",
+      "label": "phishing",
+      "raw_score": 0.986943543167288,
+      "inverse_raw_score": 0.013056456832711949,
+      "final_score": 0.986943543167288,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-5328",
+      "source": "SpaPhish_Master_Final_v5.csv",
+      "label": "legitimate",
+      "raw_score": 0.013438673938593715,
+      "inverse_raw_score": 0.9865613260614063,
+      "final_score": 0.013438673938593715,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-5433",
+      "source": "SpaPhish_Master_Final_v5.csv",
+      "label": "legitimate",
+      "raw_score": 0.014159041982627074,
+      "inverse_raw_score": 0.9858409580173729,
+      "final_score": 0.014159041982627074,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-5597",
+      "source": "SpaPhish_Master_Final_v5.csv",
+      "label": "phishing",
+      "raw_score": 0.0929255647411642,
+      "inverse_raw_score": 0.9070744352588358,
+      "final_score": 0.0929255647411642,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-5681",
+      "source": "SpaPhish_Master_Final_v5.csv",
+      "label": "legitimate",
+      "raw_score": 0.013108514940466554,
+      "inverse_raw_score": 0.9868914850595334,
+      "final_score": 0.013108514940466554,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-5687",
+      "source": "SpaPhish_Master_Final_v5.csv",
+      "label": "legitimate",
+      "raw_score": 0.012772013007577743,
+      "inverse_raw_score": 0.9872279869924223,
+      "final_score": 0.012772013007577743,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-5745",
+      "source": "SpaPhish_Master_Final_v5.csv",
+      "label": "phishing",
+      "raw_score": 0.9869391249404417,
+      "inverse_raw_score": 0.01306087505955833,
+      "final_score": 0.9869391249404417,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-5768",
+      "source": "SpaPhish_Master_Final_v5.csv",
+      "label": "phishing",
+      "raw_score": 0.7957003871440187,
+      "inverse_raw_score": 0.2042996128559813,
+      "final_score": 0.7957003871440187,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-5984",
+      "source": "SpaPhish_Master_Final_v5.csv",
+      "label": "phishing",
+      "raw_score": 0.9103513541156079,
+      "inverse_raw_score": 0.08964864588439214,
+      "final_score": 0.9103513541156079,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-6097",
+      "source": "SpaPhish_Master_Final_v5.csv",
+      "label": "legitimate",
+      "raw_score": 0.1167681309645186,
+      "inverse_raw_score": 0.8832318690354815,
+      "final_score": 0.1167681309645186,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-6112",
+      "source": "SpaPhish_Master_Final_v5.csv",
+      "label": "legitimate",
+      "raw_score": 0.012826068390485001,
+      "inverse_raw_score": 0.9871739316095149,
+      "final_score": 0.012826068390485001,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-6199",
+      "source": "SpaPhish_Master_Final_v5.csv",
+      "label": "phishing",
+      "raw_score": 0.8710197588637135,
+      "inverse_raw_score": 0.12898024113628648,
+      "final_score": 0.8710197588637135,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-6245",
+      "source": "SpaPhish_Master_Final_v5.csv",
+      "label": "phishing",
+      "raw_score": 0.5339516972319254,
+      "inverse_raw_score": 0.46604830276807463,
+      "final_score": 0.5339516972319254,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-6252",
+      "source": "SpaPhish_Master_Final_v5.csv",
+      "label": "phishing",
+      "raw_score": 0.49308336308595746,
+      "inverse_raw_score": 0.5069166369140425,
+      "final_score": 0.49308336308595746,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-6300",
+      "source": "SpaPhish_Master_Final_v5.csv",
+      "label": "phishing",
+      "raw_score": 0.9789612306648785,
+      "inverse_raw_score": 0.0210387693351215,
+      "final_score": 0.9789612306648785,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-6374",
+      "source": "SpaPhish_Master_Final_v5.csv",
+      "label": "phishing",
+      "raw_score": 0.9805778662890641,
+      "inverse_raw_score": 0.01942213371093593,
+      "final_score": 0.9805778662890641,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-6409",
+      "source": "SpaPhish_Master_Final_v5.csv",
+      "label": "legitimate",
+      "raw_score": 0.012791849619772921,
+      "inverse_raw_score": 0.987208150380227,
+      "final_score": 0.012791849619772921,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-6435",
+      "source": "SpaPhish_Master_Final_v5.csv",
+      "label": "legitimate",
+      "raw_score": 0.013719622627886785,
+      "inverse_raw_score": 0.9862803773721132,
+      "final_score": 0.013719622627886785,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-6501",
+      "source": "SpaPhish_Master_Final_v5.csv",
+      "label": "legitimate",
+      "raw_score": 0.0128712327104199,
+      "inverse_raw_score": 0.9871287672895801,
+      "final_score": 0.0128712327104199,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-6522",
+      "source": "SpaPhish_Master_Final_v5.csv",
+      "label": "phishing",
+      "raw_score": 0.649035271413695,
+      "inverse_raw_score": 0.350964728586305,
+      "final_score": 0.649035271413695,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-6535",
+      "source": "SpaPhish_Master_Final_v5.csv",
+      "label": "legitimate",
+      "raw_score": 0.4419880017943883,
+      "inverse_raw_score": 0.5580119982056118,
+      "final_score": 0.4419880017943883,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-6891",
+      "source": "SpaPhish_Master_Final_v5.csv",
+      "label": "legitimate",
+      "raw_score": 0.012742717374438495,
+      "inverse_raw_score": 0.9872572826255614,
+      "final_score": 0.012742717374438495,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-7000",
+      "source": "SpaPhish_Master_Final_v5.csv",
+      "label": "phishing",
+      "raw_score": 0.986945225697706,
+      "inverse_raw_score": 0.013054774302293959,
+      "final_score": 0.986945225697706,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-7095",
+      "source": "Enron.csv",
+      "label": "legitimate",
+      "raw_score": 0.013652147706902484,
+      "inverse_raw_score": 0.9863478522930975,
+      "final_score": 0.013652147706902484,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-7120",
+      "source": "Enron.csv",
+      "label": "legitimate",
+      "raw_score": 0.01312212409051533,
+      "inverse_raw_score": 0.9868778759094847,
+      "final_score": 0.01312212409051533,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-7127",
+      "source": "Enron.csv",
+      "label": "legitimate",
+      "raw_score": 0.013417068075621152,
+      "inverse_raw_score": 0.9865829319243788,
+      "final_score": 0.013417068075621152,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-7129",
+      "source": "Enron.csv",
+      "label": "legitimate",
+      "raw_score": 0.012973058292089668,
+      "inverse_raw_score": 0.9870269417079103,
+      "final_score": 0.012973058292089668,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-7249",
+      "source": "Enron.csv",
+      "label": "legitimate",
+      "raw_score": 0.013435592575353927,
+      "inverse_raw_score": 0.986564407424646,
+      "final_score": 0.013435592575353927,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-7261",
+      "source": "Enron.csv",
+      "label": "legitimate",
+      "raw_score": 0.013417068075621152,
+      "inverse_raw_score": 0.9865829319243788,
+      "final_score": 0.013417068075621152,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-7278",
+      "source": "Enron.csv",
+      "label": "legitimate",
+      "raw_score": 0.013051505117960827,
+      "inverse_raw_score": 0.9869484948820392,
+      "final_score": 0.013051505117960827,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-7287",
+      "source": "Enron.csv",
+      "label": "legitimate",
+      "raw_score": 0.013425626341216745,
+      "inverse_raw_score": 0.9865743736587833,
+      "final_score": 0.013425626341216745,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-7324",
+      "source": "Enron.csv",
+      "label": "legitimate",
+      "raw_score": 0.013059339361451816,
+      "inverse_raw_score": 0.9869406606385482,
+      "final_score": 0.013059339361451816,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-7338",
+      "source": "Enron.csv",
+      "label": "legitimate",
+      "raw_score": 0.013387484400835037,
+      "inverse_raw_score": 0.986612515599165,
+      "final_score": 0.013387484400835037,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-7343",
+      "source": "Enron.csv",
+      "label": "legitimate",
+      "raw_score": 0.015624080128827655,
+      "inverse_raw_score": 0.9843759198711723,
+      "final_score": 0.015624080128827655,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-7409",
+      "source": "Enron.csv",
+      "label": "legitimate",
+      "raw_score": 0.01346497363879684,
+      "inverse_raw_score": 0.9865350263612032,
+      "final_score": 0.01346497363879684,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-7433",
+      "source": "Enron.csv",
+      "label": "legitimate",
+      "raw_score": 0.012930102743226701,
+      "inverse_raw_score": 0.9870698972567733,
+      "final_score": 0.012930102743226701,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-7435",
+      "source": "Enron.csv",
+      "label": "legitimate",
+      "raw_score": 0.013417068075621152,
+      "inverse_raw_score": 0.9865829319243788,
+      "final_score": 0.013417068075621152,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-7442",
+      "source": "Enron.csv",
+      "label": "legitimate",
+      "raw_score": 0.012936748585539004,
+      "inverse_raw_score": 0.987063251414461,
+      "final_score": 0.012936748585539004,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-7455",
+      "source": "Enron.csv",
+      "label": "legitimate",
+      "raw_score": 0.0135387219138568,
+      "inverse_raw_score": 0.9864612780861433,
+      "final_score": 0.0135387219138568,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-7466",
+      "source": "Enron.csv",
+      "label": "legitimate",
+      "raw_score": 0.012873282936342323,
+      "inverse_raw_score": 0.9871267170636577,
+      "final_score": 0.012873282936342323,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-7506",
+      "source": "Enron.csv",
+      "label": "legitimate",
+      "raw_score": 0.01958700504258909,
+      "inverse_raw_score": 0.980412994957411,
+      "final_score": 0.01958700504258909,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-7514",
+      "source": "Enron.csv",
+      "label": "legitimate",
+      "raw_score": 0.013144646382938885,
+      "inverse_raw_score": 0.9868553536170611,
+      "final_score": 0.013144646382938885,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-7622",
+      "source": "Enron.csv",
+      "label": "legitimate",
+      "raw_score": 0.017985206635435402,
+      "inverse_raw_score": 0.9820147933645647,
+      "final_score": 0.017985206635435402,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-7624",
+      "source": "Enron.csv",
+      "label": "legitimate",
+      "raw_score": 0.013417068075621152,
+      "inverse_raw_score": 0.9865829319243788,
+      "final_score": 0.013417068075621152,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-7685",
+      "source": "Enron.csv",
+      "label": "legitimate",
+      "raw_score": 0.013071433671305033,
+      "inverse_raw_score": 0.986928566328695,
+      "final_score": 0.013071433671305033,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-7756",
+      "source": "Enron.csv",
+      "label": "legitimate",
+      "raw_score": 0.013417068075621152,
+      "inverse_raw_score": 0.9865829319243788,
+      "final_score": 0.013417068075621152,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-7757",
+      "source": "Enron.csv",
+      "label": "legitimate",
+      "raw_score": 0.012919879018451985,
+      "inverse_raw_score": 0.9870801209815481,
+      "final_score": 0.012919879018451985,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-7788",
+      "source": "Enron.csv",
+      "label": "legitimate",
+      "raw_score": 0.013417068075621152,
+      "inverse_raw_score": 0.9865829319243788,
+      "final_score": 0.013417068075621152,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-7882",
+      "source": "Enron.csv",
+      "label": "legitimate",
+      "raw_score": 0.013309201236595125,
+      "inverse_raw_score": 0.9866907987634048,
+      "final_score": 0.013309201236595125,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-7920",
+      "source": "Enron.csv",
+      "label": "legitimate",
+      "raw_score": 0.01325089023788728,
+      "inverse_raw_score": 0.9867491097621127,
+      "final_score": 0.01325089023788728,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-7934",
+      "source": "Enron.csv",
+      "label": "legitimate",
+      "raw_score": 0.0135340657594199,
+      "inverse_raw_score": 0.9864659342405802,
+      "final_score": 0.0135340657594199,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-7963",
+      "source": "Enron.csv",
+      "label": "legitimate",
+      "raw_score": 0.013126091268671203,
+      "inverse_raw_score": 0.9868739087313287,
+      "final_score": 0.013126091268671203,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-7965",
+      "source": "Enron.csv",
+      "label": "legitimate",
+      "raw_score": 0.014264764545373065,
+      "inverse_raw_score": 0.9857352354546269,
+      "final_score": 0.014264764545373065,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-7973",
+      "source": "Enron.csv",
+      "label": "legitimate",
+      "raw_score": 0.012929483965421318,
+      "inverse_raw_score": 0.9870705160345787,
+      "final_score": 0.012929483965421318,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-8003",
+      "source": "Enron.csv",
+      "label": "legitimate",
+      "raw_score": 0.012990080737899923,
+      "inverse_raw_score": 0.9870099192621,
+      "final_score": 0.012990080737899923,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-8011",
+      "source": "Enron.csv",
+      "label": "legitimate",
+      "raw_score": 0.013588158670447659,
+      "inverse_raw_score": 0.9864118413295524,
+      "final_score": 0.013588158670447659,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-8038",
+      "source": "Enron.csv",
+      "label": "legitimate",
+      "raw_score": 0.013165100427807441,
+      "inverse_raw_score": 0.9868348995721925,
+      "final_score": 0.013165100427807441,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-8042",
+      "source": "Enron.csv",
+      "label": "legitimate",
+      "raw_score": 0.013268352214863,
+      "inverse_raw_score": 0.986731647785137,
+      "final_score": 0.013268352214863,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-8055",
+      "source": "Enron.csv",
+      "label": "legitimate",
+      "raw_score": 0.012958975542746942,
+      "inverse_raw_score": 0.9870410244572531,
+      "final_score": 0.012958975542746942,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-8060",
+      "source": "Enron.csv",
+      "label": "legitimate",
+      "raw_score": 0.013417068075621152,
+      "inverse_raw_score": 0.9865829319243788,
+      "final_score": 0.013417068075621152,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-8061",
+      "source": "Enron.csv",
+      "label": "legitimate",
+      "raw_score": 0.013387847870745595,
+      "inverse_raw_score": 0.9866121521292543,
+      "final_score": 0.013387847870745595,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-8064",
+      "source": "Enron.csv",
+      "label": "legitimate",
+      "raw_score": 0.013192174211139773,
+      "inverse_raw_score": 0.9868078257888602,
+      "final_score": 0.013192174211139773,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-8082",
+      "source": "Enron.csv",
+      "label": "legitimate",
+      "raw_score": 0.013592475484495825,
+      "inverse_raw_score": 0.9864075245155042,
+      "final_score": 0.013592475484495825,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-8123",
+      "source": "Nazario.csv",
+      "label": "phishing",
+      "raw_score": 0.012954689055953095,
+      "inverse_raw_score": 0.9870453109440469,
+      "final_score": 0.012954689055953095,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-8131",
+      "source": "Nazario.csv",
+      "label": "phishing",
+      "raw_score": 0.013456786073990035,
+      "inverse_raw_score": 0.98654321392601,
+      "final_score": 0.013456786073990035,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-8134",
+      "source": "Nazario.csv",
+      "label": "phishing",
+      "raw_score": 0.12433313684860764,
+      "inverse_raw_score": 0.8756668631513924,
+      "final_score": 0.12433313684860764,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-8150",
+      "source": "Nazario.csv",
+      "label": "phishing",
+      "raw_score": 0.013072454883210238,
+      "inverse_raw_score": 0.9869275451167898,
+      "final_score": 0.013072454883210238,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-8158",
+      "source": "Nazario.csv",
+      "label": "phishing",
+      "raw_score": 0.013572411756863745,
+      "inverse_raw_score": 0.9864275882431363,
+      "final_score": 0.013572411756863745,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-8166",
+      "source": "Nazario.csv",
+      "label": "phishing",
+      "raw_score": 0.013686464269566878,
+      "inverse_raw_score": 0.9863135357304331,
+      "final_score": 0.013686464269566878,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-8215",
+      "source": "Nazario.csv",
+      "label": "phishing",
+      "raw_score": 0.981498306300331,
+      "inverse_raw_score": 0.01850169369966903,
+      "final_score": 0.981498306300331,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-8244",
+      "source": "Nazario.csv",
+      "label": "phishing",
+      "raw_score": 0.016086383782078162,
+      "inverse_raw_score": 0.9839136162179218,
+      "final_score": 0.016086383782078162,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-8247",
+      "source": "Nazario.csv",
+      "label": "phishing",
+      "raw_score": 0.012968656508280663,
+      "inverse_raw_score": 0.9870313434917193,
+      "final_score": 0.012968656508280663,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-8259",
+      "source": "Nazario.csv",
+      "label": "phishing",
+      "raw_score": 0.013681132181276812,
+      "inverse_raw_score": 0.9863188678187231,
+      "final_score": 0.013681132181276812,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-8276",
+      "source": "Nazario.csv",
+      "label": "phishing",
+      "raw_score": 0.014577828088361,
+      "inverse_raw_score": 0.9854221719116389,
+      "final_score": 0.95,
+      "decision_source": "content_security_rule",
+      "content_signals": [
+        "credential_disclosure_request"
+      ]
+    },
+    {
+      "id": "row-8295",
+      "source": "Nazario.csv",
+      "label": "phishing",
+      "raw_score": 0.01307720914628746,
+      "inverse_raw_score": 0.9869227908537126,
+      "final_score": 0.01307720914628746,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-8313",
+      "source": "Nazario.csv",
+      "label": "phishing",
+      "raw_score": 0.014693228239156475,
+      "inverse_raw_score": 0.9853067717608435,
+      "final_score": 0.014693228239156475,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-8321",
+      "source": "Nazario.csv",
+      "label": "phishing",
+      "raw_score": 0.015252209251303328,
+      "inverse_raw_score": 0.9847477907486967,
+      "final_score": 0.015252209251303328,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-8409",
+      "source": "Nazario.csv",
+      "label": "phishing",
+      "raw_score": 0.013068405700498165,
+      "inverse_raw_score": 0.9869315942995018,
+      "final_score": 0.013068405700498165,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-8410",
+      "source": "Nazario.csv",
+      "label": "phishing",
+      "raw_score": 0.01309434271051213,
+      "inverse_raw_score": 0.9869056572894879,
+      "final_score": 0.01309434271051213,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-8415",
+      "source": "Nazario.csv",
+      "label": "phishing",
+      "raw_score": 0.013353302311480297,
+      "inverse_raw_score": 0.9866466976885198,
+      "final_score": 0.013353302311480297,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-8419",
+      "source": "Nazario.csv",
+      "label": "phishing",
+      "raw_score": 0.014681153809161407,
+      "inverse_raw_score": 0.9853188461908386,
+      "final_score": 0.014681153809161407,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-8420",
+      "source": "Nazario.csv",
+      "label": "phishing",
+      "raw_score": 0.012769511462644212,
+      "inverse_raw_score": 0.9872304885373557,
+      "final_score": 0.012769511462644212,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-8456",
+      "source": "Nazario.csv",
+      "label": "phishing",
+      "raw_score": 0.013103977335309935,
+      "inverse_raw_score": 0.9868960226646901,
+      "final_score": 0.013103977335309935,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-8541",
+      "source": "Nazario.csv",
+      "label": "phishing",
+      "raw_score": 0.013608634893242488,
+      "inverse_raw_score": 0.9863913651067575,
+      "final_score": 0.013608634893242488,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-8603",
+      "source": "Nazario.csv",
+      "label": "phishing",
+      "raw_score": 0.014513525724790421,
+      "inverse_raw_score": 0.9854864742752096,
+      "final_score": 0.014513525724790421,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-8645",
+      "source": "Nazario.csv",
+      "label": "phishing",
+      "raw_score": 0.013046992687811065,
+      "inverse_raw_score": 0.9869530073121889,
+      "final_score": 0.013046992687811065,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-8651",
+      "source": "Nazario.csv",
+      "label": "phishing",
+      "raw_score": 0.012882194747294462,
+      "inverse_raw_score": 0.9871178052527055,
+      "final_score": 0.012882194747294462,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-8658",
+      "source": "Nazario.csv",
+      "label": "phishing",
+      "raw_score": 0.014356729111255295,
+      "inverse_raw_score": 0.9856432708887447,
+      "final_score": 0.014356729111255295,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-8675",
+      "source": "Nazario.csv",
+      "label": "phishing",
+      "raw_score": 0.013033713519746193,
+      "inverse_raw_score": 0.9869662864802538,
+      "final_score": 0.013033713519746193,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-8677",
+      "source": "Nazario.csv",
+      "label": "phishing",
+      "raw_score": 0.013872177922430784,
+      "inverse_raw_score": 0.9861278220775692,
+      "final_score": 0.013872177922430784,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-8695",
+      "source": "Nazario.csv",
+      "label": "phishing",
+      "raw_score": 0.012811223077936085,
+      "inverse_raw_score": 0.987188776922064,
+      "final_score": 0.012811223077936085,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-8709",
+      "source": "Nazario.csv",
+      "label": "phishing",
+      "raw_score": 0.012912794911058179,
+      "inverse_raw_score": 0.9870872050889419,
+      "final_score": 0.012912794911058179,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-8712",
+      "source": "Nazario.csv",
+      "label": "phishing",
+      "raw_score": 0.013900790204593394,
+      "inverse_raw_score": 0.9860992097954067,
+      "final_score": 0.013900790204593394,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-8716",
+      "source": "Nazario.csv",
+      "label": "phishing",
+      "raw_score": 0.012988126237360287,
+      "inverse_raw_score": 0.9870118737626397,
+      "final_score": 0.012988126237360287,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-8722",
+      "source": "Nazario.csv",
+      "label": "phishing",
+      "raw_score": 0.012993146047910076,
+      "inverse_raw_score": 0.98700685395209,
+      "final_score": 0.012993146047910076,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-8756",
+      "source": "Nazario.csv",
+      "label": "phishing",
+      "raw_score": 0.012892732302556886,
+      "inverse_raw_score": 0.9871072676974431,
+      "final_score": 0.012892732302556886,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-8777",
+      "source": "Nazario.csv",
+      "label": "phishing",
+      "raw_score": 0.014190803878543379,
+      "inverse_raw_score": 0.9858091961214566,
+      "final_score": 0.014190803878543379,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-8839",
+      "source": "Nazario.csv",
+      "label": "phishing",
+      "raw_score": 0.013098374756717157,
+      "inverse_raw_score": 0.9869016252432828,
+      "final_score": 0.013098374756717157,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-8864",
+      "source": "Nazario.csv",
+      "label": "phishing",
+      "raw_score": 0.01396462151306227,
+      "inverse_raw_score": 0.9860353784869378,
+      "final_score": 0.01396462151306227,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-8880",
+      "source": "Nazario.csv",
+      "label": "phishing",
+      "raw_score": 0.01294931869232857,
+      "inverse_raw_score": 0.9870506813076714,
+      "final_score": 0.01294931869232857,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-8943",
+      "source": "Nazario.csv",
+      "label": "phishing",
+      "raw_score": 0.012980316186104568,
+      "inverse_raw_score": 0.9870196838138954,
+      "final_score": 0.012980316186104568,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-8979",
+      "source": "Nazario.csv",
+      "label": "phishing",
+      "raw_score": 0.013058141171016724,
+      "inverse_raw_score": 0.9869418588289833,
+      "final_score": 0.013058141171016724,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-9053",
+      "source": "Nazario.csv",
+      "label": "phishing",
+      "raw_score": 0.013229540145571372,
+      "inverse_raw_score": 0.9867704598544287,
+      "final_score": 0.013229540145571372,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-9142",
+      "source": "Nigerian_Fraud.csv",
+      "label": "phishing",
+      "raw_score": 0.01373169912362221,
+      "inverse_raw_score": 0.9862683008763777,
+      "final_score": 0.01373169912362221,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-9177",
+      "source": "Nigerian_Fraud.csv",
+      "label": "phishing",
+      "raw_score": 0.01750399110728773,
+      "inverse_raw_score": 0.9824960088927123,
+      "final_score": 0.01750399110728773,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-9195",
+      "source": "Nigerian_Fraud.csv",
+      "label": "phishing",
+      "raw_score": 0.013880277221405668,
+      "inverse_raw_score": 0.9861197227785943,
+      "final_score": 0.013880277221405668,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-9198",
+      "source": "Nigerian_Fraud.csv",
+      "label": "phishing",
+      "raw_score": 0.013979276212481184,
+      "inverse_raw_score": 0.9860207237875188,
+      "final_score": 0.013979276212481184,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-9253",
+      "source": "Nigerian_Fraud.csv",
+      "label": "phishing",
+      "raw_score": 0.013535900582282157,
+      "inverse_raw_score": 0.9864640994177178,
+      "final_score": 0.013535900582282157,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-9270",
+      "source": "Nigerian_Fraud.csv",
+      "label": "phishing",
+      "raw_score": 0.9766438302124087,
+      "inverse_raw_score": 0.023356169787591252,
+      "final_score": 0.9766438302124087,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-9277",
+      "source": "Nigerian_Fraud.csv",
+      "label": "phishing",
+      "raw_score": 0.013278514079435144,
+      "inverse_raw_score": 0.9867214859205649,
+      "final_score": 0.013278514079435144,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-9303",
+      "source": "Nigerian_Fraud.csv",
+      "label": "phishing",
+      "raw_score": 0.013286018751245576,
+      "inverse_raw_score": 0.9867139812487544,
+      "final_score": 0.013286018751245576,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-9328",
+      "source": "Nigerian_Fraud.csv",
+      "label": "phishing",
+      "raw_score": 0.9660706619971016,
+      "inverse_raw_score": 0.033929338002898435,
+      "final_score": 0.9660706619971016,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-9335",
+      "source": "Nigerian_Fraud.csv",
+      "label": "phishing",
+      "raw_score": 0.014372661085020666,
+      "inverse_raw_score": 0.9856273389149793,
+      "final_score": 0.014372661085020666,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-9365",
+      "source": "Nigerian_Fraud.csv",
+      "label": "phishing",
+      "raw_score": 0.013102717127365382,
+      "inverse_raw_score": 0.9868972828726346,
+      "final_score": 0.013102717127365382,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-9386",
+      "source": "Nigerian_Fraud.csv",
+      "label": "phishing",
+      "raw_score": 0.015641592830987705,
+      "inverse_raw_score": 0.9843584071690124,
+      "final_score": 0.015641592830987705,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-9405",
+      "source": "Nigerian_Fraud.csv",
+      "label": "phishing",
+      "raw_score": 0.015666608629596235,
+      "inverse_raw_score": 0.9843333913704038,
+      "final_score": 0.015666608629596235,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-9429",
+      "source": "Nigerian_Fraud.csv",
+      "label": "phishing",
+      "raw_score": 0.013933690052075343,
+      "inverse_raw_score": 0.9860663099479247,
+      "final_score": 0.013933690052075343,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-9441",
+      "source": "Nigerian_Fraud.csv",
+      "label": "phishing",
+      "raw_score": 0.01379276524072337,
+      "inverse_raw_score": 0.9862072347592766,
+      "final_score": 0.01379276524072337,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-9462",
+      "source": "Nigerian_Fraud.csv",
+      "label": "phishing",
+      "raw_score": 0.9853478627495245,
+      "inverse_raw_score": 0.014652137250475539,
+      "final_score": 0.9853478627495245,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-9515",
+      "source": "Nigerian_Fraud.csv",
+      "label": "phishing",
+      "raw_score": 0.014047409313811321,
+      "inverse_raw_score": 0.9859525906861887,
+      "final_score": 0.014047409313811321,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-9518",
+      "source": "Nigerian_Fraud.csv",
+      "label": "phishing",
+      "raw_score": 0.013048046550561132,
+      "inverse_raw_score": 0.9869519534494389,
+      "final_score": 0.013048046550561132,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-9525",
+      "source": "Nigerian_Fraud.csv",
+      "label": "phishing",
+      "raw_score": 0.01336518391210928,
+      "inverse_raw_score": 0.9866348160878907,
+      "final_score": 0.01336518391210928,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-9539",
+      "source": "Nigerian_Fraud.csv",
+      "label": "phishing",
+      "raw_score": 0.9823189457950456,
+      "inverse_raw_score": 0.01768105420495436,
+      "final_score": 0.9823189457950456,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-9557",
+      "source": "Nigerian_Fraud.csv",
+      "label": "phishing",
+      "raw_score": 0.9852347279751277,
+      "inverse_raw_score": 0.014765272024872322,
+      "final_score": 0.9852347279751277,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-9622",
+      "source": "Nigerian_Fraud.csv",
+      "label": "phishing",
+      "raw_score": 0.019788520472334648,
+      "inverse_raw_score": 0.9802114795276653,
+      "final_score": 0.019788520472334648,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-9628",
+      "source": "Nigerian_Fraud.csv",
+      "label": "phishing",
+      "raw_score": 0.015360542115109399,
+      "inverse_raw_score": 0.9846394578848906,
+      "final_score": 0.015360542115109399,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-9747",
+      "source": "Nigerian_Fraud.csv",
+      "label": "phishing",
+      "raw_score": 0.038363405702105446,
+      "inverse_raw_score": 0.9616365942978946,
+      "final_score": 0.038363405702105446,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-9758",
+      "source": "Nigerian_Fraud.csv",
+      "label": "phishing",
+      "raw_score": 0.024444655271781968,
+      "inverse_raw_score": 0.975555344728218,
+      "final_score": 0.024444655271781968,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-9769",
+      "source": "Nigerian_Fraud.csv",
+      "label": "phishing",
+      "raw_score": 0.012920294938403132,
+      "inverse_raw_score": 0.9870797050615969,
+      "final_score": 0.012920294938403132,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-9771",
+      "source": "Nigerian_Fraud.csv",
+      "label": "phishing",
+      "raw_score": 0.015430193118822988,
+      "inverse_raw_score": 0.984569806881177,
+      "final_score": 0.015430193118822988,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-9845",
+      "source": "Nigerian_Fraud.csv",
+      "label": "phishing",
+      "raw_score": 0.013608996430334697,
+      "inverse_raw_score": 0.9863910035696652,
+      "final_score": 0.013608996430334697,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-9874",
+      "source": "Nigerian_Fraud.csv",
+      "label": "phishing",
+      "raw_score": 0.984487160478698,
+      "inverse_raw_score": 0.015512839521302002,
+      "final_score": 0.984487160478698,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-9877",
+      "source": "Nigerian_Fraud.csv",
+      "label": "phishing",
+      "raw_score": 0.018465582101646227,
+      "inverse_raw_score": 0.9815344178983538,
+      "final_score": 0.018465582101646227,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-9878",
+      "source": "Nigerian_Fraud.csv",
+      "label": "phishing",
+      "raw_score": 0.013838751673023064,
+      "inverse_raw_score": 0.9861612483269769,
+      "final_score": 0.013838751673023064,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-9904",
+      "source": "Nigerian_Fraud.csv",
+      "label": "phishing",
+      "raw_score": 0.9843524468042526,
+      "inverse_raw_score": 0.0156475531957474,
+      "final_score": 0.9843524468042526,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-9909",
+      "source": "Nigerian_Fraud.csv",
+      "label": "phishing",
+      "raw_score": 0.012985411609379549,
+      "inverse_raw_score": 0.9870145883906205,
+      "final_score": 0.012985411609379549,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-9919",
+      "source": "Nigerian_Fraud.csv",
+      "label": "phishing",
+      "raw_score": 0.013032250920094912,
+      "inverse_raw_score": 0.9869677490799051,
+      "final_score": 0.013032250920094912,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-9936",
+      "source": "Nigerian_Fraud.csv",
+      "label": "phishing",
+      "raw_score": 0.013669028079474232,
+      "inverse_raw_score": 0.9863309719205258,
+      "final_score": 0.013669028079474232,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-9942",
+      "source": "Nigerian_Fraud.csv",
+      "label": "phishing",
+      "raw_score": 0.9855435051009269,
+      "inverse_raw_score": 0.01445649489907308,
+      "final_score": 0.9855435051009269,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-9979",
+      "source": "Nigerian_Fraud.csv",
+      "label": "phishing",
+      "raw_score": 0.014156698692213143,
+      "inverse_raw_score": 0.9858433013077869,
+      "final_score": 0.014156698692213143,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-9985",
+      "source": "Nigerian_Fraud.csv",
+      "label": "phishing",
+      "raw_score": 0.013254953874587916,
+      "inverse_raw_score": 0.9867450461254121,
+      "final_score": 0.013254953874587916,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-10005",
+      "source": "Nigerian_Fraud.csv",
+      "label": "phishing",
+      "raw_score": 0.013144877981723868,
+      "inverse_raw_score": 0.9868551220182762,
+      "final_score": 0.013144877981723868,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-10055",
+      "source": "Nigerian_Fraud.csv",
+      "label": "phishing",
+      "raw_score": 0.01406123794502584,
+      "inverse_raw_score": 0.9859387620549742,
+      "final_score": 0.01406123794502584,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-10103",
+      "source": "SpamAssasin.csv",
+      "label": "legitimate",
+      "raw_score": 0.014009088396296332,
+      "inverse_raw_score": 0.9859909116037037,
+      "final_score": 0.014009088396296332,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-10126",
+      "source": "SpamAssasin.csv",
+      "label": "legitimate",
+      "raw_score": 0.015083891568922259,
+      "inverse_raw_score": 0.9849161084310778,
+      "final_score": 0.015083891568922259,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-10131",
+      "source": "SpamAssasin.csv",
+      "label": "legitimate",
+      "raw_score": 0.017744131094720728,
+      "inverse_raw_score": 0.9822558689052793,
+      "final_score": 0.017744131094720728,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-10137",
+      "source": "SpamAssasin.csv",
+      "label": "legitimate",
+      "raw_score": 0.012857968069527992,
+      "inverse_raw_score": 0.987142031930472,
+      "final_score": 0.012857968069527992,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-10156",
+      "source": "SpamAssasin.csv",
+      "label": "legitimate",
+      "raw_score": 0.01744893824275595,
+      "inverse_raw_score": 0.982551061757244,
+      "final_score": 0.01744893824275595,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-10169",
+      "source": "SpamAssasin.csv",
+      "label": "legitimate",
+      "raw_score": 0.022945492552680247,
+      "inverse_raw_score": 0.9770545074473198,
+      "final_score": 0.022945492552680247,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-10176",
+      "source": "SpamAssasin.csv",
+      "label": "legitimate",
+      "raw_score": 0.02513092423020452,
+      "inverse_raw_score": 0.9748690757697955,
+      "final_score": 0.02513092423020452,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-10199",
+      "source": "SpamAssasin.csv",
+      "label": "legitimate",
+      "raw_score": 0.9858693024011529,
+      "inverse_raw_score": 0.014130697598847108,
+      "final_score": 0.9858693024011529,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-10206",
+      "source": "SpamAssasin.csv",
+      "label": "legitimate",
+      "raw_score": 0.015094055140753293,
+      "inverse_raw_score": 0.9849059448592468,
+      "final_score": 0.015094055140753293,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-10261",
+      "source": "SpamAssasin.csv",
+      "label": "legitimate",
+      "raw_score": 0.9807921181380206,
+      "inverse_raw_score": 0.019207881861979414,
+      "final_score": 0.9807921181380206,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-10279",
+      "source": "SpamAssasin.csv",
+      "label": "legitimate",
+      "raw_score": 0.017447668709772435,
+      "inverse_raw_score": 0.9825523312902276,
+      "final_score": 0.017447668709772435,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-10320",
+      "source": "SpamAssasin.csv",
+      "label": "legitimate",
+      "raw_score": 0.018067644771041003,
+      "inverse_raw_score": 0.9819323552289589,
+      "final_score": 0.018067644771041003,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-10329",
+      "source": "SpamAssasin.csv",
+      "label": "legitimate",
+      "raw_score": 0.019813255313982536,
+      "inverse_raw_score": 0.9801867446860175,
+      "final_score": 0.019813255313982536,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-10340",
+      "source": "SpamAssasin.csv",
+      "label": "legitimate",
+      "raw_score": 0.9837175416627144,
+      "inverse_raw_score": 0.016282458337285588,
+      "final_score": 0.9837175416627144,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-10353",
+      "source": "SpamAssasin.csv",
+      "label": "legitimate",
+      "raw_score": 0.9850901873044169,
+      "inverse_raw_score": 0.014909812695583113,
+      "final_score": 0.9850901873044169,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-10400",
+      "source": "SpamAssasin.csv",
+      "label": "legitimate",
+      "raw_score": 0.9849642784939494,
+      "inverse_raw_score": 0.015035721506050592,
+      "final_score": 0.9849642784939494,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-10487",
+      "source": "SpamAssasin.csv",
+      "label": "legitimate",
+      "raw_score": 0.9659379125720782,
+      "inverse_raw_score": 0.03406208742792183,
+      "final_score": 0.9659379125720782,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-10512",
+      "source": "SpamAssasin.csv",
+      "label": "legitimate",
+      "raw_score": 0.03808670298494449,
+      "inverse_raw_score": 0.9619132970150555,
+      "final_score": 0.03808670298494449,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-10529",
+      "source": "SpamAssasin.csv",
+      "label": "legitimate",
+      "raw_score": 0.020521448832066913,
+      "inverse_raw_score": 0.9794785511679331,
+      "final_score": 0.020521448832066913,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-10532",
+      "source": "SpamAssasin.csv",
+      "label": "legitimate",
+      "raw_score": 0.9831992895009938,
+      "inverse_raw_score": 0.01680071049900622,
+      "final_score": 0.9831992895009938,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-10554",
+      "source": "SpamAssasin.csv",
+      "label": "legitimate",
+      "raw_score": 0.9855187133992568,
+      "inverse_raw_score": 0.014481286600743215,
+      "final_score": 0.9855187133992568,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-10564",
+      "source": "SpamAssasin.csv",
+      "label": "legitimate",
+      "raw_score": 0.015075557960363306,
+      "inverse_raw_score": 0.9849244420396367,
+      "final_score": 0.015075557960363306,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-10567",
+      "source": "SpamAssasin.csv",
+      "label": "legitimate",
+      "raw_score": 0.015579026266573148,
+      "inverse_raw_score": 0.9844209737334269,
+      "final_score": 0.015579026266573148,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-10585",
+      "source": "SpamAssasin.csv",
+      "label": "legitimate",
+      "raw_score": 0.9835787333969789,
+      "inverse_raw_score": 0.016421266603021123,
+      "final_score": 0.9835787333969789,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-10597",
+      "source": "SpamAssasin.csv",
+      "label": "legitimate",
+      "raw_score": 0.9842470362162188,
+      "inverse_raw_score": 0.015752963783781215,
+      "final_score": 0.9842470362162188,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-10624",
+      "source": "SpamAssasin.csv",
+      "label": "legitimate",
+      "raw_score": 0.9846195459174636,
+      "inverse_raw_score": 0.01538045408253641,
+      "final_score": 0.9846195459174636,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-10723",
+      "source": "SpamAssasin.csv",
+      "label": "legitimate",
+      "raw_score": 0.017243355722407205,
+      "inverse_raw_score": 0.9827566442775928,
+      "final_score": 0.017243355722407205,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-10728",
+      "source": "SpamAssasin.csv",
+      "label": "legitimate",
+      "raw_score": 0.020022974551139328,
+      "inverse_raw_score": 0.9799770254488607,
+      "final_score": 0.020022974551139328,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-10752",
+      "source": "SpamAssasin.csv",
+      "label": "legitimate",
+      "raw_score": 0.014105327501347964,
+      "inverse_raw_score": 0.985894672498652,
+      "final_score": 0.014105327501347964,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-10802",
+      "source": "SpamAssasin.csv",
+      "label": "legitimate",
+      "raw_score": 0.013707105570292921,
+      "inverse_raw_score": 0.9862928944297071,
+      "final_score": 0.013707105570292921,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-10842",
+      "source": "SpamAssasin.csv",
+      "label": "legitimate",
+      "raw_score": 0.023604058162568775,
+      "inverse_raw_score": 0.9763959418374313,
+      "final_score": 0.023604058162568775,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-10852",
+      "source": "SpamAssasin.csv",
+      "label": "legitimate",
+      "raw_score": 0.014594368066725316,
+      "inverse_raw_score": 0.9854056319332747,
+      "final_score": 0.014594368066725316,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-10902",
+      "source": "SpamAssasin.csv",
+      "label": "legitimate",
+      "raw_score": 0.013682036215275861,
+      "inverse_raw_score": 0.9863179637847241,
+      "final_score": 0.013682036215275861,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-10906",
+      "source": "SpamAssasin.csv",
+      "label": "legitimate",
+      "raw_score": 0.9749625110086477,
+      "inverse_raw_score": 0.025037488991352275,
+      "final_score": 0.9749625110086477,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-10947",
+      "source": "SpamAssasin.csv",
+      "label": "legitimate",
+      "raw_score": 0.015990390546939848,
+      "inverse_raw_score": 0.9840096094530602,
+      "final_score": 0.015990390546939848,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-10991",
+      "source": "SpamAssasin.csv",
+      "label": "legitimate",
+      "raw_score": 0.05507762983666359,
+      "inverse_raw_score": 0.9449223701633365,
+      "final_score": 0.05507762983666359,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-11056",
+      "source": "SpamAssasin.csv",
+      "label": "legitimate",
+      "raw_score": 0.9685192612185587,
+      "inverse_raw_score": 0.03148073878144131,
+      "final_score": 0.9685192612185587,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-11076",
+      "source": "SpamAssasin.csv",
+      "label": "legitimate",
+      "raw_score": 0.026796664773771017,
+      "inverse_raw_score": 0.973203335226229,
+      "final_score": 0.026796664773771017,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-11084",
+      "source": "SpamAssasin.csv",
+      "label": "legitimate",
+      "raw_score": 0.015794833259811625,
+      "inverse_raw_score": 0.9842051667401883,
+      "final_score": 0.015794833259811625,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-11085",
+      "source": "SpamAssasin.csv",
+      "label": "legitimate",
+      "raw_score": 0.02384343282782192,
+      "inverse_raw_score": 0.9761565671721781,
+      "final_score": 0.02384343282782192,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-11093",
+      "source": "curated_contrastive_v3",
+      "label": "phishing",
+      "raw_score": 0.013547070764681868,
+      "inverse_raw_score": 0.9864529292353181,
+      "final_score": 0.95,
+      "decision_source": "content_security_rule",
+      "content_signals": [
+        "device_code_coercion"
+      ]
+    },
+    {
+      "id": "row-11102",
+      "source": "curated_contrastive_v3",
+      "label": "legitimate",
+      "raw_score": 0.012770195113273597,
+      "inverse_raw_score": 0.9872298048867264,
+      "final_score": 0.012770195113273597,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-11105",
+      "source": "curated_contrastive_v3",
+      "label": "phishing",
+      "raw_score": 0.013069216157715058,
+      "inverse_raw_score": 0.9869307838422849,
+      "final_score": 0.95,
+      "decision_source": "content_security_rule",
+      "content_signals": [
+        "payment_redirection_no_verification"
+      ]
+    },
+    {
+      "id": "row-11111",
+      "source": "curated_contrastive_v3",
+      "label": "phishing",
+      "raw_score": 0.021260077992298565,
+      "inverse_raw_score": 0.9787399220077014,
+      "final_score": 0.021260077992298565,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-11112",
+      "source": "curated_contrastive_v3",
+      "label": "legitimate",
+      "raw_score": 0.012838172186440733,
+      "inverse_raw_score": 0.9871618278135592,
+      "final_score": 0.012838172186440733,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    },
+    {
+      "id": "row-11115",
+      "source": "curated_contrastive_v3",
+      "label": "phishing",
+      "raw_score": 0.014356439088257622,
+      "inverse_raw_score": 0.9856435609117424,
+      "final_score": 0.014356439088257622,
+      "decision_source": "model_and_security_rules",
+      "content_signals": []
+    }
+  ],
+  "elapsed_seconds": 21.98755700000038,
+  "limitations": [
+    "Legacy model training overlap is unknown: NOT an independent holdout result.",
+    "Labels are inherited from the local corpus; not individually verified.",
+    "Sample caps change the class/source distribution; not population accuracy.",
+    "CSV lacks sender and authentication: real Outlook evidence is not represented.",
+    "Inverse scores are diagnostic only; production class mapping is unchanged."
+  ]
+}

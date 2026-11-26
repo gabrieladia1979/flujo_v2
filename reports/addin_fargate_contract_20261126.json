@@ -1,0 +1,42 @@
+{
+  "passed": true,
+  "classifier": "audit-candidate-v2",
+  "backend_requests": 8,
+  "token_requests": 8,
+  "replay_rejected": true,
+  "cases": [
+    {
+      "id": "galicia-transfer",
+      "is_phishing": false,
+      "score": 0.8861,
+      "bank": "Banco Galicia",
+      "sender_status": "known_domain_unverified"
+    },
+    {
+      "id": "bbva-summary",
+      "is_phishing": false,
+      "score": 0.4437,
+      "bank": "BBVA",
+      "sender_status": "known_domain_authenticated"
+    },
+    {
+      "id": "bbva-impersonation",
+      "is_phishing": true,
+      "score": 0.95,
+      "bank": "BBVA",
+      "sender_status": "unrecognized_domain"
+    },
+    {
+      "id": "authenticated-secret-request",
+      "is_phishing": true,
+      "score": 0.95,
+      "bank": "BBVA",
+      "sender_status": "known_domain_authenticated"
+    }
+  ],
+  "limits": [
+    "Loopback transport; no live AWS or Outlook session.",
+    "Four authored diagnostic emails; not a production accuracy estimate.",
+    "SLM generation replaced by its offline fallback."
+  ]
+}

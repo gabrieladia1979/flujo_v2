@@ -1,9 +1,13 @@
-name: Deploy AWS Fargate
+name: Prepare or deploy AWS Fargate
 
 on:
-  push:
-    branches: [aws-fargate-deployment]
   workflow_dispatch:
+    inputs:
+      deploy_service:
+        description: Update the ECS service after building and testing the image
+        type: boolean
+        default: false
+        required: true
 
 permissions:
   contents: read
@@ -14,27 +18,48 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  deploy:
+  prepare:
     runs-on: ubuntu-latest
     env:
       AWS_REGION: us-east-1
       ECR_REPOSITORY: phisharg-api
-      ECS_CONTAINER: phisharg-api
+      CLASSIFIER_MODEL_S3_BUCKET: ${{ vars.CLASSIFIER_MODEL_S3_BUCKET }}
+      CLASSIFIER_MODEL_S3_VERSION_ID: ${{ vars.CLASSIFIER_MODEL_S3_VERSION_ID }}
+      ECS_EXECUTION_ROLE_ARN: ${{ vars.ECS_EXECUTION_ROLE_ARN }}
+      ECS_TASK_ROLE_ARN: ${{ vars.ECS_TASK_ROLE_ARN }}
+      API_KEY_SECRET_ARN: ${{ vars.API_KEY_SECRET_ARN }}
+      TOKEN_KEY_SECRET_ARN: ${{ vars.TOKEN_KEY_SECRET_ARN }}
+      PHISHARG_REPLAY_TABLE: ${{ vars.PHISHARG_REPLAY_TABLE }}
+      PHISHARG_CORS_ORIGINS: ${{ vars.PHISHARG_CORS_ORIGINS }}
+      ECS_CLUSTER: ${{ vars.ECS_CLUSTER }}
+      ECS_SERVICE: ${{ vars.ECS_SERVICE }}
     steps:
       - uses: actions/checkout@v4
 
-      - name: Verify deployment configuration
+      - name: Validate artifact configuration
         env:
           ROLE_ARN: ${{ vars.AWS_DEPLOY_ROLE_ARN }}
-          ECS_CLUSTER: ${{ vars.ECS_CLUSTER }}
-          ECS_SERVICE: ${{ vars.ECS_SERVICE }}
         run: |
-          for name in ROLE_ARN ECS_CLUSTER ECS_SERVICE; do
-            if [ -z "${!name}" ]; then
-              echo "Missing GitHub Actions variable: $name" >&2
-              exit 1
-            fi
+          python - <<'PY'
+          import json, os
+          release = json.load(open('deploy/ecs/classifier-release.json'))
+          for name in ('ROLE_ARN', 'CLASSIFIER_MODEL_S3_BUCKET', 'CLASSIFIER_MODEL_S3_VERSION_ID'):
+              if not os.getenv(name) or os.environ[name].startswith('<') or os.environ[name] == 'null':
+                  raise SystemExit('Missing variable: ' + name)
+          with open(os.environ['GITHUB_ENV'], 'a') as env:
+              for name, value in [('CLASSIFIER_BUNDLE_SHA256', release['bundle_sha256']),
+                                  ('CLASSIFIER_MODEL_SHA256', release['model_sha256']),
+                                  ('CLASSIFIER_MODEL_S3_KEY', release['s3_key'])]:
+                  env.write(f'{name}={value}\n')
+          PY
+
+      - name: Validate deployment configuration before AWS work
+        if: inputs.deploy_service
+        run: |
+          for name in ECS_CLUSTER ECS_SERVICE; do
+            test -n "${!name}" || { echo "Missing variable: $name" >&2; exit 1; }
           done
+          IMAGE_URI=validation-only python scripts/render_audit_task.py > /dev/null
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v6.3.0
@@ -42,54 +67,45 @@ jobs:
           role-to-assume: ${{ vars.AWS_DEPLOY_ROLE_ARN }}
           aws-region: ${{ env.AWS_REGION }}
 
+      - name: Download immutable classifier for image smoke test
+        run: |
+          aws s3api get-object --bucket "$CLASSIFIER_MODEL_S3_BUCKET" \
+            --key "$CLASSIFIER_MODEL_S3_KEY" --version-id "$CLASSIFIER_MODEL_S3_VERSION_ID" \
+            /tmp/classifier.zip > /dev/null
+          python scripts/bootstrap_classifier.py --archive /tmp/classifier.zip --destination /tmp/audit-candidate-v2
+          chmod -R a+rX /tmp/audit-candidate-v2
+
       - name: Log in to Amazon ECR
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v2
 
       - name: Build container image
-        id: image
         env:
           REGISTRY: ${{ steps.login-ecr.outputs.registry }}
         run: |
-          IMAGE="$REGISTRY/$ECR_REPOSITORY:$GITHUB_SHA"
-          docker build --tag "$IMAGE" .
-          echo "uri=$IMAGE" >> "$GITHUB_OUTPUT"
+          IMAGE_URI="$REGISTRY/$ECR_REPOSITORY:$GITHUB_SHA"
+          docker build --tag "$IMAGE_URI" .
+          echo "IMAGE_URI=$IMAGE_URI" >> "$GITHUB_ENV"
 
-      - name: Verify packaged classifier and security rules
-        env:
-          IMAGE: ${{ steps.image.outputs.uri }}
-        run: docker run --rm --entrypoint python "$IMAGE" scripts/smoke_classifier.py
+      - name: Verify actual classifier and security rules inside image
+        run: |
+          docker run --rm --entrypoint python \
+            --mount type=bind,source=/tmp/audit-candidate-v2,target=/model,readonly \
+            -e PFI_CLASSIFIER_MODEL_PATH=/model/phisharg_xgboost.pkl \
+            "$IMAGE_URI" scripts/smoke_audit_candidate.py
 
-      - name: Push image to Amazon ECR
-        env:
-          IMAGE: ${{ steps.image.outputs.uri }}
-        run: docker push "$IMAGE"
+      - name: Push tested image to ECR
+        run: docker push "$IMAGE_URI"
 
-      - name: Render ECS task definition
-        id: task-def
-        uses: aws-actions/amazon-ecs-render-task-definition@v1
-        with:
-          task-definition: deploy/ecs/task-definition.json
-          container-name: ${{ env.ECS_CONTAINER }}
-          image: ${{ steps.image.outputs.uri }}
+      - name: Render release task definition
+        if: inputs.deploy_service
+        run: python scripts/render_audit_task.py > /tmp/task-definition.json
 
-      - name: Deploy ECS service
+      - name: Deploy ECS service only when explicitly selected
+        if: inputs.deploy_service
         uses: aws-actions/amazon-ecs-deploy-task-definition@v2
         with:
-          task-definition: ${{ steps.task-def.outputs.task-definition }}
+          task-definition: /tmp/task-definition.json
           cluster: ${{ vars.ECS_CLUSTER }}
           service: ${{ vars.ECS_SERVICE }}
           wait-for-service-stability: true
-
-      - name: Verify public health
-        run: |
-          python - <<'PY'
-          import json
-          import urllib.request
-
-          with urllib.request.urlopen("https://api.phisharg.com/api/v1/health", timeout=20) as response:
-              health = json.load(response)
-          if not health.get("classifier", {}).get("loaded"):
-              raise SystemExit(f"Classifier not loaded after deployment: {health}")
-          print("Public API reports classifier.loaded=true")
-          PY

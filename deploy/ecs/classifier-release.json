@@ -1,0 +1,6 @@
+{
+  "version": "audit-candidate-v2",
+  "s3_key": "xgboost/audit-candidate-v2/20261126/model.zip",
+  "bundle_sha256": "0a0f9c94cda222cf18a50ae57eb2275caf468ec27c404ff7855cc8a2869c0ff6",
+  "model_sha256": "d176ffcbede82073a83e39139da8ee00665adeb4a6a60508c6cd51561a191728"
+}

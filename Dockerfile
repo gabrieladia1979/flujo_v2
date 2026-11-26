@@ -29,8 +29,7 @@ RUN python -m pip install --no-cache-dir /wheels/* \
     && rm -rf /wheels \
     && python -m spacy download es_core_news_sm
 
-# .dockerignore deliberately excludes model/*.gguf while retaining the small
-# model/phisharg_xgboost.pkl classifier shipped with this API version.
+# Both model artifacts are downloaded from versioned S3 with SHA-256 verification.
 COPY --chown=appuser:appuser . .
 
 RUN chmod +x /app/scripts/container-entrypoint.sh

@@ -4,8 +4,27 @@
     {
       "Sid": "ReadOnlyVersionedSlmArtifact",
       "Effect": "Allow",
-      "Action": ["s3:GetObject", "s3:GetObjectVersion"],
+      "Action": [
+        "s3:GetObject",
+        "s3:GetObjectVersion"
+      ],
       "Resource": "arn:aws:s3:::phisharg-models-668281913895-us-east-1-an/qwen2.5-3b-instruct-q4_k_m.gguf"
+    },
+    {
+      "Sid": "ReadVersionedClassifier",
+      "Effect": "Allow",
+      "Action": [
+        "s3:GetObjectVersion"
+      ],
+      "Resource": "arn:aws:s3:::<CLASSIFIER_MODEL_S3_BUCKET>/xgboost/audit-candidate-v2/20261126/model.zip"
+    },
+    {
+      "Sid": "ClaimBrowserNonce",
+      "Effect": "Allow",
+      "Action": [
+        "dynamodb:PutItem"
+      ],
+      "Resource": "arn:aws:dynamodb:us-east-1:668281913895:table/<PHISHARG_REPLAY_TABLE>"
     }
   ]
 }

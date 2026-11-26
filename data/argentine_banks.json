@@ -1,0 +1,19 @@
+{
+  "reviewed_on": "2026-11-25",
+  "scope": "Domain roots for identity context, not an exhaustive list of authorized senders or a guarantee of legitimacy.",
+  "banks": [
+    {"id": "bbva", "name": "BBVA", "aliases": ["bbva", "banco frances"], "domains": ["bbva.com.ar", "bbva.com"], "source": "https://www.bbva.com.ar/economia-para-tu-dia-a-dia/ciberseguridad/phising.html"},
+    {"id": "galicia", "name": "Banco Galicia", "aliases": ["galicia", "banco galicia"], "domains": ["bancogalicia.com.ar", "galicia.ar"], "source": "https://www.galicia.ar/personas/educacion-financiera/Todas-las-formas-de-contactarte-con-Galicia"},
+    {"id": "santander", "name": "Santander", "aliases": ["santander"], "domains": ["santander.com.ar"], "source": "https://www.santander.com.ar/personas/canales-de-atencion/ciberseguridad"},
+    {"id": "macro", "name": "Banco Macro", "aliases": ["banco macro"], "domains": ["macro.com.ar"], "source": "https://www.macro.com.ar/3dsecure"},
+    {"id": "nacion", "name": "Banco Nación", "aliases": ["banco nacion", "banco de la nacion argentina", "bna"], "domains": ["bna.com.ar"], "source": "https://www.bna.com.ar/home/informaciondeseguridad"},
+    {"id": "provincia", "name": "Banco Provincia", "aliases": ["banco provincia", "banco de la provincia de buenos aires"], "domains": ["bancoprovincia.com.ar"], "source": "https://www.bancoprovincia.com.ar/web/recomendaciones_de_seguridad"},
+    {"id": "ciudad", "name": "Banco Ciudad", "aliases": ["banco ciudad"], "domains": ["bancociudad.com.ar"], "source": "https://www.bancociudad.com.ar/"},
+    {"id": "icbc", "name": "ICBC", "aliases": ["icbc"], "domains": ["icbc.com.ar"], "source": "https://www.icbc.com.ar/personas/seguridad-canales"},
+    {"id": "credicoop", "name": "Banco Credicoop", "aliases": ["credicoop"], "domains": ["bancocredicoop.coop"], "source": "https://www.bancocredicoop.coop/"},
+    {"id": "supervielle", "name": "Banco Supervielle", "aliases": ["supervielle"], "domains": ["supervielle.com.ar"], "source": "https://www.supervielle.com.ar/personas"},
+    {"id": "patagonia", "name": "Banco Patagonia", "aliases": ["banco patagonia"], "domains": ["bancopatagonia.com.ar"], "source": "https://www.bancopatagonia.com.ar/personas/index.php"},
+    {"id": "comafi", "name": "Banco Comafi", "aliases": ["comafi"], "domains": ["comafi.com.ar"], "source": "https://www.comafi.com.ar/"},
+    {"id": "hipotecario", "name": "Banco Hipotecario", "aliases": ["banco hipotecario"], "domains": ["hipotecario.com.ar"], "source": "https://www.hipotecario.com.ar/"}
+  ]
+}
